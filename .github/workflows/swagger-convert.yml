@@ -43,8 +43,6 @@ jobs:
       - name: Download nexus metadata
         run: |
          cd $TARGET_FOLDER
-         mkdir -p openapi
-         pushd openapi
          for item in ${url}
          do
           file_name=$(echo ${item} | grep -o -P '(?<=m.).*(?=&a)')
