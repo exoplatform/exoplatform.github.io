@@ -1,5 +1,12 @@
-# Simple integration 
-<<<<<<< HEAD
+> 🚧 Work in progress
+
+This section describes how to realize a simple integration in eXo Platform, by using existing framework and extension points. 
+
+By following this tutorial, you will be able to :
+- [Add a new activity type](/guide/developer-guide/simple-integration/activity-type.html)
+- [Add a new notification type](/guide/developer-guide/simple-integration/notification.html)
+
+
 eXo platform is offering many capabilities for developers to integrate their developments and customize its default functionality set.
 To start developing on top of eXo platform, we need to start by creating a new empty project that will represent an eXo extension.
 
@@ -47,13 +54,12 @@ The extension is a maven project that has the following structure
  - ``` src/main/webapp/WEB-INF/conf/configuration.xml ``` : an XML configuration file that could be used to add / modify an existing server configuration
  - ``` src/main/webapp/WEB-INF/web.xml ``` : web descriptor of the extension webapp, we do not need usually to modify it
  -  - ``` src/pom.xml ``` : Maven descriptor that will be used to build the extension webapp
-=======
-> 🚧 Work in progress
 
-This section describes how to realize a simple integration in eXo Platform, by using existing framework and extension points. 
 
-By following this tutorial, you will be able to :
-- [Add a new activity type](/guide/developer-guide/simple-integration/activity-type.html)
-- [Add a new notification type](/guide/developer-guide/simple-integration/notification.html)
+ ## Deploy your extension
 
->>>>>>> bcb7981 (Add introduction for simple integration)
+ 1. To deploy the extension, you need to build it using Maven
+ ```shell
+ mvn package
+ ```
+ 2. Integrate the resulting web archive in the docker compose file of eXo platform server. Modify the file $EXO_HOME/docker-compose.yml
