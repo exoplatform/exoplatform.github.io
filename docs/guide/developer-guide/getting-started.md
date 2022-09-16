@@ -1,61 +1,5 @@
 # Getting started
 
-## Customization Capabilities with eXo Platform
-> **Warning**
-> 🛑 To rework
-
-eXo Platform can be easily customized and extended by:
-
-- Creating extensions that allows you to customize all resources of
-  eXo Platform, including templates, skin, default configuration, and
-  more.
-- Creating new applications (portlets or gadgets) that you can add to
-  your portal's pages.
-
-### Extensions
-
-Almost everything in eXo Platform can be customized through extensions.
-The main concept behind extensions is that resources of your extensions
-will override resources of eXo Platform. See `eXo Platform Extensions
-<PLFDevGuide.eXoAdd-ons.PortalExtension>` for more details.
-
-Here are some examples of what can be done with extensions:
-
-- Creating a site with some pages and navigations.
-- Customizing internationalized labels.
-- Changing the default connector for users/groups/roles.
-- Creating and customizing a new site. See `Creating a new site
-  <#PLFDevGuide.Site.CreateNew>` for details.
-- Adding or removing languages. See `Adding/Removing a language
-  <#PLFDevGuide.Site.Features.Languages>` for details.
-- Creating a new skin for `your site
-  <#PLFDevGuide.Site.LookAndFeel.CreatingNewSiteSkin>` and `portlet
-  <#PLFDevGuide.Site.LookAndFeel.CreatingNewPortletSkin>`.
-- Creating and customizing templates for content. See `Developing
-  Content <#PLFDevGuide.DevelopingContent>` for more details.
-- Creating a Groovy REST script in your extension that will be loaded
-  at startup by the REST engine. See `Using Groovy REST service
-  <#PLFDevGuide.DevelopingRESTServices.UsingGroovyRESTService>` for
-  more details.
-
-### Applications
-
-Applications are blocks that compose a portal page. eXo Platform comes
-with a lot of out-of-the-box applications which allow you to display a
-navigation menu, display a content or a list of content, manage
-bookmarks, display your next calendar events, and more. Also, you can
-create your own applications.
-
-From a technical point of view, an application can be either a portlet
-or a gadget. Therefore, it is important to understand distinctions
-between gadgets and portlets. While portlets are user interface
-components that provide fragments of markup code from the server side,
-gadgets generate dynamic web content on the client side. With gadgets,
-small applications can be built quickly, and mashed up on the client
-side using lightweight Web-Oriented Architecture (WOA) technologies,
-like REST or RSS.
-
-
 ## Setting up development environment
 
 This guideline helps developers to set up their development environment (SCM, IDE and building tools).
@@ -70,7 +14,7 @@ To set up development environment, see the followings:
 ### Setting eXo Repository in Maven
 
 To set up Maven, you can follow instructions in [Apache's Maven in 5 minutes](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html) for quick start or see [The Apache Maven definitive guide by
-Sonatype](http://books.sonatype.com/mvnref-book/reference/index.html) for a complete reference. 
+Sonatype](http://books.sonatype.com/mvnref-book/reference/index.html) for a complete reference.
 
 To use eXo APIs in your own projects, you have to add the eXo Platform Maven repository to your Maven `settings.xml` file.
 
@@ -154,4 +98,63 @@ contribution guide](http://developer.exoplatform.org/#id-community-contributions
 
 > **Note**
 > To write your own extension, see [this sample project](https://github.com/exo-samples/docs-samples/tree/master/custom-extension).
+
+## How to contribute on eXo Platform
+> 🚧 Work in progress
+
+## Customization Capabilities with eXo Platform
+> **Warning**
+> 🚧🛑 To rework
+
+eXo Platform can be easily customized and extended by:
+
+- Creating extensions that allows you to customize all resources of
+  eXo Platform, including templates, skin, default configuration, and
+  more.
+- Creating new applications (portlets or gadgets) that you can add to
+  your portal's pages.
+
+### Extensions
+
+Almost everything in eXo Platform can be customized through extensions.
+The main concept behind extensions is that resources of your extensions
+will override resources of eXo Platform. See `eXo Platform Extensions
+<PLFDevGuide.eXoAdd-ons.PortalExtension>` for more details.
+
+Here are some examples of what can be done with extensions:
+
+- Creating a site with some pages and navigations.
+- Customizing internationalized labels.
+- Changing the default connector for users/groups/roles.
+- Creating and customizing a new site. See `Creating a new site
+  <#PLFDevGuide.Site.CreateNew>` for details.
+- Adding or removing languages. See `Adding/Removing a language
+  <#PLFDevGuide.Site.Features.Languages>` for details.
+- Creating a new skin for `your site
+  <#PLFDevGuide.Site.LookAndFeel.CreatingNewSiteSkin>` and `portlet
+  <#PLFDevGuide.Site.LookAndFeel.CreatingNewPortletSkin>`.
+- Creating and customizing templates for content. See `Developing
+  Content <#PLFDevGuide.DevelopingContent>` for more details.
+- Creating a Groovy REST script in your extension that will be loaded
+  at startup by the REST engine. See `Using Groovy REST service
+  <#PLFDevGuide.DevelopingRESTServices.UsingGroovyRESTService>` for
+  more details.
+
+### Applications
+
+Applications are blocks that compose a portal page. eXo Platform comes
+with a lot of out-of-the-box applications which allow you to display a
+navigation menu, display a content or a list of content, manage
+bookmarks, display your next calendar events, and more. Also, you can
+create your own applications.
+
+From a technical point of view, an application can be either a portlet
+or a gadget. Therefore, it is important to understand distinctions
+between gadgets and portlets. While portlets are user interface
+components that provide fragments of markup code from the server side,
+gadgets generate dynamic web content on the client side. With gadgets,
+small applications can be built quickly, and mashed up on the client
+side using lightweight Web-Oriented Architecture (WOA) technologies,
+like REST or RSS.
+
 

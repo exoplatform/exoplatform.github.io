@@ -1,4 +1,5 @@
 # Introduction
+> 🚧 Work in progress
 
 ## About this documentation
 This documentation is a starting point to run locally eXo Platform and describes first steps to develop with eXo Platform. If you want to simply try the platform, you can browse the trial part. If you want to browse the User Guide, please refer to ...

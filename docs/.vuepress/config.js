@@ -123,7 +123,7 @@ module.exports = {
             {
               title: 'Miscellaneous',
               collapsable: true,
-              path: '/guide/developer-guide/miscellaneous/',
+              path: '/guide/developer-guide/miscellaneous/debug-dev-mode',
               children: [
                 '/guide/developer-guide/miscellaneous/debug-dev-mode',
                 //'/guide/developer-guide/miscellaneous/feature-flags',
