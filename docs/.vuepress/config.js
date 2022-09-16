@@ -60,7 +60,7 @@ module.exports = {
         },
         '/guide/userAndAdminGuide',
         {
-          title: 'Developer Guide',
+          title: 'Developer guide',
           collapsable: false,
           path: '/guide/developer-guide/getting-started',
           children: [
