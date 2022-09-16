@@ -35,7 +35,7 @@ module.exports = {
     lastUpdated: false,
     nav: [
       {
-        text: 'Guide',
+        text: 'Getting Started',
         link: '/guide/getting-started/Introduction.html',
       },
       {
