@@ -29,6 +29,8 @@ The full environment will be provided as Docker containers assembled together us
 
 ## Start eXo platform
 
+### With Dockerfile
+
 - Create a new folder $EXO\_HOME, this file will contain all files needed to run the eXo platform environment
 - Download the Docker Compose from [here](https://raw.githubusercontent.com/exo-docker/exo-community/master/docker-compose.yml) and save it under $EXO\_HOME
 - Create the folder **conf** which will contain configuration files needed for the services deployed in docker images
@@ -40,3 +42,56 @@ docker-compose -f docker-compose.yml up
 ```
 
 - Open your browser and open the URL : <http://localhost/>
+
+
+### With separated containers
+
+Alternatively, you may want to run each component separately with containers. Required images are :
+
+- [Mongo](https://hub.docker.com/_/mongo) 4.4
+- [eXo Platform Elastic Search](https://hub.docker.com/r/exoplatform/elasticsearch) 2.0.3. This image is build by eXo with all
+  needed ES addons
+- [eXo Platform Community](https://hub.docker.com/r/exoplatform/exo-community) 6.3
+
+To do this, you can use properties described in [this page](https://hub.docker.com/r/exoplatform/exo-community) to configure eXo Community docker image.
+
+The prerequisites are :
+
+- Docker daemon version 12+ + internet access
+- 4GB of available RAM + 1GB of disk
+
+The most basic way to start eXo Platform Community edition for *evaluation* purpose is to execute theses steps : 
+
+- Create the network
+```bash
+docker network create -d bridge exo-network
+```
+
+- Start Mongo Server
+```bash
+docker run -v mongo_data:/data/db -p 27017:27017 --name mongo --network=exo-network mongo:4.4
+```
+ 
+- Start ElasticSearch Server
+```bash
+docker run -e ES_JAVA_OPTS="-Xms2048m -Xmx2048m" -e node.name=exo -e cluster.name=exo -e cluster.initial_master_nodes=exo -e network.host=_site_ -v search_data:/usr/share/elasticsearch/data --name es --network=exo-network exoplatform/elasticsearch:2.0.3
+```
+
+- Start eXo Platform Server
+```bash
+docker run -v exo_data:/srv/exo -p 8080:8080 -e EXO_ES_HOST=es --name exo --network=exo-network exoplatform/exo-community:6.3
+```
+
+and then waiting the log line which say that the server is started
+
+```log
+2017-05-22 10:49:30,176 | INFO  | Server startup in 83613 ms [org.apache.catalina.startup.Catalina<main>]
+```
+
+When ready just go to <http://localhost:8080> and follow the instructions ;-)
+
+Once containers successfully start, you can stop/start them with
+```bash
+docker stop $CONTAINER_NAME
+docker start $CONTAINER_NAME
+```
