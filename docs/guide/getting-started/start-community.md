@@ -34,8 +34,8 @@ The full environment will be provided as Docker containers assembled together us
 - Create a new folder $EXO\_HOME, this file will contain all files needed to run the eXo platform environment
 - Download the Docker Compose from [here](https://raw.githubusercontent.com/exo-docker/exo-community/master/docker-compose.yml) and save it under $EXO\_HOME
 - Create the folder **conf** which will contain configuration files needed for the services deployed in docker images
-- Download the file configuration file of Nging server from [here](https://raw.githubusercontent.com/exo-docker/exo-community/master/conf/nginx.conf) and save it under the folder **conf**
-- Using your preferred console, start the environment with the command:
+- Download the file configuration file of Nginx server from [here](https://raw.githubusercontent.com/exo-docker/exo-community/master/conf/nginx.conf) and save it under the folder **conf**
+- Using your preferred console, move in the $EXO\_HOME, then start the environment with the command:
 
 ```shell
 docker-compose -f docker-compose.yml up
