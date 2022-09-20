@@ -53,8 +53,7 @@ The extension is a maven project that has the following structure
  - ``` src/main/webapp/META-INF/exo-conf/configuration.xml ``` : is the extension activator, it tells the eXo platform server that the current web app is an eXo extension
  - ``` src/main/webapp/WEB-INF/conf/configuration.xml ``` : an XML configuration file that could be used to add / modify an existing server configuration
  - ``` src/main/webapp/WEB-INF/web.xml ``` : web descriptor of the extension webapp, we do not need usually to modify it
- -  - ``` src/pom.xml ``` : Maven descriptor that will be used to build the extension webapp
-
+ - ``` src/pom.xml ``` : Maven descriptor that will be used to build the extension webapp
 
  ## Deploy your extension
 
