@@ -31,7 +31,8 @@ The full environment will be provided as Docker containers assembled together us
 
 ### With Dockerfile
 
-- Create a new folder $EXO\_HOME, this file will contain all files needed to run the eXo platform environment
+- Create a new folder $EXO\_HOME, this folder will contain all files needed to run the eXo platform environment. 
+> It is recommended to add **$EXO_HOME** as an environment variable in your system, it will be used during all the tutorials.
 - Download the Docker Compose from [here](https://raw.githubusercontent.com/exo-docker/exo-community/master/docker-compose.yml) and save it under $EXO\_HOME
 - Create the folder **conf** which will contain configuration files needed for the services deployed in docker images
 - Download the file configuration file of Nginx server from [here](https://raw.githubusercontent.com/exo-docker/exo-community/master/conf/nginx.conf) and save it under the folder **conf**
@@ -88,7 +89,7 @@ and then waiting the log line which say that the server is started
 2017-05-22 10:49:30,176 | INFO  | Server startup in 83613 ms [org.apache.catalina.startup.Catalina<main>]
 ```
 
-When ready just go to <http://localhost:8080> and follow the instructions ;-)
+When ready just go to <http://localhost> and follow the instructions ;-)
 
 Once containers successfully start, you can stop/start them with
 ```bash

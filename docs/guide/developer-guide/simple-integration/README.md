@@ -29,15 +29,17 @@ You can download an empty extension project from Github :
 git clone https://github.com/exo-samples/docs-samples.git
 ```
 This project contains a set of code samples, we will use just the extension that we can find under docs-samples/custom-extension
-Copy it to your working directory : 
+Create a sources directory then copy the source code of the **custom-extension** inside it : 
 ```shell
-cp -r docs-samples/custom-extension ~/work/first-extension
+cd $EXO_HOME
+mkdir sources
+cp -r docs-samples/custom-extension $EXO_HOME/sources
 ```
 
 ### eXo extension structure
 The extension is a maven project that has the following structure
 ```
-📦first-extension
+📦custom-extension
  ┣ 📂src
  ┃ ┗ 📂main
  ┃ ┃ ┗ 📂webapp
@@ -52,7 +54,7 @@ The extension is a maven project that has the following structure
 ```
  - ``` src/main/webapp/META-INF/exo-conf/configuration.xml ``` : is the extension activator, it tells the eXo platform server that the current web app is an eXo extension
  - ``` src/main/webapp/WEB-INF/conf/configuration.xml ``` : an XML configuration file that could be used to add / modify an existing server configuration
- - ``` src/main/webapp/WEB-INF/web.xml ``` : web descriptor of the extension webapp, we do not need usually to modify it
+ - ``` src/main/webapp/WEB-INF/web.xml ``` : web descriptor of the extension webapp. Usually we won't need  to modify it
  - ``` src/pom.xml ``` : Maven descriptor that will be used to build the extension webapp
 
  ## Deploy your extension
@@ -61,4 +63,20 @@ The extension is a maven project that has the following structure
  ```shell
  mvn package
  ```
- 2. Integrate the resulting web archive in the docker compose file of eXo platform server. Modify the file $EXO_HOME/docker-compose.yml
+ 2. Create a new folder named **webapps** under $EXO\_HOME
+ ```shell
+ cd $EXO_HOME
+ mkdir webapps
+ ```
+ 3. Copy the file custom-extension.war under the folder $EXO\_HOME/webapps
+ ```shell
+ cp $EXO_HOME/sources/custom-extension/target/custom-extension.war $EXO_HOME/webapps
+ ```
+ 3. Tell the docker compose file to use the new file with the eXo platform server. Modify the file $EXO_HOME/docker-compose.yml and add this code under the **volumes** section of the exo container. It should look like this:
+ ```
+  volumes:
+      - exo_data:/srv/exo
+      - exo_logs:/var/log/exo
+      - /opt/exo/webapps/custom-extension.war:$EXO_HOME/webapps/custom-extension.war
+ ``` 
+        
