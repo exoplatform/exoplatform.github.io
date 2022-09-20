@@ -1,5 +1,4 @@
 # Introduction
-> 🚧 Work in progress
 
 ## About this documentation
 This documentation is the starting point for developers looking to start a project with eXo Platform. It describes how to run eXo locally, how to sep up a developer environment and start developing with eXo. It also documents eXo Platform extension points, APIs and more.
