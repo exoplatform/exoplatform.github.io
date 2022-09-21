@@ -65,6 +65,7 @@ module.exports = {
           path: '/guide/developer-guide/getting-started',
           children: [
             '/guide/developer-guide/getting-started',
+            '/guide/developer-guide/prepare-extension-project',
             {
               title: 'Simple Integration',
               collapsable: true,
