@@ -32,7 +32,8 @@ The full environment will be provided as Docker containers assembled together us
 ### With Dockerfile
 
 - Create a new folder $EXO\_HOME, this folder will contain all files needed to run the eXo platform environment. 
-> It is recommended to add **$EXO_HOME** as an environment variable in your system, it will be used during all the tutorials.
+> **Warning**
+> It is recommended to add **$EXO_HOME** as an environment variable in your system, it will be used in all the tutorials.
 - Download the Docker Compose from [here](https://raw.githubusercontent.com/exo-docker/exo-community/master/docker-compose.yml) and save it under $EXO\_HOME
 - Create the folder **conf** which will contain configuration files needed for the services deployed in docker images
 - Download the file configuration file of Nginx server from [here](https://raw.githubusercontent.com/exo-docker/exo-community/master/conf/nginx.conf) and save it under the folder **conf**
@@ -43,7 +44,8 @@ docker-compose -f docker-compose.yml up
 ```
 
 - Open your browser and open the URL : <http://localhost/>
-
+- You can create a new user using the form that will be displayed with the first server startup
+- If you skip the step above, you can still connect with the super-user of the platform. Its username is **root** and password **password**
 
 ### With separated containers
 
@@ -86,7 +88,7 @@ docker run -v exo_data:/srv/exo -p 8080:8080 -e EXO_ES_HOST=es --name exo --netw
 and then waiting the log line which say that the server is started
 
 ```log
-2017-05-22 10:49:30,176 | INFO  | Server startup in 83613 ms [org.apache.catalina.startup.Catalina<main>]
+exo_1    | 2022-09-20 16:55:43,009 | INFO  | Server startup in [58805] milliseconds [org.apache.catalina.startup.Catalina<main>] 
 ```
 
 When ready just go to <http://localhost> and follow the instructions ;-)

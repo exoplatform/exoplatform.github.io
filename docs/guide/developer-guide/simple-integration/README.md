@@ -77,6 +77,64 @@ The extension is a maven project that has the following structure
   volumes:
       - exo_data:/srv/exo
       - exo_logs:/var/log/exo
-      - /opt/exo/webapps/custom-extension.war:$EXO_HOME/webapps/custom-extension.war
+      - $EXO_HOME/webapps/custom-extension.war:/opt/exo/webapps/custom-extension.war
  ``` 
-        
+ 4. Restart exo docker environment, you should replace $EXO8DOCKER8NAME with the name of the container of eXo server.
+ ```shell
+docker restart $EXO_DOCKER_NAME 
+ ```
+
+ ### Test your extension
+Finally, let's test our extension and make sure it works.
+We will modify the corporation name in the top bar of our digital workplace instance, by default it is Digital Workplace, we will change it to ACME corp :
+1. Using your file editor, open the file $EXO_HOME/sources/custom-extension/src/main/webapp/WEB-INF/conf/configuration.xml
+2. Add the following code inside it :
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+   <component>
+      <key>org.exoplatform.portal.branding.BrandingService</key>
+      <type>org.exoplatform.portal.branding.BrandingServiceImpl</type>
+      <init-params>
+         <value-param>
+            <name>exo.branding.company.name</name>
+            <value>ACME corp</value>
+         </value-param>
+         <value-param>
+            <name>exo.branding.company.siteName</name>
+            <value>ACME digital village</value>
+         </value-param>
+         <value-param>
+            <name>exo.branding.company.link</name>
+            <value>https://acme.com</value>
+         </value-param>
+         <value-param>
+            <name>exo.branding.company.logo</name>
+            <value>${exo.branding.company.logo:}</value>
+         </value-param>
+         <value-param>
+            <name>exo.branding.theme.path</name>
+            <value>${exo.branding.theme.path:war:/conf/branding/branding.less}</value>
+         </value-param>
+         <values-param>
+            <name>exo.branding.theme.variables</name>
+            <value>#476A9C</value>
+            <value>#476a9c</value>
+            <value>#476A9C</value>
+         </values-param>
+      </init-params>
+   </component>
+</configuration>
+```       
+Note that in the XML file, we changed the value of the property **exo.branding.company.name**
+3. Build your extension and copy it under the folder $EXO_HOME/webapps :
+```shell
+cd $EXO_HOME/sources/custom-extension 
+mvn deploy
+cp $EXO_HOME/sources/custom-extension/target/custom-extension.war $EXO_HOME/webapps/custom-extension.war
+```
+4. Restart your eXo platform environment
+5. Check the new instance name in the top banner, you should see : **ACME corp**
