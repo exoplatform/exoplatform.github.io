@@ -1,3 +1,4 @@
+# Simple integration 
 > 🚧 Work in progress
 
 This section describes how to realize a simple integration in eXo Platform, by using existing framework and extension points. 
