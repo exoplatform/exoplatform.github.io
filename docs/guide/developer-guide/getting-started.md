@@ -96,9 +96,9 @@ Many eXo projects are public at [Meeds-io
 repositories](https://github.com/meeds-io/) and [eXo Platform repositories](https://github.com/exoplatform/). To contribute to a project, you can follow steps described in [Community member
 contribution guide](http://developer.exoplatform.org/#id-community-contributions).
 
-> **Note**
-> To write your own extension, see [this sample project](https://github.com/exo-samples/docs-samples/tree/master/custom-extension).
-
+::: tip Note
+To write your own extension, see [this sample project](https://github.com/exo-samples/docs-samples/tree/master/custom-extension).
+:::
 ## How to contribute on eXo Platform
 > 🚧 Work in progress
 

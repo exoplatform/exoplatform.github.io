@@ -28,8 +28,9 @@ mkdir sources
 cp -r docs-samples/custom-extension $EXO_HOME/sources
 ```
 
-> **Warning**
-> $EXO_HOME is the root of our working folder where we put the docker compose file and all the other files that will be used by our dockerized environment. Make sure to add it as an environment variable in your system, or replace it with the full path of the working folder. Please check [Start eXo platform guide](/guide/getting-started/start-community.html#start-exo-platform)
+::: warning
+$EXO_HOME is the root of our working folder where we put the docker compose file and all the other files that will be used by our dockerized environment. Make sure to add it as an environment variable in your system, or replace it with the full path of the working folder. Please check [Start eXo platform guide](/guide/getting-started/start-community.html#start-exo-platform)
+:::
 
 ### eXo extension structure
 The extension is a maven project that has the following structure
@@ -124,8 +125,9 @@ We will modify the corporation name in the top bar of our digital workplace inst
    </component>
 </configuration>
 ```       
-> **Note** 
-> In the configuration XML file above, we changed the value of the property **exo.branding.company.name**
+::: tip Note 
+In the configuration XML file above, we changed the value of the property **exo.branding.company.name**
+:::
 
 3. Build your extension and copy it under the folder $EXO_HOME/webapps :
 ```shell

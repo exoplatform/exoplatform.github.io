@@ -679,6 +679,7 @@ The steps are pretty simple :
 
 3- Deploy it, and restart the server
 
-> **Note**
-> The template of the header **NotificationHeader.gtmpl** and the template of the footer **NotificationFooter.gtmpl** of all **email** notification are under **commons-extension.war/WEB-INF/notification/templates/mail/** 
-> Both are overridable, using the same steps.
+::: tip Note
+The template of the header **NotificationHeader.gtmpl** and the template of the footer **NotificationFooter.gtmpl** of all **email** notification are under **commons-extension.war/WEB-INF/notification/templates/mail/** 
+Both are overridable, using the same steps.
+:::
