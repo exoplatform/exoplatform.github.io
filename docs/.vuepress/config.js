@@ -72,6 +72,7 @@ module.exports = {
               path: '/guide/developer-guide/simple-integration/',
               children: [
                 '/guide/developer-guide/simple-integration/activity-type',
+                '/guide/developer-guide/simple-integration/event-listeners',
                 '/guide/developer-guide/simple-integration/notification',
               ]
             },

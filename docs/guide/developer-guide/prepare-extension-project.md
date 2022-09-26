@@ -28,6 +28,9 @@ mkdir sources
 cp -r docs-samples/custom-extension $EXO_HOME/sources
 ```
 
+> **Warning**
+> $EXO_HOME is the root of our working folder where we put the docker compose file and all the other files that will be used by our dockerized environment. Make sure to add it as an environment variable in your system, or replace it with the full path of the working folder. Please check [Start eXo platform guide](/guide/getting-started/start-community.html#start-exo-platform)
+
 ### eXo extension structure
 The extension is a maven project that has the following structure
 ```
@@ -71,7 +74,7 @@ The extension is a maven project that has the following structure
       - exo_logs:/var/log/exo
       - $EXO_HOME/webapps/custom-extension.war:/opt/exo/webapps/custom-extension.war
  ``` 
- 4. Restart exo docker environment, you should replace $EXO8DOCKER8NAME with the name of the container of eXo server.
+ 4. Restart exo docker environment, you should replace $EXO_DOCKER_NAME with the name of the container of eXo server.
  ```shell
 docker restart $EXO_DOCKER_NAME 
  ```
@@ -132,3 +135,5 @@ cp $EXO_HOME/sources/custom-extension/target/custom-extension.war $EXO_HOME/weba
 ```
 4. Restart your eXo platform environment
 5. Check the new instance name in the top banner, you should see : **ACME corp**
+
+![eXo branding : site name changed](/img/prepare-extension-project/exo-branding-name-changed.png)
