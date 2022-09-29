@@ -93,25 +93,103 @@ exo_1      | 2022-09-28 20:36:23,202 | INFO  | An event was received from class 
 ``` 
 
 ## List of built-in events
+
+This is a non exhaustive list of events already present in eXo platform
+
 Event name | Description
 ------|------
 exo.core.security.ConversationRegistry.register | A user logs in
-exo.core.security.ConversationRegistry.unregister | a user logs out
-login.failed | 
-metadata.tag.added | 
-dlp.listener.event.detect.item | 
-exo.agenda.event.created | 
-exo.agenda.event.updated | 
-exo.agenda.event.responseSaved | 
-exo.agenda.event.responseSent | 
-exo.agenda.event.poll.created | 
-exo.agenda.event.poll.voted | 
-exo.agenda.event.poll.dismissed | 
-exo.agenda.event.poll.voted.all | 
-exo.onlyoffice.editor.opened | 
-exo.task.taskCreation | 
-exo.task.taskUpdate | 
-share_document_event | 
-rename_file_event | 
-Document.event.TagAdded | 
-Document.event.TagRemoved | 
+exo.core.security.ConversationRegistry.unregister | A user logs out
+login.failed | A user failed to login
+exo.onlyoffice.editor.opened | OnlyOffice editor opened to edit a document
+share_document_event | A document was shared to a space/user
+rename_file_event | A file was renamed
+exo.automatic-translation.event.translate | A request to translate an activity was sent 
+Document.event.TagAdded   | A new tag added to a document
+Document.event.TagRemoved | A tag removed from a document
+metadata.tag.added | a new tag added to metadata
+meeds.poll.createPoll | Poll created
+meeds.poll.votePoll   | A poll was voted
+exo.agenda.event.created |   An event was created
+exo.agenda.event.poll.created | A poll created for an event  
+exo.agenda.event.updated   | an event was updated
+exo.agenda.event.poll.voted   | A poll for an event gets voted
+exo.agenda.event.poll.dismissed  |  A vote for an event poll was dismissed
+exo.agenda.event.poll.voted.all   | All participants in an event did vote
+exo.agenda.event.responseSent   | A response was sent for an event
+org.exoplatform.web.GenericHttpListener.sessionCreated | new HTTP session was created
+org.exoplatform.web.GenericHttpListener.sessionDestroyed | an HTTP session was destroyed  
+dlp.listener.event.detect.item | An item was detected by DLP
+dlp.listener.event.delete.item | An item was deleted by DLP 
+dlp.listener.event.restore.item | A deleted item was restored by DLP 
+social.metadataItem.created | a new metadata item was created
+social.metadataItem.deleted  | a metadata item was deleted
+social.metadataItem.updated  | a metadata item was updated
+social.metadataItem.shared | a new metadata item was shared
+exo.wiki.edit | a Notes (aka Wiki) page was updated
+WCMPublicationService.event.updateState | Publication state of a document was updated 
+PublicationService.event.postChangeState | Event fired before updating the publication state of a content 
+CmsService.event.postCreate | A new content created  
+CmsService.event.postEdit   | A content is updated     
+WebDavService.event.postUpload | A file was uploaded from Webdav connector 
+PublicationService.event.postUpdateState | A publication state will be changed
+ActivityNotify.event.FileCreated | A new file was created/uploaded
+ActivityNotify.event.StateChanged | the publication state of a content\file has been changed 
+ActivityNotify.event.PropertyUpdated | a property of a content as updated
+FileActivityNotify.event.PropertyAdded | a content was added a new property
+FileActivityNotify.event.PropertyRemoved | a property of a content was removed
+FileActivityNotify.event.FileRemoved  | A file was removed
+FileActivityNotify.event.PropertyUpdated | a property of a content was updated
+ActivityNotify.event.AttachmentAdded | A file was attached to an activity
+ActivityNotify.event.AttachmentRemoved | An attached file was removed from an activity
+ActivityNotify.event.CategoryAdded | A content was added to a Category
+ActivityNotify.event.CategoryRemoved | A content was removed from an activity
+ActivityNotify.event.CommentAdded | A comment was added to an activity
+ActivityNotify.event.CommentUpdated | A comment was updated 
+ActivityNotify.event.CommentRemoved | A comment was removed
+ActivityNotify.event.NodeMoved | A content was moved
+ActivityNotify.event.NodeRemoved | A content was removed
+ActivityNotify.event.RevisionChanged | A content revision was restored
+exo.news.gamification.postArticle | A new article was posted
+exo.news.gamification.PublishArticle | A new article was published
+exo.news.postArticle | A new article was posted
+exo.news.updateArticle | An article was updated
+exo.news.deleteArticle | An article was deleted
+exo.news.viewArticle | An article was viewed
+exo.news.shareArticle | An article was shared
+exo.news.commentArticle | An article was commented
+exo.news.likeArticle | An article was liked
+exo.news.archiveArticle | An article was archived
+exo.news.unarchiveArticle | An article was un-archived
+exo.news.scheduleArticle | An article publication was scheduled
+exo.news.unscheduleArticle | An article publication was unscheduled
+exo.task.taskCreation | A task was created
+exo.task.taskUpdate | A task was updated
+exo.task.taskCommentCreation | A task had a new comment
+exo.project.projectModified | A task's project was modified
+exo.task.labelAddedToTask | A label was added to a task
+exo.task.labelDeletedFromTask | A label deleted from a task
+challenge.announcement.activity | A challenge was announced
+exo.gamification.generic.action | A generic action for gamification events
+exo.gamification.domain.action | A generic event for adding/updating/deleting gamification domains
+exo.kudos.activity | A kudos activity was created
+exo.kudos.sent | A kudos was sent
+exo.perkstore.order.createOrModify | An order created/updated
+exo.perkstore.product.createOrModify | A Product created/updated
+exo.perkstore.settings.modified | The settings of perkstore updated
+exo.wallet.reward.report.success | Rewarding report generated successfully
+exo.wallet.transaction.replaced | A blockchain transaction was replaced by another onEvent
+exo.wallet.addressAssociation.new | the address of the wallet created
+exo.wallet.block.mined | A new block mined in the Blockchain
+exo.wallet.transaction.mined | A transaction was mined in the blockchain
+exo.wallet.transaction.modified | A transaction was modified in the blockchain
+exo.wallet.transaction.sent | A transaction was sent to the blockchain
+exo.wallet.modified | A wallet was modified
+exo.wallet.contract.modified | The blockchain contract was modified
+exo.wallet.deleted | The wallet was deleted
+exo.webconferencing.callCreated | Web conferencing : call created
+exo.webconferencing.callStarted | Web conferencing : call started
+exo.webconferencing.callJoined | Web conferencing : user joined the call
+exo.webconferencing.callLeft | Web conferencing : user left the call
+exo.webconferencing.callStopped | Web conferencing : call stopped
+exo.webconferencing.callRecorded | Web conferencing : call was recorded successfully
