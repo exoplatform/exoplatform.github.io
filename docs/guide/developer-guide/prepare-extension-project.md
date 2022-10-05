@@ -167,3 +167,23 @@ In the configuration XML file above, we changed the value of the property **exo.
 5.  Check the new instance name in the top banner, you should see : **ACME corp**
 
 ![eXo branding : site name changed](/img/prepare-extension-project/exo-branding-name-changed.png)
+
+## Rename the extension
+In the following tutorials and for your future developments on top of eXo platform, you will need to rename this extension project. 
+To rename the extension to awesome-extension follow the steps above :
+1.  Rename the project folder from **custom-extension** to **awesome-extension**
+2.  In *awesome-extension/pom.xml*Rename the **groupid** to your organization's group ID like *com.acme* and **artifactid** to *awesome-extension*
+3.  In the files *awesome-extension/services/pom.xml*  and *awesome-extension/webapp/pom.xml* , rename the **parent** tag to
+    ```xml
+      <parent>
+         <groupId>com.acme</groupId>
+         <artifactId>awesome-extension</artifactId>
+         <version>1.0.x-SNAPSHOT</version>
+      </parent> 
+    ```   
+4. In *awesome-extension/services/pom.xml* , rename *artifactId* and *finalName* to *awesome-extension-services*
+5. In *awesome-extension/webapp/pom.xml* , rename *artifactId* and *finalName* to *awesome-extension-webapp*
+6. In *awesome-extension/webapp/src/main/webapp/META-INF/exo-conf/configuration.xml* , replace **<string>custom-extension-webapp</string>** with **<string>awesome-extension-webapp</string>**
+7. In *awesome-extension/webapp/src/main/webapp/WEB-INF/web.xml* , replace **<display-name>custom-extension-webapp</display-name>** with **<display-name>awesome-extension-webapp</display-name>**
+
+That is it, you have now a new extension with a new name that you can add to the volumes of your eXo platform server.
