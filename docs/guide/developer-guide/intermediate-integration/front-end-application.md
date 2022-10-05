@@ -1,8 +1,5 @@
 # Develop a front end application 
 
-> 🚧 Work in progress
->
-> This page will describe how to create a front end application and deploy it in eXo
 eXo Platform uses Portlets ([JSR-168](https://www.jcp.org/en/jsr/detail?id=168)) are user interface components that provide fragments of markup code from the server side. 
 We can use many Frontend technologies to build portlets like :
 1.  Java Server Pages (JSP)
@@ -14,9 +11,8 @@ In this tutorial , we will build a VueJS portlet.
 [VueJS](https://vuejs.org/) is a approachable, performant and versatile framework for building web user interfaces using Javascript.
 Since eXo platform 6.0, VueJS became the principal framework for building frontend application in eXo platform.
 
-1.  Download the complete example from [VueJS portlet sample](https://github.com/exo-samples/docs-samples/tree/master/portlet/vue-portlet-webpack)
-2.  
-
+Download the complete example from [VueJS portlet sample](https://github.com/exo-samples/docs-samples/tree/master/portlet/vue-portlet-webpack)
+  
 ## Project structure
 
 This is the structure for our project, it consists of 2 parts :
@@ -253,7 +249,7 @@ This is the structure for our project, it consists of 2 parts :
        -  ```webpack.common.js```: Common configuration for [Webpack](https://webpack.js.org/concepts/) needed to package the application 
        -  ```webpack.dev.js``` : Development configuration of the application for Webpack, needed to simplify developing and debugging the application
        -  ```webpack.prod.js```:Production configuration of the application for Webpack, used to build final package deployable on production
-2.  Here is the list of files included that are the extension : 
+2.  Here is the list of files included that form the extension : 
    -  ```src/main/webapp/META-INF/exo-conf/configuration.xml``` : extension activator configuration, more details in [Prepare extension project](/guide/developer-guide/prepare-extension-project)
    -  ```src/main/webapp/WEB-INF/web.xml``` : Web application descriptor. it contains 
       -  PortalContainerConfigOwner listener to register the current war as an eXo extension 
@@ -286,8 +282,75 @@ This is the structure for our project, it consists of 2 parts :
               <url-pattern>/*</url-pattern>
             </filter-mapping>
           </web-app>
-      ```  
+      ```
+      -  ```src/main/webapp/WEB-INF/conf/configuration.xml``` : main entry point for configurations available in this extension. This configuration file will loads other configuration files using the import tag. 
+      ```xml
+         <?xml version="1.0" encoding="UTF-8"?>
+          <configuration
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd http://www.exoplatform.org/xml/ns/kernel_1_3.xsd"
+            xmlns="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd">
+
+            <!-- Import the configuration file of the resource bundles -->
+            <import>war:/conf/custom-extension/bundle-configuration.xml</import>
+          </configuration>
+      ```
+     -  ```src/main/webapp/WEB-INF/conf/custom-extension/bundle-configuration.xml``` : Configuration for the resource bundle files that will be added to the resource bundles of the site to provide internationalization of text
+        ```xml
+          <?xml version="1.0" encoding="UTF-8"?>
+          <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd http://www.exoplatform.org/xml/ns/kernel_1_3.xsd"
+            xmlns="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd">
+
+            <external-component-plugins>
+              <!-- Service managing resource bundles -->
+              <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
+              <component-plugin>
+                <!-- Name of the plugin -->
+                <name>Vue Sample Portlet Resource Bundle</name>
+                <!-- function to add the resource bundle -->
+                <set-method>addResourceBundle</set-method>
+                <!-- type of the plugin -->
+                <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
+                <init-params>
+                  <!-- this resource bundle will be added to the portal (site) resource bundles-->
+                  <values-param>
+                    <name>portal.resource.names</name>
+                    <!-- the location of resource bundles under resources folder -->
+                    <value>locale.addon.Sample</value>
+                  </values-param>
+                </init-params>
+              </component-plugin>
+            </external-component-plugins>
+          </configuration>
+        ```
+   -  ```src/main/resources/locale/addon/Sample_en.properties``` : the resource bundle file that will be added to the resource bundles of the site. It is a text file composed of key/value pairs representing all text keys with their translation 
+
+## Insert the video using the wizard : add a new page
+Please follow this video to know how to add a new page to your digital workplace and insert the new application inside it : 
+
+<video width="640" height="480" controls>
+  <source src="/vids/create-frontent-application/add-application-to-new-page.mp4" type="video/mp4">
+</video>
+
+## Insert application using configuration
+IF you want to insert the application automatically when you install the extension in eXo platform server, you can add the following files to your extension. Those files will add automatically a new page and will insert the application inside it.
+
+
    -  ```src/main/webapp/WEB-INF/conf/configuration.xml``` : main entry point for configurations available in this extension. This configuration file will loads other configuration files using the import tag. 
+      ```xml
+         <?xml version="1.0" encoding="UTF-8"?>
+          <configuration
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd http://www.exoplatform.org/xml/ns/kernel_1_3.xsd"
+            xmlns="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd">
+
+            <!-- Import the configuration file of the resource bundles -->
+            <import>war:/conf/custom-extension/bundle-configuration.xml</import>
+            <!-- Added a new import to activate configuration of new page / navigation link-->
+            <import>war:/conf/custom-extension/portal-configuration.xml</import>
+
+          </configuration>
+      ```
    -  ```src/main/webapp/WEB-INF/conf/custom-extension/portal-configuration.xml``` : Configuration for site metadata configuration, it will add a new navigation link and a new page to the site **DW**
       ```xml
          <?xml version="1.0" encoding="UTF-8"?>
@@ -400,35 +463,6 @@ This is the structure for our project, it consists of 2 parts :
             </page>
           </page-set>
       ```
-   -  ```src/main/webapp/WEB-INF/conf/custom-extension/bundle-configuration.xml``` : Configuration for the resource bundle files that will be added to the resource bundles of the site to provide internationalization of text
-      ```xml
-        <?xml version="1.0" encoding="UTF-8"?>
-        <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd http://www.exoplatform.org/xml/ns/kernel_1_3.xsd"
-          xmlns="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd">
-
-          <external-component-plugins>
-            <!-- Service managing resource bundles -->
-            <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
-            <component-plugin>
-              <!-- Name of the plugin -->
-              <name>Vue Sample Portlet Resource Bundle</name>
-              <!-- function to add the resource bundle -->
-              <set-method>addResourceBundle</set-method>
-              <!-- type of the plugin -->
-              <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
-              <init-params>
-                <!-- this resource bundle will be added to the portal (site) resource bundles-->
-                <values-param>
-                  <name>portal.resource.names</name>
-                  <!-- the location of resource bundles under resources folder -->
-                  <value>locale.addon.Sample</value>
-                </values-param>
-              </init-params>
-            </component-plugin>
-          </external-component-plugins>
-        </configuration>
-      ```
-   -  ```src/main/resources/locale/addon/Sample_en.properties``` : the resource bundle file that will be added to the resource bundles of the site. It is a text file composed of key/value pairs representing all text keys with their translation 
 
 ## Deploy and test the application
 1.  Build the project available in [vue-portlet-webpack](https://github.com/exo-samples/docs-samples/tree/master/portlet/vue-portlet-webpack) sample project
