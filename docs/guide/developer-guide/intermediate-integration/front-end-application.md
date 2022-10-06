@@ -333,7 +333,7 @@ Please follow this video to know how to add a new page to your digital workplace
 </video>
 
 ## Insert application using configuration
-IF you want to insert the application automatically when you install the extension in eXo platform server, you can add the following files to your extension. Those files will add automatically a new page and will insert the application inside it.
+If you want to insert the application automatically when you install the extension in eXo platform server, you can add the following files to your extension. Those files will add automatically a new page and will insert the application inside it.
 
 
    -  ```src/main/webapp/WEB-INF/conf/configuration.xml``` : main entry point for configurations available in this extension. This configuration file will loads other configuration files using the import tag. 
