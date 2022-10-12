@@ -21,8 +21,6 @@ This is the structure for our project, it consists of 2 parts :
 
     ```
       📦vue-portlet-webpack
-      ┣ 📂.vscode
-      ┃ ┗ 📜settings.json
       ┣ 📂src
       ┃ ┣ 📂main
       ┃ ┃ ┣ 📂resources
