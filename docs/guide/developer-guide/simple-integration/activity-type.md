@@ -5,7 +5,7 @@
 > This page will describe how to create a new activity type in eXo Platorm
 
 In this tutorial, we will see how to add a new activity type in eXo Platform.
-Activities are short messages sent by users of the platform in different spaces stream. We already have few activity types like this : 
+Activities are short messages sent by (or on belhalf of) users of the platform in different spaces stream. Several types of activity are built-in such as : 
 - Simple activity
 
   ![](/img/activity-type/simple-activity.png)
@@ -19,9 +19,9 @@ Activities are short messages sent by users of the platform in different spaces 
   ![](/img/activity-type/kudo-activity.png)
 
 
-Each activity type define how the activity object is displayed. 
+Each activity type defines how the activity object is displayed. 
 
-To illustrate this tutorial, we will create a new activity type named "Mood of the day"
+In this tutorial, we will create a new activity type called "Mood of the day"
 
 ## Init the extension
 
@@ -73,8 +73,8 @@ In this file, you can see the props activity :
     },
   },
 ```
-This props comes from the upper vue component, and represent the activity object we want to display.
-We will display it with a v-card, containing two lines : the first one (the v-card title) will contains "Mood of the day", and the second one (the v-card subtitle) will contain the activity title.
+These props come from the upper Vue component, and represent the activity object to display.
+Let's display it with a v-card, containing two lines : the first one (the v-card title) with "Mood of the day", and the second one (the v-card subtitle) with the activity title.
 
 ## Register the new activity extension
 
@@ -103,14 +103,14 @@ export function init() {
 }
 ```
 
-This file allow to register our Vue component in the eXo Platform extensionRegistry. The two first parameter of the function registerExtension define which kind of extension we are registring, the third one defines the object we want to register.
-The 'type' parameter is our extension type. All activities with this type we be displayed with our Vue component.
+This file allow sto register our Vue component in the eXo Platform extensionRegistry. The first two parameters of the function registerExtension define which kind of extension we are registering, the third one defines the object we want to register.
+The 'type' parameter is our activity type. All activities with this type we be displayed with our Vue component.
 
 ## Load the Vue Component
 
-Create the folder `$EXO_HOME/sources/docs-sample/activity-extensions/src/main/webapp/groovy/MoodOfTheDayActivityExtension.gtmpl`
+Create the template file `$EXO_HOME/sources/docs-sample/activity-extensions/src/main/webapp/groovy/MoodOfTheDayActivityExtension.gtmpl`
 
-Fill this file with 
+Fill it with 
 
 ```js
 <script type="text/javascript" defer="defer">
@@ -143,19 +143,19 @@ Replace the existing  `external-component-plugin` by
   </external-component-plugins>
 ```
 
-This xml configuration will indicate to the portal, to insert the gtmpl `.MoodOfTheDayActivityExtension.gtmpl` in the dynamic container `UIPortalApplication-End-Body` when loading the portal. The gtmpl load the javascript file which load the activity extension. 
+This xml configuration tells the portal to insert the gtmpl `.MoodOfTheDayActivityExtension.gtmpl` in the dynamic container `UIPortalApplication-End-Body` when loading the portal. The gtmpl loads the javascript file which loads our activity type extension. 
 
 
 
 ## Deploy the extension
 
-1.  We will now build and deploy our extension
+1.  Let's build our extension
     ```bash
     cd $EXO_HOME/sources/docs-sample/activity-extensions
     mvn clean package
     ```
 
-2. And deploy it to the server
+2. Now deploy it to the server
     ```bash    
     cp target/activity-extensions.war $EXO_HOME/webapps
     ```
@@ -167,30 +167,30 @@ This xml configuration will indicate to the portal, to insert the gtmpl `.MoodOf
         - exo_logs:/var/log/exo
         - $EXO_HOME/webapps/activity-extensions.war:/opt/exo/webapps/activity-extensions.war
     ```
-3.  Restart the docker containers of eXo platform :
+3.  Restart the docker containers of eXo Platform :
     ```bash
     docker-compose -f docker-compose.yml up
     ```      
 
 ## Create an activity with the new type
-To create an activity we will use REST service which [manage activities](/guide/openapi/social.html#/v1%2Fsocial%2Factivities/postActivity).
+Now let's call the [social API](/guide/openapi/social.html#/v1%2Fsocial%2Factivities/postActivity) to post a new mood activity.
 
 To use it, we firstly need a space in which we will create the activity. Access to the application, and create a new space. Then access to url to get user spaces :
 
     http://{eXoServer}/portal/rest/v1/social/spaces?limit=10
 
-Find your space and note the attribute "id". If the space is the first one create, the id will be 1
+Find your space and note the attribute "id". If the space is the first one created, the id will be 1
 
-The create the activity, we need to make a POST request. In this example, we will make it with curl, but you can use tools like [Talent API Tester](https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm?hl=fr) or [YARC](chrome-extension://ehafadccdcdedbhcbddihehiodgcddpl/index.html) which will help to make REST requests.
+To generate the activity, we need to make a POST request. In this example, we will make it with curl, but you can use tools like [Talend API Tester](https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm?hl=fr) or [YARC](chrome-extension://ehafadccdcdedbhcbddihehiodgcddpl/index.html) which will help to make REST requests.
 
-With curl tool, launch theses requests in your command line tool : 
+With curl tool, make the following requests from command line  : 
 
 ```bash
 curl -X POST -c cookies -d 'username=root&password=password' http://localhost:8080/portal/login
 curl -X POST -b cookies -H 'Content-Type: application/json' -d '{"title": "Im happy","type": "moodActivity"}' http://localhost:8080/portal/rest/v1/social/activities?spaceId=1
 ```
 
-The first command make the login and store cookies in `cookies` file. The second command makes the POST request using `cookies file for the authentication. 
+The first command performs the authentication and store cookies in `cookies` file. The second command makes the POST request using `cookies` file for the authentication. 
 
 Access to the space :
     ![](/img/activity-type/mood-result.png)
