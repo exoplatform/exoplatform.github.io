@@ -39,6 +39,10 @@ module.exports = {
         link: '/guide/getting-started/Introduction.html',
       },
       {
+        text: 'Technical Administration',
+        link: '/administration/',
+      },
+      {
         text: 'REST API',
         link: '/guide/developer-guide/rest-api',
       },
@@ -109,7 +113,7 @@ module.exports = {
                 ['/guide/openapi/gamification', 'Gamification REST Api'],
                 ['/guide/openapi/gatein_portal', 'Portal REST Api'],
                 ['/guide/openapi/kudos', 'Kudos REST Api'],
-                ['/guide/openapi/multifactor-authentication', 'Multi-factor AuthenticationREST Api'],
+                ['/guide/openapi/multifactor-authentication', 'Multi-factor Authentication REST Api'],
                 ['/guide/openapi/news', 'News REST Api'],
                 ['/guide/openapi/notes', 'Notes REST Api'],
                 ['/guide/openapi/onlyoffice', 'Onlyoffice REST Api'],
@@ -134,6 +138,24 @@ module.exports = {
             },
           ]
         }
+      ],
+      '/administration/': [
+        {
+          title: 'Technical Administration Guide',
+          collapsable: false,
+          path: '/administration/',
+          children: [
+            '/administration/configuration',
+            '/administration/database',
+            '/administration/backup-restore',
+            '/administration/indexing',
+            '/administration/LDAP',
+            '/administration/oauth-integration',
+            '/administration/addons-management',
+            '/administration/security',
+            '/administration/jmx-rest-management'
+          ]
+        },
       ],
     
       '/': [ // Your fallback (this is your landing page)
