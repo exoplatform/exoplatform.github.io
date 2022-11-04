@@ -1,4 +1,201 @@
-# OAuth integration
-> 🚧 Work in progress
->
-> https://docs.exoplatform.org/en/6.3/OAuthIntegration.html
+# OAuth Integration
+
+Starting from 4.3 version, eXo Platform allows users to log in using their social network accounts, including Facebook, Google+, Twitter, LinkedIn. Starting from 6.0 version, you can use an OpenId integration, which is based on OAuth protocol. To enable the feature, you need to do the main steps below:
+
+- Registering an application on the social network you want.
+- Making some configurations in `exo.properties` to enable the social network with its registered application information.
+After startup of eXo Platform, the users can log in and register into eXo Platform via the corresponding social network.
+In this chapter:
+- `Overview` Quick introduction to the the UI flow after one social network is integrated with eXo Platform.
+- `Registering your OAuth application`How to register your OAuth applications, including Facebook, Google+, Twitter, LinkedIn, and OpenId
+- `Setting up eXo Platform` Steps to configure eXo Platform that enable the social network with its registered application information.
+- `On-the-fly registration` Introduction to the on-the-fly registration that allows administrator to skip the Registration form for the new social accounts.
+
+## Overview
+
+When a social network is integrated with eXo Platform, the UI flow will be as follows:
+
+The login page will have new buttons below:
+
+![image0](/img/administration/oauth/oauth_signin_buttons.png)
+
+When clicking the Facebook button for example, the OAuth authorization flow starts. The user will be redirected to the Facebook page and be asked for login if not yet. Facebook then asks the user if he allows eXo to access his profile data.
+
+![image1](/img/administration/oauth/facebook_authorization_form.png)
+
+If the user accepts, he is logged into eXo and redirected to the homepage.
+
+## Registering your OAuth application
+
+Registration will be detailed for each OAuth provider. But in all cases, the provider will give you a pair of *Client ID/Secret* needed for later configuration.
+
+::: tip
+
+Pay attention to the Redirect URL that should match your server host and port. In the below instructions, it is assumed that your host is [server.local.network.com](server.local.network.com).
+:::
+
+### Facebook
+
+1. Go to <https://developers.facebook.com/apps> and register as a Facebook developer if not yet.
+
+2. Click **Create a New App**. Here, enter Display Name, Namespace and select one Category, then click Create App ID.
+
+    ![image2](/img/administration/oauth/facebook_create_new_app.png)
+
+3. In your created application, select **Settings**. Here, input the values:
+
+    - [local.network.com](local.network.com) for **App Domains**.
+    - <http://server.local.network.com:8080> for **Site URL** (by selecting Add PlatformWebsite).
+
+![image3](/img/administration/oauth/facebook_app_settings.png)
+
+Before going to the production environment, you need to disable the development mode in your registered application. If not, your application is available only for you, your developers and users created for your application.
+
+![image4](/img/administration/oauth/facebook_app_dashboard.png)
+
+To switch the development mode to the public one, go to **Status & Review**, then click
+
+![image5](/img/administration/oauth/facebook_app_enable_public_button.png)Confirm.
+
+![image6](/img/administration/oauth/facebook_app_status_review_section.png)
+
+### Twitter
+
+1. Go to the [Twitter Developer page](https://dev.twitter.com/). From this page, go to the **Manage Your Apps** page (in the **TOOLS** category near the bottom), then register your application by clicking **Create New App**.
+2. Fill values for Name and Description. Use <http://server.local.network.com:8080> and <http://server.local.network.com:8080/portal/twitterAuth> for Website and Callback URL respectively.
+
+![image7](/img/administration/oauth/twitter_create_app_form.png)
+
+::: tip
+
+The **Callback URL** must be filled for Twitter to recognize that it is a web application which is trying to connect. Twitter will not accept **<http://localhost:8080/portal>** as a valid URL but you can use any, even **<http://www.twitter.com>**. This field will be ignored but it cannot be left empty.
+:::
+
+3. In the created application, optionally edit it. In the **Settings** tab, you may need to enable the **Sign in with Twitter** feature (by ticking the **Allow this application to be used to Sign in with Twitter** checkbox). It is recommended you enable it, otherwise your users will need to authorize in Twitter after each login into eXo Platform. For the Access option, the default value as **Read only** is sufficient.
+After finishing the whole process, you should see in the **Details** tab as below:
+
+![image8](/img/administration/oauth/twitter_app_registration_details.png)
+
+**Consumer Key** and **Consumer Secret** (in *Keys and Access Token* tab) will be used to configure Client ID and Client Secret later.
+
+### LinkedIn
+
+1. Go to <https://www.linkedin.com/developer/apps/>. From this page, register your application by selecting **Create Application**.
+2. Fill values for Name, Description, Application Logo URL, Application User, Business Email and Business Phone. For Website URL, enter <http://server.local.network.com:8080>.
+
+![image9](/img/administration/oauth/linkedIn_create_new_app_form.png)
+
+3. Click **Submit**.
+4. In the Authentication part, tick two checkboxes: **r_basicprofile** and **r_emailaddress**, then input <http://server.local.network.com:8080/portal/linkedinAuth> for the Authorized Redirect URLs field and click Update.
+
+![image10](/img/administration/oauth/linkedIn_authentication_keys.png)
+
+### Google
+
+1. Go to the <https://developers.google.com/>. Here, access the **Google Developers Console** page (in the **Developer Consoles** category near the bottom) and register as Google developer if not yet.
+2. Create your project first, then go to it.
+3. In the Gallery icon \--\> API Manager part \--\> Overview, make sure **Google+ API** is enabled.
+4. In the **Credentials** part, click Add credentials and select **Oauth 2.0 client ID**.
+
+![image11](/img/administration/oauth/googleplus_add_credentials.png)
+
+5. Select *Web application*. In the Authorized redirect URIs field, input <http://server.local.network.com:8080/portal/googleAuth>.
+
+![image12](/img/administration/oauth/googleplus_create_client_id.png)
+
+6. Click Create and view information of Client ID, Client Secret and Redirect URIs.
+
+![image13](/img/administration/oauth/googleplus_oauth_client.png)
+
+### OpenId
+
+The OpenId configuration depends on which implementation you use, but the steps are similar : You have to create an application, provide Authorized Redirect URI, which is <http://server.local.network.com:8080/portal/openidAuth> Then, you will be able to obtain a client ID, and a client secret from the openID provider
+
+## Setting up eXo Platform
+
+It is assumed that your eXo Platform instance will be executed on the host: [server.local.network.com](server.local.network.com) (remember to set up your host, for example, by adding it to `/etc/hosts` on Linux), so you will need to:
+
+1. Change the property `exo.base.url` to the value of your host. See `Server base URL` for details.
+
+   ```properties
+        # OAuth
+        exo.base.url=http://server.local.network.com:8080
+   ```
+
+2. Make configurations for the social networks that you want in `exo.properties`.
+
+   ```properties
+        ## Facebook
+        exo.oauth.facebook.enabled=true
+        exo.oauth.facebook.clientId=Facebook_App_Id
+        exo.oauth.facebook.clientSecret=Facebook_App_Secret
+
+        ## Twitter
+        exo.oauth.twitter.enabled=true
+        exo.oauth.twitter.clientId=Twitter_Consumer_Key
+        exo.oauth.twitter.clientSecret=Twitter_Consumer_Secret
+
+        ## LinkedIn
+        exo.oauth.linkedin.enabled=true
+        exo.oauth.linkedin.apiKey=LinkedIn_Client_Id
+        exo.oauth.linkedin.apiSecret=LinkedIn_Client_Secret
+
+        ## Google Plus
+        exo.oauth.google.enabled=true
+        exo.oauth.google.clientId=GooglePlus_Client_Id
+        exo.oauth.google.clientSecret=GooglePlus_Client_Secret
+
+        ## OpenId
+        exo.oauth.openid.enabled=true
+        exo.oauth.openid.clientId=OpenId_Client_Id
+        exo.oauth.openid.clientSecret=OpenId_Client_Secret
+   ```
+
+    In which:
+
+    - `exo.oauth.{OAuth_Provider}.enabled` - Enables the integration with the social network. Users will now be able to log in and register with their social network accounts.
+    - `exo.oauth.{OAuth_Provider}.clientId` - Client ID of your application.
+    - `exo.oauth.{OAuth_Provider}.clientSecret` - Client Secret of your application.
+
+For OpenId, you need to add 1 more property which is the url of the resource named **well-known configuration file**. In this file, all other information are present. This configuration is implicit in other providers, but as OpenId can be implemented in different ways, we have to provide url. In url, replace [openid.server.com](openid.server.com)] by the name of your OpenId server.
+
+```properties
+  ## OpenId Urls
+  exo.oauth.openid.wellKnownConfigurationUrl=https://openid.server.com/.well-known/openid-configuration
+```
+
+::: tip
+Google provide an OpenId protocol implementation. You can use it by creating an Oauth 2.0 client ID (as explained previously), and by using it as openid provider, with theses parameters :
+
+``` properties
+    exo.oauth.openid.enabled=true
+    exo.oauth.openid.clientId=GooglePlus_Client_Id
+    exo.oauth.openid.clientSecret=GooglePlus_Client_Secret
+    exo.oauth.openid.wellKnownConfigurationUrl=https://accounts.google.com/.well-known/openid-configuration
+```
+
+:::
+
+Finally, for OpenId, you need a redirectUrl which will be called by your openid server after successful authentication. This url will **read** the logged-in user, and redirect him to the portal
+
+```properties
+   exo.oauth.openid.redirectURL=http://server.local.network.com:8080/portal/openidAuth
+```
+
+1. Restart eXo Platform server. Your users should be able to register or log in with their social network accounts.
+
+## On-the-fly registration
+
+The on-the-fly registration mode is option that allows administrator to skip the Registration form for the new social accounts that log into eXo for the first time. If the option is not turned on, users will have to edit their social information for the first login into eXo Platform.
+
+![image14](/img/administration/oauth/register_new_account_form.png)
+
+1. Configuring the on-the-fly registration
+
+By default, the Registration form is skipped for the three networks following:
+
+```properties
+    exo.oauth.registraterOnFly=FACEBOOK,GOOGLE,LINKEDIN,OPENID
+```
+
+The on-the-fly registration option is not turned on for Twitter by default. In case of the on-the-fly registration, a random password will be generated for the new user. So the only way for the user to know his password is via the `Forget password` function (which will require email address). The Twitter site does not allow third-party application to get user email, so it is recommended you do not enable this option for Twitter.
