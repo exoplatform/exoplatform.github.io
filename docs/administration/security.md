@@ -390,7 +390,7 @@ eXo Platform supports the \"Remember My Login\" feature. This guideline explains
 If users select \"Remember My Login\" when they log in, their login information will be saved in both client and server sides:
 
 - A token is saved in the server side. The user password is encrypted and saved along with the token. - The token ID is sent back to the browser and saved in the \"rememberme\" cookie.
-When the users visit the website for next time from the same browser on the same machine, they do not need to type their username and password. The browser sends the cookies, and the server validates it using the token. By that way, the login step is automatically completed.
+When users visit the website for next time from the same browser on the same machine, they do not need to type their username and password. The browser sends the cookies, and the server validates it using the token. By that way, the login step is automatically completed.
 
 ### Symmetric encryption of passwords
 
