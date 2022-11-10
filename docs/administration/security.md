@@ -318,7 +318,7 @@ Configure the server *proxy1.com* at port *443* like this (you can put the confi
     }
  ```
 
-The configuration here is a simple one and it works. For a more advanced configuration, you may want to read [this blog post](http://blog.exoplatform.com/en/2014/04/17/apache-2-nginx-highly-secure-pfs-ssl-encrypting-reverse-proxy-exo-platform-4-0-web-application).
+The configuration here is a simple one and it works. It can be tuned for advanced usages.
 
 #### Configuring the HTTP connector
 
