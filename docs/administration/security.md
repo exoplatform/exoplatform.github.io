@@ -179,7 +179,7 @@ wildcards can be used, as in the following example:
 
 In order to enable HTTPS, you can either:
 
-- `Use a reverse proxy`, such as Apache HTTPd or Nginx, to set up an HTTPS virtual host that runs in front of eXo Platform.
+- `Use a reverse proxy`, such as Apache HTTPd or Nginx, to set up an HTTPS virtual host that runs in front of eXo Platform. This is the recommended way.
 Or:
 - `Run eXo Platform itself over HTTPS`
 
