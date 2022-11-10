@@ -3,7 +3,6 @@
 This chapter introduces you to the security configuration in eXo Platform:
 
 - `JAAS Realm configuration` Instructions on how to configure JAAS Realm.
-- `Gadget proxy configuration` How to configure the ProxyFilterService, and how the proxy service works.
 - `Enabling HTTPS` To enable security access, you can either run eXo Platform itself in HTTPS, or more commonly, use a reverse proxy like Apache.
 - `Password encryption key of RememberMe` Information about the file location and steps to update the \"Remember My Login\" password encryption key.
 - `Anti Brute Force` To configure the mechanim that protects against brute force attacks on password authentication.
@@ -109,72 +108,6 @@ The `.war` files are located under the `$PLATFORM_TOMCAT_HOME/webapps`
 folder.
 :::
 
-## Gadget proxy configuration
-
-In eXo Platform, you could allow gadgets to load remote resources.
-However, this could be a potential security risk, as it will make the
-Gadget deployed as an open web proxy. So, you can set up the anonymous
-proxy to accept or deny certain hosts by configuring the
-*ProxyFilterService*.
-
-### Configuring the ProxyFilterService
-
-By default, the proxy denies any host except the domain on which the
-gadget server is installed.
-
-To specify domains that you want to allow or deny, modify the file:
-
-- `$PLATFORM_TOMCAT_HOME/webapps/portal.war/WEB-INF/conf/common/common-configuration.xml`
-
-The default configuration is:
-
-``` xml
-<component>
-    <key>org.exoplatform.web.security.proxy.ProxyFilterService</key>
-    <type>org.exoplatform.web.security.proxy.ProxyFilterService</type>
-    <init-params>
-        <values-param>
-        <!-- The white list -->
-            <name>white-list</name>
-            <!-- We accept anything not black listed -->
-            <value>*</value>
-        </values-param>
-        <values-param>
-            <name>black-list</name>
-            <value>*.evil.org</value>
-        </values-param>
-    </init-params>
-</component>
-```
-
-### How does it work?
-
-- Any domain name in black list is denied.
-- Any domain name NOT in white list is denied.
-- Only domain names in white list and NOT in black list are allowed.
-
-Multiple values can be added (by adding more **value** tags) and
-wildcards can be used, as in the following example:
-
-``` xml
-<component>
-    <key>org.exoplatform.web.security.proxy.ProxyFilterService</key>
-    <type>org.exoplatform.web.security.proxy.ProxyFilterService</type>
-    <init-params>
-        <values-param>
-            <name>white-list</name>
-            <value>*.example.com</value>
-            <value>www.example.net</value>
-        </values-param>
-
-        <values-param>
-            <name>black-list</name>
-            <value>evil.example.com</value>
-        </values-param>
-    </init-params>
-</component>
-```
-
 ## Enabling HTTPS
 
 In order to enable HTTPS, you can either:
@@ -199,27 +132,6 @@ You will use cert-key.pem to certificate the Apache/Nginx server proxy1.com, so 
 ::: tip
 
 When using a self-signed certificate, users will need to point their browser to *<https://proxy1.com>* and accept the security exception.
-:::
-
-### Importing an SSL certificate in the JVM\'s trust store
-
-For gadgets to work, the SSL certificate must be imported in the JVM trust store:
-
-1. Because Java keytool does not accept PEM file format, you will need to convert `cert-key.pem` into DER format.
-
-```shell
-   openssl x509 -outform der -in cert-key.pem -out cert-key.der
-```
-
-2. Import your certificate to the JVM trust store using the following command:
-
-```shell
-   keytool -import -trustcacerts -file cert-key.der -keystore $JAVA_HOME/jre/lib/security/cacerts -alias proxy1.com
-```
-
-::: tip
-
-The default password of the JVM\'s trust store is *changeit*.
 :::
 
 ### Using a reverse proxy for HTTPS in front of eXo Platform
