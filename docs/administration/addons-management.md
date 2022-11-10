@@ -2,7 +2,7 @@
 
  An add-on could be a set of extensions, customizations, xml configurations, applications, templates or any new services packaged in a zip archive. In other words, an add-on could be whatever that extends eXo Platform capabilities by adding services, resources, and more.
 
- The easiest way to manage add-ons is to use the eXo Add-ons Manager that is shipped by default in all 4.3 editions. The eXo Add-ons Manager defines a standard approach of packaging, installing/uninstalling and updating the available add-ons. With the eXo Add-ons Manager, you, as administrators, can enhance your management of the add-ons installed on the eXo Platform instances via the Command Line Interface (known as CLI), in a simple manner.
+ The easiest way to manage add-ons is to use the eXo Add-ons Manager that is shipped by default in all versions superior to 4.3. The eXo Add-ons Manager defines a standard approach of packaging, installing/uninstalling and updating the available add-ons. With the eXo Add-ons Manager, you, as administrators, can enhance your management of the add-ons installed on the eXo Platform instances via the Command Line Interface (known as CLI), in a simple manner.
 
  Basically, start with the launch scripts:
 
