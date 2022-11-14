@@ -30,33 +30,6 @@ This chapter covers the following topics:
 > - `Elasticsearch Configuration` : Configuration for Elasticsearch .
 > - `Elasticsearch Indexing architecture` Indexing Architecture
 
-### Elasticsearch embedded mode (deprecated)
-
-An Elasticsearch node is embedded in the eXo Platform server (and is hosted in the same JVM).
-
-The Elasticsearch node is declared as:
-
-- Master: To manage the cluster with only one node.
-- Data: To index and store documents.
-- Client: To serve and coordinate requests from the platform.
-
-By default:
-
-- The parameter `es.cluster.name` of the Elasticsearch cluster is exoplatform-es.
-- The parameter `es.network.host` is set to 127.0.0.1. This prevents accesses from IP other than localhost and prevents other nodes to join the ES cluster.
-- The parameter `es.http.port` is set by default to the port 9200: Elasticseach is bound to port 9200 for HTTP connections.
-
-::: tip
-
-Elasticsearch Embedded mode properties are configurable through `exo.properties` file. It is also possible to override Elasticsearch embedded mode configuration by using this property in the server startup:
-
-```java
-    -Dexo.es.embedded.configuration.file=/absolute/path/to/file
-```
-
-Where `/absolute/path/to/file` is the absolute path the the yml configuration file.
-:::
-
 ### Elasticsearch Configuration
 
 With the external mode, eXo Platform connects to the external Elasticsearch node or cluster.
