@@ -167,40 +167,6 @@ An example of the execution command to use MySQL database for eXo Platform docke
 
 For more details, you can look at this [documentation](https://hub.docker.com/r/exoplatform/exo-community/).
 
-## Datasource JNDI name
-
-As said previously, eXo Platform uses two datasources, *exo-idm_portal* and *exo-jcr_portal*. If for any reason you change those names in datasource configuration (xml file), you need to match them in some other files.
-
-::: tip
-
-The properties file (`exo.properties`) will not take **_portal** suffix as it is appended automatically by eXo, as detailed below.
-:::
-
-There is a constraint that the suffix of datasource JNDI names must be **_portal**. Take JCR as example, it uses the following property:
-
-```properties
-    exo.jcr.datasource.name=java:/comp/env/exo-jcr
-```
-
-to look up a datasource for the portal. Because the core of eXo Platform is designed for supporting multi-portal, there are theoretically different datasources for different portals. Consequently this property is treated as datasource name\'s prefix, and the portal name (knowing that it is \"portal\" by default) is appended to complete the name in JNDI lookup.
-
-So if you change the JDNI names *exo-idm_portal* and **exo-jcr_portal**, you need to edit the following properties in `gatein/conf/exo.properties`:
-
-```properties  
-  # JNDI Name of the IDM datasource
-  exo.idm.datasource.name=java:/comp/env/exo-idm
-  ...
-  # name of the datasource that will be used by eXo JCR
-  exo.jcr.datasource.name=java:/comp/env/exo-jcr
-```
-
-You also need to edit `conf/Catalina/localhost/context.xml.default` file:
-
-``` xml
-<ResourceLink name="exo-jcr_portal" global="exo-jcr_portal" type="javax.sql.DataSource"/>
-<ResourceLink name="exo-idm_portal" global="exo-idm_portal" type="javax.sql.DataSource"/>
-```
-
 ## File Storage
 
 In order to store binary files uploaded by users (such as attachments, documents or profile pictures) eXo Platform needs a file storage subsystem. There are two supported methods to perform file storage:
