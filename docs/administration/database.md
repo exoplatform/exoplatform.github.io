@@ -120,17 +120,24 @@ eXo provides the ready-made and fine-tuned configuration so typically you just n
        hibernate.dialect=org.hibernate.dialect.PostgresPlusDialect
      ```
 
-     Or for *Oracle Database 12c*:
-
-     ```properties
-        hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
-     ```
-
 3. Download the JDBC driver for Java and install it to `$PLATFORM_TOMCAT_HOME/lib`.
 
 ::: tip
-Normally you can find out an appropriate driver for your JDK from your database vendor website. For example, for MySQL: <http://dev.mysql.com/downloads/connector/j/>, and for Oracle: <http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html>.
+Normally you can find out an appropriate driver for your JDK from your database vendor website. For example, for MySQL: <http://dev.mysql.com/downloads/connector/j/>.
 :::
+
+eXo provides the database drivers in specific addons that you can install depending on the database that you will be using.
+To install the addon of Mysql Java connector :
+
+```shell
+./addon install exo-jdbc-driver-mysql
+```
+
+To install the addon of Postgresql Java connector :
+
+```shell
+./addon install exo-jdbc-driver-postgresql
+```
 
 ## Configuring database for a docker container
 
