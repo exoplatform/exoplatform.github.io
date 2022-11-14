@@ -21,7 +21,7 @@ eXo Platform uses three datasources:
 - **JCR**: For Java Content Repository service.
 - **JPA**: To store entities mapped by Hibernate.
 
-Create 3 databases, one for IDM, one for JCR and one for JPA, or you can use the same database for all pf them. Leave the databases empty, the tables will be created automatically in Platform first startup.
+Create 3 databases, one for IDM, one for JCR and one for JPA, or you can use the same database for all of them. Leave the databases empty, the tables will be created automatically on Platform first startup.
 
 - If you do not need to support specific characters, it is recommended to use the character set `latin1` and the collation    `latin1_general_cs` (as eXo JCR is case sensitive). For example, in MySQL:
 
