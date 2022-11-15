@@ -16,7 +16,7 @@ In this chapter, the following topics are included:
 ## Introduction to eXo Platform management
 
 Managing resources of eXo Platform is critical for IT operators and system administrators to monitor and supervise the production system.
-eXo Platform can be managed using JMX (Java Management Extension) tools or REST service.
+eXo Platform can be managed using JMX (Java Management Extension) tools or REST services.
 
 To use JMX, some settings are required. To use REST service, you just need a browser. As you will see later in this chapter, all operations are available in JMX and some of them are available in REST. So use JMX if you need all operations and use REST in some cases, for example, you are on a machine that JMX is not installed, or at remote region where JMX is inaccessible because of security setup.
 
