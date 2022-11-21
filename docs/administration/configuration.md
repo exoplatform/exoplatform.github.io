@@ -268,6 +268,7 @@ exo.unified-search.indexing.supportedMimeTypes|List of indexed file Types|
   `exo.agenda.settings.automaticPushEvents` | Default user setting for automatic pushing events remotely into connected Remote Agenda Provider or not. | true  
   `exo.agenda.google.connector.enabled` | Global setting to allow users to connect their personal Google Calendar with eXo Agenda or not. | true
   `exo.agenda.google.connector.key` | Client API Key to be generated from Google Console to identify current site that uses eXo Agenda application. |
+    `exo.agenda.google.connector.secret` | Client secret key to be generated from Google Console to identify current site that uses eXo Agenda application. | 
   `exo.agenda.office.connector.enabled` | Global setting to allow users to connect their personal Office 365 Outlook Calendar with eXo Agenda or not. | true
   `exo.agenda.office.connector.key` | Client API Key to be generated from Office 365 to identify current site that uses eXo Agenda application. |
 
