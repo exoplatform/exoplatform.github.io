@@ -136,8 +136,17 @@ module.exports = {
                 //'/guide/developer-guide/miscellaneous/properties-reference',
               ]
             },
+            {
+              title: 'Product reference',
+              collapsable: false,
+              path: '/guide/product-reference/',
+              children: [
+                '/guide/product-reference/Internationalization',
+                '/guide/product-reference/Javascript',
+              ]
+            }
           ]
-        }
+        },
       ],
       '/administration/': [
         {
@@ -157,7 +166,7 @@ module.exports = {
           ]
         },
       ],
-    
+
       '/': [ // Your fallback (this is your landing page)
         '' // this is your README.md (main)
       ]       
