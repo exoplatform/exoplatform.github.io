@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[43],{385:function(t,n,e){"use strict";e.r(n);var s=e(13),a=Object(s.a)({},(function(){var t=this._self._c;return t("ContentSlotsDistributor",{attrs:{"slot-key":this.$parent.slotKey}},[t("OpenApi",{attrs:{page:"agenda_swagger"}})],1)}),[],!1,null,null,null);n.default=a.exports}}]);
