@@ -1492,22 +1492,6 @@ All predefined users can be found under the *user* field. The configurations are
 
 Note that the code above uses the *exo.super.user* property which is set to *root* in `exo.properties` file:
 
-## Enabling/Disabling groovy templates statistics
-
-`Management and Monitoring Gadgets`   is a set of administrative gadgets that provide a global vision for the system and they can provide performance statistics useful for administrators.
-
-With eXo Platform 4.4, a new parameter configurable through `exo.properties` file, was introduced:
-
-```properties
-    exo.statistics.groovy.template.enabled=true
-```
-
-This parameter allows to enable/disable groovy templates statistics that is collected asynchronously. Enabling it (i.e setting it to \"True\")activates the statistics collection to be made in memory without logs.
-
-::: tip
-This parameter is not necessary for production environements. It could be activated for testing purposes.
-:::
-
 ### Excluded characters
 
 By default only the whitespace is recognized as the word separator
