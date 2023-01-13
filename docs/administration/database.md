@@ -176,12 +176,12 @@ In order to store binary files uploaded by users (such as attachments, documents
 
 ::: tip
 
-You should choose either to store binary data in the database or through file system by setting the suitable value to the variable `exo.files.binaries.storage.type <Configuration.FileStorage>`. Choosing one file storage than the other depends on your data type and size.
+You should choose either to store binary data in the database or through file system by setting the suitable value to the variable `exo.files.binaries.storage.type`. Choosing one file storage than the other depends on your data type and size.
 :::
 
 ::: warning
 
-Note that in case of using database as file storage, binary files are stored in the database table FILES_BINARY however in case of using file system storage, binary files are loaded from a folder of files. If you choose to store data through file system then you want to change to database or vice versa, note that you will lose data files because the source of binary files is different in the two cases. Consequently, you should choose the suitable file storage. if you absolutely need to migrate from rdbms to fs or vice versa, you need to **implement a migration tool allowing to maintain your binary files.**
+Note that in case of using database as file storage, binary files are stored in the database table FILES_BINARY however in case of using file system storage, binary files are loaded from a folder of files. If you choose to store data through file system then you want to change to database or vice versa, note that you will lose data files because the source of binary files is different in the two cases. Consequently, you should choose the suitable file storage. if you absolutely need to migrate from RDBMS to File System or vice versa, you need to **implement a migration tool allowing to maintain your binary files.**
 :::
 
 ### File System storage
@@ -189,10 +189,6 @@ Note that in case of using database as file storage, binary files are stored in 
 - The primary advantage of storing files in the file system is that it is easier to see the actual files.
 - Through file system, it is possible to backup and manipulate files separately of the database.
 - Files are stored off the database keeping it lighter.
-
-::: tip
-The supported file system in eXo Platform is **NTFS**.
-:::
 
 ### RDBMS storage
 
@@ -208,7 +204,7 @@ Storing files in the database has many advantages such as:
   ----------------|--------------------------|--------------------------
   Transaction support: This feature is needed in case of concurrent access to the same dataset.  | A basic feature provided by all databases. |  Most of file systems don\'t have this feature. Transactional NTFS(TxF), Sun ZFS, and Veritas VxFS, support this feature. With eXo Platform transaction is managed at application level.
   Fast indexing: by most of file systems. It helps fast retrieval of data. | Databases allow indexing based on any attribute or data-property (i.e SQL columns). | This is not offered
-  Consistency check |  It is feasable by all databases. |     File systems also support data consistency check.
+  Consistency check |  It is provided by all databases. |     File systems also support data consistency check.
   Clean unused data |  Possible with database. |    File system also ensure data cleanup.
   Clustering        | Advanced databases offer clustering capabilities (such as Oracle and Mysql). | File systems still don't support this option (The only exceptions are Veritas CFS and GFS.
   Replication       | It is a commodity with databases. |  File systems provide replication feature but still need evolution.
