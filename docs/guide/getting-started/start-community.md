@@ -23,9 +23,15 @@ to meet the following specifications or higher:
 ::: tip Note
 The eXo server will run on the port 80 by default, so make sure this port is not currently in use or configure eXo Platform to use another port.
 :::
+
 ## Prerequisites
 
 The full environment will be provided as Docker containers assembled together using a Docker Compose file. To install and try eXo platform community edition, you need to install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/)
+
+::: warning
+If you are using Docker desktop, there is a default limitation for resources that may prevent eXo platform server from starting.
+Make sure to allow enough resources (Memory, disk, CPU) to the docker containers as explained in [Docker desktop documentation](https://docs.docker.com/desktop/settings/mac/#resources) for different Operating systems.
+:::
 
 ## Start eXo platform
 
