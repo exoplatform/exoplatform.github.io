@@ -711,59 +711,6 @@ The value of the parameter
 
 The default value of `exo.webdav.folder.listing.paths.allowed.regex` is set to empty which means that **the contents of All JCR folders are listed**.
 
-## Open in Office configuration
-
-With the Open in Office feature, you are able to easily edit documents, spreadsheets and presentations in the native applications installed on your client, without keeping a local copy.
-
-By default, there are 4 labels displayed for corresponding file types as below:
-
-  Label                   | File types
-  ------------------------|----------------------------------------------
-  Open in Word            | docx, doc, docm, dot, dotm, dotx.
-  Open in Excel           | xltx, xltm, xlt, xlsx, xlsm, xlsb, xls, xll, xlam, xla.
-  Open in Powerpoint      | pptx, pptm, ppt, ppsx, ppsm, pps, ppam, ppa, potx, potm, pot
-  Open on Desktop         | Non-MS Office files, such as Open Document text files (odp, ods, odt, and more) or archive files (zip, rar, war, and more).
-
-As an administrator, you can easily configure the file types associated with the application named as in \"Open in Word\", and set a new label via `exo.properties` file.
-
-```properties
-    exo.remote-edit.$CATEGORY=$SET_OF_FILETYPES
-    exo.remove-edit.$CATEGORY.label=$LABEL
-```
-
-- Replace *\$CATEGORY* with any text as you want, but it should represent the application in correspondence to the file types defined in *\$SET_OF_FILETYPES*.
-- Replace *\$LABEL* with the application label that will be displayed in the UI, for example \"Word\" or \"MS Word\".
-
-Here are some examples:
-
-- Changing the default labels from \"Open in Word\", \"Open in Excel\", and \"Open in Powerpoint\" into \"Open in MS Word\", \"Open in MS Excel\" and \"Open in MS Powerpoint\":
-
-```properties
-#MS Word
- exo.remote-edit.word=docx,doc,docm,dot,dotm,dotx
- exo.remote-edit.word.label=MS Word
-#MS Excel
- exo.remote-edit.excel=xltx,xltm,xlt,xlsx,xlsm,xlsb,xls,xll,xlam,xla
- exo.remote-edit.excel.label=MS Excel
-#MS Powerpoint
- exo.remote-edit.powerpoint=pptx,pptm,ppt,ppsx,ppsm,pps,ppam,ppa,potx,potm,pot
- exo.remote-edit.powerpoint.label=MS Powerpoint
-```
-
-- Adding a new label \"Open in LibreOffice\" for some Open Document. Text file types:
-
-```properties
-        exo.remote-edit.libreoffice=odp,ods,odt
-        exo.remote-edit.libreoffice.label=LibreOffice
-```
-
-- Setting a new label \"Open in Writer\" for some both Word and Open Document .Text file types:
-
-```properties
-  exo.remote-edit.writer=docx,doc,odm,odt
-  exo.remote-edit.writer.label=Writer
-```
-
 ## JODConverter configuration
 
 In Sites Explorer or Activity Stream, users can preview documents of various types, without downloading it. To support this feature, eXo Platform uses the JODConverter service that requires OpenOffice or LibreOffice to be installed locally (in the same machine with the eXo Platform server).
