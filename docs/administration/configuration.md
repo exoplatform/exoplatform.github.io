@@ -291,36 +291,6 @@ The parameter is expressed in millisecond and the value default is 240000 millis
 exo.user.status.offline.delay=240000
 ```
 
-## People directory sort field configuration
-
-In `people application`, users are sorted to facilitate the search in the directory.
-It is possible to choose the field on which to sort by defining this parameter in `exo.properties` file:
-
-```properties
-exo.social.identity.sort.field=fullname
-```
-
-The following values are accepted: fullname, lastname or firstname.
-
-::: tip
-
-The fullname is the display name defined by the user.
-:::
-
-You can also define the sort direction (ASC for ascending or DESC for descending) with this parameter in `exo.properties` file:
-
-```properties
-    exo.social.identity.sort.direction=asc
-```
-
-It is also possible to define the first character filtering field when using the letters filters:
-
-```properties
-    exo.social.identity.firstChar.field=lastname
-```
-
-By default, users are sorted in the `people directory` by their full names in ascending order and filtered by the first character of their last name.
-
 ## Data directory configuration
 
 JCR data is stored in both SQL databases and File System. JCR Database configuration is explained in `Database`. The JCR File System configuration is explained in this section.
