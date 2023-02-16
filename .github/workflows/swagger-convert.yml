@@ -20,7 +20,7 @@ jobs:
            r=exo-addons-snapshots&g=org.exoplatform.anti-malware&a=anti-malware-services&v=1.1.x-SNAPSHOT&c=swagger&e=yaml
            r=exo-addons-snapshots&g=org.exoplatform.addons.app-center&a=app-center-services&v=2.5.x-SNAPSHOT&c=swagger&e=yaml
            r=exo-addons-snapshots&g=org.exoplatform.addons.kudos&a=kudos-services&v=2.5.x-SNAPSHOT&c=swagger&e=yaml
-           r=exo-addons-snapshots&g=org.exoplatform.addons.multifactor-authentication&a=multifactor-authentication-services&v=1.5.x-SNAPSHOT&c=swagger&e=yaml
+           r=exo-addons-snapshots&g=org.exoplatform.addons.multifactor-authentication&a=multifactor-authentication-services&v=1.3.x-SNAPSHOT&c=swagger&e=yaml
            r=exo-addons-snapshots&g=org.exoplatform.addons.web-conferencing&a=web-conferencing-services&v=2.5.x-SNAPSHOT&c=swagger&e=yaml
            r=exo-addons-snapshots&g=org.exoplatform.addons.onlyoffice&a=exo-onlyoffice-editor-services&v=2.5.x-SNAPSHOT&c=swagger&e=yaml
            r=exo-addons-snapshots&g=org.exoplatform.addons.chat&a=chat-services&v=3.5.x-SNAPSHOT&c=swagger&e=yaml
