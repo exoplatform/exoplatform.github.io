@@ -55,9 +55,9 @@ docker-compose -f docker-compose.yml up
 Alternatively, you may want to run each component separately with containers. Required images are :
 
 - [Mongo](https://hub.docker.com/_/mongo) 4.4
-- [eXo Platform Elastic Search](https://hub.docker.com/r/exoplatform/elasticsearch) 2.0.3. This image is build by eXo with all
+- [eXo Platform Elastic Search](https://hub.docker.com/r/exoplatform/elasticsearch) 2.0.4. This image is build by eXo with all
   needed ES addons
-- [eXo Platform Community](https://hub.docker.com/r/exoplatform/exo-community) 6.3
+- [eXo Platform Community](https://hub.docker.com/r/exoplatform/exo-community) 6.4
 
 To do this, you can use properties described in [this page](https://hub.docker.com/r/exoplatform/exo-community) to configure eXo Community docker image.
 
@@ -80,12 +80,12 @@ docker run -v mongo_data:/data/db -p 27017:27017 --name mongo --network=exo-netw
  
 - Start ElasticSearch Server
 ```bash
-docker run -e ES_JAVA_OPTS="-Xms2048m -Xmx2048m" -e node.name=exo -e cluster.name=exo -e cluster.initial_master_nodes=exo -e network.host=_site_ -v search_data:/usr/share/elasticsearch/data --name es --network=exo-network exoplatform/elasticsearch:2.0.3
+docker run -e ES_JAVA_OPTS="-Xms2048m -Xmx2048m" -e node.name=exo -e cluster.name=exo -e cluster.initial_master_nodes=exo -e network.host=_site_ -v search_data:/usr/share/elasticsearch/data --name es --network=exo-network exoplatform/elasticsearch:2.0.4
 ```
 
 - Start eXo Platform Server
 ```bash
-docker run -v exo_data:/srv/exo -p 8080:8080 -e EXO_ES_HOST=es --name exo --network=exo-network exoplatform/exo-community:6.3
+docker run -v exo_data:/srv/exo -p 8080:8080 -e EXO_ES_HOST=es --name exo --network=exo-network exoplatform/exo-community:6.4
 ```
 
 and then waiting the log line which say that the server is started
