@@ -1988,3 +1988,16 @@ This address is the official contract address for the official rewarding token p
 It is an [ERC-20](https://eips.ethereum.org/EIPS/eip-20) Token contract that is deployed on Ethereum Mainnet.
 
 To be able to receive some tokens, a wallet address must be initialized by a *token contract* administrator on the blockchain (this cannot be done on your eXo Platform server).
+
+
+## TrashCleaner Job
+TrashCleaner job is a job which remove old contents present in the trash. 
+This job use two properties :
+``` properties
+    exo.trashcleaner.lifetime=30
+    exo.trashcleaner.cron.expression=0 0 20 ? * SAT
+```
+
+By default, the job runs each saturday a 8PM, and delete all content present in Trash since more than 30 days.
+
+
