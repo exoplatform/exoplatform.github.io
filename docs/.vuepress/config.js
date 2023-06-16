@@ -78,6 +78,7 @@ module.exports = {
                 '/guide/developer-guide/simple-integration/activity-type',
                 '/guide/developer-guide/simple-integration/event-listeners',
                 '/guide/developer-guide/simple-integration/notification',
+                '/guide/developer-guide/simple-integration/scheduled-jobs',
               ]
             },
             {
