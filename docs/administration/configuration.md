@@ -1684,15 +1684,28 @@ This given password is then encrypted **by the same algorithm and the same encod
 
 As of eXo Platform 4.3, the encoder and the algorithm can be configured via `exo.properties` file.
 
-::: tip
-
-It is not likely administrators will want to change the default encoder and algorithm. However for users who upgrade from a previous version older than 4.3, it is important to know that **the default encoder and the default algorithm have changed**, so you will need to re-configure it back to the old one which has been used, otherwise old users will not be able to log in.
-:::
+As of eXo Platform 6.5, the default encoder change to use a more robust one. Before change, default encoder was `org.picketlink.idm.impl.credential.DatabaseReadingSaltEncoder` with SHA-256 hashing algorithm.
+Now, the default encoder is `org.exoplatform.web.security.hash.Argon2IdPasswordEncoder`.
 
   Name | Description | Default
   -----|-------------|------------
-  exo.plidm.password.class|The class that encrypts the user password before it is stored in the database. | org.picketlink.idm.impl.credential.HashingEncoder
-  exo.plidm.password.hash | The encryption algorithm | SHA-256
+  exo.plidm.password.class|The class that encrypts the user password before it is stored in the database. | org.exoplatform.web.security.hash.Argon2IdPasswordEncoder
+
+### Update Password Encryption Algorithm
+
+To make this important change transparent for administrators who are in charge of platform security, there is few points to know : 
+
+- It is possible to keep the algorithm you use previously, by setting the property with the encoder class you want. As the DatabaseReadingSaltEncoder is less secure, keeping the old encoder could lead to security vulnerabilities
+- It is possible to move to the new hashing algorithm. For that, unset the `exo.plidm.password.class` (default class will be used aka Argon2IdPasswordEncoder), and set the property `exo.plidm.password.oldClass` with the previous encoder class. 
+
+When moving to a new algorithm, all existing hashes in database will be updated. 
+Before changing, hash are calculated like that : 
+- `hash = oldAlg(password)`
+After changing, hash will be updated to :
+- `newHash = newAlg(hash)`, which mean `newHash = newAlg(oldAlg(password))`
+Authenticate process is updated, and when we detect the old algorithm is still used, on successfull authentication, we update the hash to remove olgAlg. So that, after authentication, user hash will be `hash = newAlg(password)`
+
+With this update process, we ensure that all hashes are creating with new algorithm, which is more secure, and that, all users can still log in, even if we modify the default password encoder.
 
 ## Task Management
 

@@ -336,19 +336,6 @@ As you can see, the customization involves properties in `exo.properties`, `jca-
 
 Again, in case of eXo Platform package, you need to create the `jca-symmetric-codec.properties` file by yourself. You also need to put these two properties in `exo.properties`.
 
-### Updating password encryption key
-
-The password encryption uses a keystore file. By default, the file is:
-
-- `$PLATFORM_TOMCAT_HOME/gatein/conf/codec/codeckey.txt`
-
-To update the password encryption key, just remove the file, then restart the server. The keystore file will be re-created at the startup time.
-
-::: warning
-
-Updating the password encryption key causes the invalidation of existing tokens, so the users must re-login.
-:::
-
 ## Login Brute Force Attacks Protection
 
 To prevent an attack based on brute force on login/password form, a built-in protection mechanism exists when multiple failed login attempts occur in a short time, the target user account is temporarily locked for a few minutes. When an account is locked, the user can immediately unlock it by resetting its password through a **forgot password** request.
