@@ -293,48 +293,19 @@ In the previous section you learnt to configure a reverse proxy in front of eXo 
 
 After starting eXo Platform, you can connect to *<https://exo1.com:8443/portal>*. If you are testing with dummy server names, make sure you created the host \"exo1.com\" in the file `/etc/hosts`.
 
-## Password encryption key of RememberMe
+## RememberMe Token Generation
 
-eXo Platform supports the \"Remember My Login\" feature. This guideline explains how the feature works, and how to update the password encryption key in server side for security purpose.
+eXo Platform supports the "Remember My Login" feature. This guideline
+explains how the feature works, and how to update the password
+encryption key in server side for security purpose.
 
 ### How the feature works?
 
-If users select \"Remember My Login\" when they log in, their login information will be saved in both client and server sides:
+If users select "Remember My Login" when they log in, 2 tokens are generated : one named `selector`
+and one named `validator`. The validator is hashed with algorithm `PBKDF2WithHmacSHA1`.
+`selector` and hashed `validator` are stored in database, associated to the username, and `selector.validator` is sent as cookie to the user.
 
-- A token is saved in the server side. The user password is encrypted and saved along with the token. - The token ID is sent back to the browser and saved in the \"rememberme\" cookie.
-When users visit the website for next time from the same browser on the same machine, they do not need to type their username and password. The browser sends the cookies, and the server validates it using the token. By that way, the login step is automatically completed.
-
-### Symmetric encryption of passwords
-
-The user password is encrypted and stored along with the token.
-
-The password encryption is built against JCA (Java Cryptography Architecture) and by default uses the [AES](http://en.wikipedia.org/wiki/Advanced_Encryption_Standard) algorithm. If you do not make your own configuration, a keystore is generated with defaulted attributes (such as file name, keypass, keysize). Thus, the feature works without any effort to configure anything. However, eXo Platform allows you to configure and use your own keystore to conform to your security policy.
-
-### How to customize the password
-
-As you can see, the customization involves properties in `exo.properties`, `jca-symmetric-codec.properties` and a keystore. The goal of customization is to use your own keystore instead of the default one.
-
-1. Generate your own keystore file using keytool:
-
-   ```shell
-      keytool -genseckey -alias "customAlias" -keypass "customKeyPass" -keyalg "customAlgo" -keystore "customStore" -storepass "customStorePass" -storetype "customStoreType"
-   ```
-
-   The file name will be the parameter *keystore* (\"customStore\" in the example). The valid value of algorithms and other parameters can be found [here](http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#SecretKeyFactor).
-   Then, place the generated file under `gatein/conf/codec`.
-
-2. Update the `jca-symmetric-codec.properties` file with the parameters used in your keytool command:
-
-   ```properties
-        gatein.codec.jca.symmetric.alias=customAlias
-        gatein.codec.jca.symmetric.keypass=customKeyPass
-        gatein.codec.jca.symmetric.keyalg=customAlgo
-        gatein.codec.jca.symmetric.keystore=customStore
-        gatein.codec.jca.symmetric.storepass=customStorePass
-        gatein.codec.jca.symmetric.storetype=customStoreType
-   ```
-
-Again, in case of eXo Platform package, you need to create the `jca-symmetric-codec.properties` file by yourself. You also need to put these two properties in `exo.properties`.
+To validate the cookie, the `selector` and the `validator` and extracted, then the hash of the validator is calculated, and compared with the value in the database. If both match, token is valid. If it is not expired, the associated user is then automatically loggued in.
 
 ### Updating password encryption key
 
