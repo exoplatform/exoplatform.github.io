@@ -6,9 +6,10 @@ This documentation is the starting point for developers looking to start a proje
 The documentation focuses primarily on developers. **Administrator and User guides** are packaged within the platform. eXo platform **website**, resource center and **blog** also provide end-user oriented content about the product.
 
 ## About eXo Platform
-<img src="/img/introduction/about-exo.png" width="400" height="400" style="margin:60px" align="left">
+<img src="/img/introduction/about-exo.png" width="400" height="400" alt="About eXo platform" style="margin:60px" align="left">
 
 eXo Platform is a **digital workplace platform**, providing a number of interconnected features and tools :
+
 - facilitating internal communications
 - collaboration and remote work
 - knowledge management
@@ -28,6 +29,7 @@ eXo Platform Enterprise Edition is distributed under a **commercial license**, u
 
 In terms of product functionalities, both editions are based on **the same core** and include the **same features**.
 There are however a few **notable exceptions** :
+
 - **Connectors to paid third party software** (Microsoft, Google) are excluded from the community edition
 - **OnlyOffice** and **Jitsi** modules are not distributed with the community edition. However, connectors are included and can be used to package open source versions of those tools
 - **Advanced administration** and **security** features are excluded from the community edition
@@ -35,6 +37,7 @@ Moreover, eXo Platform CE does not benefit from professional grade **support** a
 
 ## Third-Party Software
 eXo Platform includes several third party open-source modules to power up some user facing features. In particular these features are based on integrations with third party tools  :
+
 - eXo Platform **unified search** module is based on Elastic Search
 - eXo **Chat** module on MongoDB
 - eXo **videoconferencing** is based on Jitsi
@@ -43,7 +46,14 @@ Regarding Jitsi and OnlyOffice, those tools are distributed under their own lice
 
 However, connectors developed for eXo Platform EE (which packages both OnlyOffice and Jitsi) can be used to package open-source distributions of those tools. In this documentation, we include a guide as to how to do so (in progress).
 
+## Architecture
+
+eXo Platform is based on modern frameworks, making it easy to customize, connect to your systems and extend.
+![eXo platform architecture](/img/introduction/exo-platform-architecture-EN.png)
+
+
 ## eXo Trial
+
 If you want to see what eXo Platform looks like, you can check [our hosted trial](https://trial.exoplatform.org/).
 
 The trial runs on eXo Platform Enterprise Edition. The trial is under continuous deployment and is based on the **latest version in development**.
