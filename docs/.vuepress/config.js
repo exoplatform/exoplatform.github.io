@@ -160,6 +160,7 @@ module.exports = {
             '/administration/indexing',
             '/administration/LDAP',
             '/administration/oauth-integration',
+            '/administration/saml-integration',
             '/administration/addons-management',
             '/administration/security',
             '/administration/jmx-rest-management'
