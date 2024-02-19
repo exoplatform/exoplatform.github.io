@@ -21,10 +21,6 @@ consumes it. The following scenario describes a SAML2 exchange:
 
 ![image0](/img/administration/saml/salm-sequence.png)
 
-In this document, two addresses, www.sp.com and www.idp.com, and folders
-with name ``$PLATFORM_*`` are used to respectively represent URLs and
-home folders of SP and IDP.
-
 eXo Platform SAML integration supports the SP role thus can be
 integrated with various [IdP providers](https://en.wikipedia.org/wiki/SAML-based_products_and_services)
 such as Salesforce or Shibboleth.
