@@ -51,6 +51,7 @@ gatein.sso.callback.enabled=true
 gatein.sso.valve.enabled=true
 gatein.sso.valve.class=org.gatein.sso.saml.plugin.valve.ServiceProviderAuthenticator
 gatein.sso.filter.login.sso.url=/portal/dologin
+
 gatein.sso.filter.initiatelogin.enabled=false
 gatein.sso.filter.logout.enabled=true
 gatein.sso.filter.logout.class=org.gatein.sso.saml.plugin.filter.SAML2LogoutFilter
@@ -63,6 +64,7 @@ gatein.sso.sp.host=SP_HOSTNAME
 gatein.sso.sp.url=${gatein.sso.sp.host}/portal/dologin
 gatein.sso.idp.host=IDP_HOSTNAME
 gatein.sso.idp.url=IDP_SAML_ENDPOINT
+gatein.sso.idp.url.logout=IDP_SAML_ENDPOINT_LOGOUT
 gatein.sso.idp.alias=IDP_SIGNING_ALIAS
 gatein.sso.idp.signingkeypass=IDP_SIGNING_KEY_PASS
 gatein.sso.idp.keystorepass=IDP_KEYSTORE_PASS
@@ -70,7 +72,7 @@ gatein.sso.idp.keystorepass=IDP_KEYSTORE_PASS
 gatein.sso.picketlink.keystore=${exo.conf.dir}/saml2/jbid_test_keystore.jks
 ```
 
-You need to modify **gatein.sso.idp.host**, **gatein.sso.idp.url**, **gatein.sso.idp.alias**, **gatein.sso.idp.signingkeypass** and **gatein.sso.idp.keystorepass** according to your environment setup. You also need to install your own keystore as instructed in [Generating and using your own keystore](#generating-and-using-your-own-keystore).
+You need to modify **gatein.sso.idp.host**, **gatein.sso.idp.url**, **gatein.sso.idp.url.logout**, **gatein.sso.idp.alias**, **gatein.sso.idp.signingkeypass** and **gatein.sso.idp.keystorepass** according to your environment setup. You also need to install your own keystore as instructed in [Generating and using your own keystore](#generating-and-using-your-own-keystore).
 
 ::: tip
 If your IDP send username in assertion with some char in capital letter, and you want to force lower case, you can add this property :
