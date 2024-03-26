@@ -1,0 +1,3282 @@
+openapi: 3.0.1
+info:
+  title: Poll Rest Api
+  description: Poll addon rest endpoints
+  license:
+    name: LGPL
+    url: https://www.gnu.org/licenses/lgpl-3.0.en.html
+  version: "1.0"
+tags:
+- name: /gamification/announcements
+  description: Manages announcement associated to users
+- name: /gamification/realizations
+  description: Manages users realizations
+- name: /gamification/rules
+  description: Manages rules
+- name: /registration/settings
+  description: Managing user registraion settings and flow
+- name: /v1/platform/branding
+  description: Managing branding information
+- name: v1/navigations
+  description: Retrieve sites navigations
+- name: v1/groups
+  description: Manages groups operations
+- name: v1/membershipTypes
+  description: Manage membership types operations
+- name: v1/users
+  description: Manage User operations
+- name: /v1/features
+  description: Manages product experimental features
+- name: /v1/settings
+  description: Managing settings
+paths:
+  /:
+    get:
+      operationId: listJSON
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RootResourcesList'
+  /balancer/cometdurl/{exoid}:
+    get:
+      operationId: getCometdURL
+      parameters:
+      - name: exoid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            text/plain: {}
+  /balancer/releasecometd/{exoid}:
+    get:
+      operationId: release
+      parameters:
+      - name: exoid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /bench/execute/{injectorId}:
+    get:
+      operationId: execute
+      parameters:
+      - name: injectorId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /bench/inject/{injectorId}:
+    get:
+      operationId: inject
+      parameters:
+      - name: injectorId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /bench/reject/{injectorId}:
+    get:
+      operationId: reject
+      parameters:
+      - name: injectorId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /continuation/gettoken/{exoID}:
+    get:
+      operationId: getToken
+      parameters:
+      - name: exoID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            text/plain: {}
+  /continuation/haschannel:
+    get:
+      operationId: hasChannel
+      parameters:
+      - name: channel
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            text/plain: {}
+  /continuation/issubscribed/{exoID}:
+    get:
+      operationId: isSubscribed
+      parameters:
+      - name: exoID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: channel
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            text/plain: {}
+  /continuation/sendbroadcastmessage:
+    post:
+      operationId: sendBroadcastMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DelegateMessage'
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /continuation/sendprivatemessage:
+    post:
+      operationId: sendMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DelegateMessage'
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /gamification/announcements:
+    post:
+      tags:
+      - /gamification/announcements
+      summary: Creates a new Announcement
+      description: Creates a new Announcement
+      operationId: createAnnouncement
+      requestBody:
+        description: Announcement object to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementActivity'
+        required: true
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "500":
+          description: Internal server error
+        "401":
+          description: Unauthorized operation
+  /gamification/announcements/{announcementId}:
+    delete:
+      tags:
+      - /gamification/announcements
+      summary: Cancels an existing announcement
+      description: Cancels an existing announcement
+      operationId: cancelAnnouncement
+      parameters:
+      - name: announcementId
+        in: path
+        description: Announcement technical identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "404":
+          description: Object not found
+        "401":
+          description: Unauthorized operation
+  /gamification/badges/add:
+    post:
+      operationId: addBadge
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/BadgeDTO'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/badges/all:
+    get:
+      operationId: getAllBadges
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/badges/delete/{id}:
+    delete:
+      operationId: deleteBadge
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/badges/update:
+    put:
+      operationId: updateBadge
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/BadgeDTO'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/connectors:
+    get:
+      summary: Retrieves the list of remote connectors
+      operationId: getConnectors
+      parameters:
+      - name: username
+        in: query
+        description: Username
+        required: true
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Used to retrieve extra information about connectors
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+  /gamification/connectors/disconnect/{connectorName}:
+    delete:
+      summary: Deletes an existing connector account
+      description: Deletes an existing connector account
+      operationId: disconnect
+      parameters:
+      - name: connectorName
+        in: path
+        description: Connector name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+              - remoteId
+              type: object
+              properties:
+                remoteId:
+                  type: string
+                  description: User Remote identifier
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: Object not found
+        "400":
+          description: Invalid query input
+        "500":
+          description: Internal server error
+  /gamification/connectors/oauthCallback/{connectorName}:
+    get:
+      summary: Validate Remote user identifier on a selected connector and associate
+        it in his current profile.
+      description: Validate Remote user identifier on a selected connector and associate
+        it in his current profile.
+      operationId: connect
+      parameters:
+      - name: connectorName
+        in: path
+        description: Connector name
+        required: true
+        schema:
+          type: string
+      - name: code
+        in: query
+        description: Access Token
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /gamification/connectors/settings:
+    post:
+      summary: Saves gamification connector settings
+      description: Saves gamification connector settings
+      operationId: saveConnectorSettings
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+              - apiKey
+              - connectorName
+              - enabled
+              - redirectUrl
+              - secretKey
+              type: object
+              properties:
+                connectorName:
+                  type: string
+                  description: Remote connector name
+                apiKey:
+                  type: string
+                  description: Remote connector Api key
+                secretKey:
+                  type: string
+                  description: Remote connector secret key
+                redirectUrl:
+                  type: string
+                  description: Remote connector redirect Url
+                enabled:
+                  type: boolean
+                  description: Remote connector status
+                  default: true
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /gamification/connectors/settings/{connectorName}:
+    delete:
+      summary: Deletes gamification connector settings
+      description: Deletes gamification connector settings
+      operationId: deleteConnectorSettings
+      parameters:
+      - name: connectorName
+        in: path
+        description: Remote connector name
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /gamification/leaderboard:
+    get:
+      summary: Retrieve the list leaderboard users/spaces including the selected identity
+        to retrieve its rank
+      operationId: getIdentityLeaderboard
+      parameters:
+      - name: programId
+        in: query
+        description: Program technical identifier to filter
+        schema:
+          type: integer
+          format: int64
+      - name: identityType
+        in: query
+        description: "Type of leaderboard, whether users or spaces"
+        schema:
+          type: string
+          default: USER
+          enum:
+          - USER
+          - SPACE
+      - name: identityId
+        in: query
+        description: Identity technical identifier to include in results
+        schema:
+          type: integer
+          format: int64
+      - name: period
+        in: query
+        description: "Current period: WEEK, MONTH or ALL"
+        schema:
+          type: string
+          default: WEEK
+      - name: offset
+        in: query
+        description: Results offset
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Results limit
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+  /gamification/leaderboard/stats/{identityId}:
+    get:
+      summary: "Retrieves identity gamification statistics classified by program,\
+        \ ready to be displayed in a pie chart"
+      operationId: getIdentityStats
+      parameters:
+      - name: identityId
+        in: path
+        description: Identity technical identifier
+        required: true
+        schema:
+          type: string
+      - name: period
+        in: query
+        description: "Current period to consider. Possible values: WEEK, MONTH or\
+          \ ALL"
+        schema:
+          type: string
+          default: WEEK
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+  /gamification/programs:
+    get:
+      summary: Retrieves the list of available programs
+      operationId: getPrograms
+      parameters:
+      - name: offset
+        in: query
+        description: Offset of results to retrieve
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Limit of results to retrieve
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: status
+        in: query
+        description: "Programs status filtering, possible values: ENABLED, DISABLED\
+          \ and ALL. Default value = ENABLED."
+        schema:
+          type: string
+          default: ENABLED
+          enum:
+          - ENABLED
+          - DISABLED
+          - ALL
+      - name: owned
+        in: query
+        description: Whether retrieve owned programs only or not
+        schema:
+          type: boolean
+      - name: sortByBudget
+        in: query
+        description: "If true, this will return the filtered programs sorted by budget.\
+          \ Possible values = true or false. Default value = false."
+        schema:
+          type: boolean
+          default: false
+      - name: includeDeleted
+        in: query
+        description: "If true, this will return the filtered programs including deleted\
+          \ ones. Possible values = true or false. Default value = false."
+        schema:
+          type: boolean
+          default: false
+      - name: returnSize
+        in: query
+        description: "If true, this will return the total count of filtered programs.\
+          \ Possible values = true or false. Default value = false."
+        schema:
+          type: boolean
+          default: false
+      - name: lang
+        in: query
+        description: Used to retrieve the title and description in requested language
+        schema:
+          type: string
+      - name: query
+        in: query
+        description: Term to search.
+        schema:
+          type: string
+      - name: sortBy
+        in: query
+        description: "Sort field. Possible values: createdDate, startDate, endDate\
+          \ or score."
+        schema:
+          type: string
+          default: title
+      - name: sortDescending
+        in: query
+        description: Whether to retrieve results sorted descending or not
+        schema:
+          type: boolean
+          default: true
+      - name: expand
+        in: query
+        description: Used to retrieve extra information about the program
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+    post:
+      summary: Creates a program
+      operationId: createProgram
+      requestBody:
+        description: Program object to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgramDTO'
+        required: true
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /gamification/programs/{id}:
+    put:
+      summary: Updates an existing program
+      operationId: updateProgram
+      parameters:
+      - name: id
+        in: path
+        description: Program id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Program object to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgramDTO'
+        required: true
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /gamification/programs/{id}/avatar:
+    get:
+      summary: Gets a program avatar
+      operationId: getProgramAvatar
+      parameters:
+      - name: lastModified
+        in: query
+        description: "The value of lastModified parameter will determine whether the\
+          \ query should be cached by browser or not. If not set, no 'expires HTTP\
+          \ Header will be sent'"
+        schema:
+          type: integer
+          format: int64
+      - name: id
+        in: path
+        description: program id
+        required: true
+        schema:
+          type: string
+      - name: r
+        in: query
+        description: A mandatory valid token that is used to authorize anonymous request
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error
+        "400":
+          description: Invalid query input
+        "403":
+          description: Forbidden request
+        "404":
+          description: Resource not found
+  /gamification/programs/{id}/color:
+    post:
+      summary: "Returns true if the color can be used, else return false"
+      operationId: checkProgramColorValidity
+      parameters:
+      - name: id
+        in: path
+        description: program id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+              - color
+              type: object
+              properties:
+                color:
+                  type: string
+                  description: Program color to check its validity
+      responses:
+        "200":
+          description: Request fulfilled
+  /gamification/programs/{id}/cover:
+    get:
+      summary: Gets a program cover
+      operationId: getProgramCover
+      parameters:
+      - name: lastModified
+        in: query
+        description: "The value of lastModified parameter will determine whether the\
+          \ query should be cached by browser or not. If not set, no 'expires HTTP\
+          \ Header will be sent'"
+        schema:
+          type: integer
+          format: int64
+      - name: id
+        in: path
+        description: program id
+        required: true
+        schema:
+          type: string
+      - name: r
+        in: query
+        description: A mandatory valid token that is used to authorize anonymous request
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error
+        "400":
+          description: Invalid query input
+        "403":
+          description: Forbidden request
+        "404":
+          description: Resource not found
+  /gamification/programs/{programId}:
+    get:
+      summary: Retrieves a program by its technical identifier
+      operationId: getProgramById
+      parameters:
+      - name: programId
+        in: path
+        description: Program technical identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: lang
+        in: query
+        description: Used to retrieve the title and description in requested language
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Used to retrieve extra information about the program
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "400":
+          description: Invalid query input
+        "404":
+          description: Not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Deletes an existing program identified by its id
+      operationId: deleteProgram
+      parameters:
+      - name: programId
+        in: path
+        description: Program id to be deleted
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Object not found
+        "500":
+          description: Internal server error
+  /gamification/programs/{programId}/avatar:
+    delete:
+      summary: Deletes program avatar identified by program id
+      operationId: deleteProgramAvatar
+      parameters:
+      - name: programId
+        in: path
+        description: Program identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Object not found
+  /gamification/programs/{programId}/cover:
+    delete:
+      summary: Deletes program cover identified by program id
+      operationId: deleteProgramCover
+      parameters:
+      - name: programId
+        in: path
+        description: Program identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Object not found
+  /gamification/realizations:
+    get:
+      tags:
+      - /gamification/realizations
+      summary: Retrieves the list of achievements switch a filter. The returned format
+        can be of type JSON or XLSX
+      description: Retrieves the list of achievements switch a filter. The returned
+        format can be of type JSON or XLSX
+      operationId: getRealizations
+      parameters:
+      - name: fromDate
+        in: query
+        description: result fromDate
+        required: true
+        schema:
+          type: string
+      - name: toDate
+        in: query
+        description: result toDate
+        required: true
+        schema:
+          type: string
+      - name: sortBy
+        in: query
+        description: "Sort field. Possible values: date or actionType."
+        schema:
+          type: string
+          default: date
+      - name: sortDescending
+        in: query
+        description: Whether to retrieve results sorted descending or not
+        schema:
+          type: boolean
+          default: true
+      - name: earnerIds
+        in: query
+        description: "earnerIds, that will be used to filter achievements"
+        schema:
+          type: array
+          items:
+            type: string
+      - name: offset
+        in: query
+        description: Offset of result
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Limit of result
+        schema:
+          type: integer
+          format: int32
+      - name: returnType
+        in: query
+        description: "Response content Type. Either xlsx or json. Default value: json"
+        schema:
+          type: string
+          default: json
+      - name: identityType
+        in: query
+        description: "Earner type, either USER or SPACE. Default: USER"
+        schema:
+          type: string
+          default: USER
+          enum:
+          - USER
+          - SPACE
+      - name: status
+        in: query
+        description: "Realization status. Possible values: ACCEPTED, REJECTED, CANCELED,\
+          \ DELETED"
+        schema:
+          type: string
+          enum:
+          - ACCEPTED
+          - NONE
+          - REJECTED
+          - CANCELED
+          - DELETED
+      - name: programIds
+        in: query
+        description: Program technical identifiers. that will be used to filter achievements
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: ruleIds
+        in: query
+        description: Rule technical identifiers that will be used to filter achievements
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: owned
+        in: query
+        description: "If true, this will return the list of realizations, the current\
+          \ user can manage. Possible values = true or false. Default value = false."
+        schema:
+          type: boolean
+          default: false
+      - name: allPrograms
+        in: query
+        description: "If true, this will return all realizations, even the ones where\
+          \ user can't access, will be retrieved by anonymizing the associated program\
+          \ and rule"
+        schema:
+          type: boolean
+          default: false
+      - name: returnSize
+        in: query
+        description: "If true, this will return the total count of filtered realizations.\
+          \ Possible values = true or false. Default value = false."
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+    patch:
+      tags:
+      - /gamification/realizations
+      summary: Updates an existing realization
+      description: Updates an existing realization status
+      operationId: updateRealizationStatus
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+              - id
+              - status
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Realization technical identifier
+                status:
+                  type: string
+                  description: Realization technical identifier
+      responses:
+        "204":
+          description: Request fulfilled
+        "404":
+          description: Object not found
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+  /gamification/realizations/manager:
+    get:
+      tags:
+      - /gamification/realizations
+      summary: "Return 'true' if the current user can manage some realizations, else\
+        \ return 'false'"
+      operationId: isRealizationManager
+      responses:
+        "200":
+          description: Request fulfilled
+  /gamification/realizations/points:
+    get:
+      tags:
+      - /gamification/realizations
+      summary: Retrieves the points of a given user in last period type
+      operationId: getAllPointsByUserId
+      parameters:
+      - name: userId
+        in: query
+        description: Username to retrieve its points.
+        required: true
+        schema:
+          type: string
+      - name: period
+        in: query
+        description: "Period Type. Possible values: WEEK or MONTH. Default: WEEK."
+        schema:
+          type: string
+          default: WEEK
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Bad Request
+  /gamification/realizations/{id}:
+    get:
+      tags:
+      - /gamification/realizations
+      summary: Retrieves an achievement identified by its id
+      operationId: getRealization
+      parameters:
+      - name: id
+        in: path
+        description: Achievement id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+  /gamification/reputation/AllofBadges:
+    get:
+      operationId: getAllOfBadges
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/reputation/badge/{badge}/avatar:
+    get:
+      operationId: getBadgeAvatarById
+      parameters:
+      - name: badge
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/reputation/badges:
+    get:
+      operationId: getUserBadges_1
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/reputation/badges/{identityId}:
+    get:
+      operationId: getUserBadges
+      parameters:
+      - name: identityId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/reputation/otherBadges:
+    get:
+      operationId: getOtherBadges
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/reputation/stats:
+    get:
+      operationId: stat
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/reputation/status:
+    get:
+      operationId: getReputationStatus
+      parameters:
+      - name: username
+        in: query
+        schema:
+          type: string
+      - name: url
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/reputation/won:
+    get:
+      operationId: getallBadges
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /gamification/rules:
+    get:
+      tags:
+      - /gamification/rules
+      summary: Retrieves the list of available rules
+      operationId: getRules
+      parameters:
+      - name: offset
+        in: query
+        description: Offset of results to retrieve
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Limit of results to retrieve
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      - name: programId
+        in: query
+        description: Used to filter rules by program
+        schema:
+          type: integer
+          format: int64
+      - name: spaceId
+        in: query
+        description: Used to filter rules by space audience
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: eventName
+        in: query
+        description: Used to filter rules by event name
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: "Rules type filtering, possible values: AUTOMATIC, MANUAL and\
+          \ ALL. Default value = ALL."
+        schema:
+          type: string
+          default: ALL
+          enum:
+          - AUTOMATIC
+          - MANUAL
+          - ALL
+      - name: programStatus
+        in: query
+        description: "Programs status filtering, possible values: ENABLED, DISABLED\
+          \ and ALL. Default value = ENABLED."
+        schema:
+          type: string
+          default: ALL
+          enum:
+          - ENABLED
+          - DISABLED
+          - ALL
+      - name: status
+        in: query
+        description: "Rules status filtering, possible values: ENABLED, DISABLED and\
+          \ ALL. Default value = ALL."
+        schema:
+          type: string
+          default: ALL
+          enum:
+          - ENABLED
+          - DISABLED
+          - ALL
+      - name: dateFilter
+        in: query
+        description: "Rule period filtering. Possible values: STARTED, NOT_STARTED,\
+          \ ENDED, ALL"
+        schema:
+          type: string
+          default: ALL
+          enum:
+          - ACTIVE
+          - STARTED
+          - STARTED_WITH_END
+          - UPCOMING
+          - ENDED
+          - ALL
+      - name: term
+        in: query
+        description: term to search rules with
+        schema:
+          type: string
+      - name: favorites
+        in: query
+        description: Whether to search in favorites only or not
+        schema:
+          type: boolean
+          default: false
+      - name: tags
+        in: query
+        description: Whether to search in favorites only or not
+        schema:
+          type: array
+          items:
+            type: string
+      - name: sortBy
+        in: query
+        description: "Sort field. Possible values: createdDate, startDate, endDate\
+          \ or score."
+        schema:
+          type: string
+          default: score
+      - name: sortDescending
+        in: query
+        description: Whether to retrieve results sorted descending or not
+        schema:
+          type: boolean
+          default: true
+      - name: includeDeleted
+        in: query
+        description: "If true, this will return the filtered rules including deleted\
+          \ ones. Possible values = true or false. Default value = false."
+        schema:
+          type: boolean
+          default: false
+      - name: realizationsLimit
+        in: query
+        description: Accepted users realizations count
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: groupByProgram
+        in: query
+        description: Group rules by program
+        schema:
+          type: boolean
+          default: false
+      - name: orderByRealizations
+        in: query
+        description: Whether Sort by popular rules or not
+        schema:
+          type: boolean
+          default: false
+      - name: excludedRuleIds
+        in: query
+        description: Excluded rule Ids
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: period
+        in: query
+        description: "Rule period filtering. Possible values: WEEK, MONTH, YEAR, ALL"
+        schema:
+          type: string
+          default: ALL
+          enum:
+          - WEEK
+          - MONTH
+          - YEAR
+          - ALL
+      - name: returnSize
+        in: query
+        description: "If true, this will return the total count of filtered programs.\
+          \ Possible values = true or false. Default value = false."
+        schema:
+          type: boolean
+          default: false
+      - name: lang
+        in: query
+        description: Used to retrieve the title and description in requested language
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: "Asking for a full representation of a specific subresource,\
+          \ ex: userRealizations"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+    put:
+      tags:
+      - /gamification/rules
+      summary: Updates a rule
+      operationId: updateRule
+      requestBody:
+        description: rule object to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RulePublication'
+        required: true
+      responses:
+        "204":
+          description: Request fulfilled
+        "404":
+          description: Object not found
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+    post:
+      tags:
+      - /gamification/rules
+      summary: Creates a rule
+      operationId: createRule
+      requestBody:
+        description: rule object to save
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RulePublication'
+        required: true
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /gamification/rules/{id}:
+    get:
+      tags:
+      - /gamification/rules
+      summary: Retrieves the list of available rules
+      operationId: getRule
+      parameters:
+      - name: id
+        in: path
+        description: Rule technical identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: realizationsLimit
+        in: query
+        description: Accepted users realizations count
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: lang
+        in: query
+        description: Used to retrieve the title and description in requested language
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: "Asking for a full representation of a specific subresource,\
+          \ ex: countRealizations"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "404":
+          description: Object not found
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /gamification/rules/{ruleId}:
+    delete:
+      tags:
+      - /gamification/rules
+      summary: Deletes a rule
+      operationId: deleteRule
+      parameters:
+      - name: ruleId
+        in: path
+        description: Rule technical identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+        "404":
+          description: Object not found
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /gamification/triggers:
+    get:
+      summary: Retrieves the list of gamification triggers
+      operationId: getTriggers
+      parameters:
+      - name: type
+        in: query
+        description: Used to filter triggers by Connector type
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Used to retrieve extra information about triggers
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+  /gamification/triggers/status:
+    post:
+      summary: enables/disables trigger for connector account.
+      description: enables/disables event for connector account
+      operationId: updateAccountTriggerStatus
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              required:
+              - accountId
+              - enabled
+              - trigger
+              type: object
+              properties:
+                trigger:
+                  type: string
+                  description: Trigger name
+                accountId:
+                  type: integer
+                  description: Account Id
+                  format: int64
+                enabled:
+                  type: boolean
+                  description: "Trigger status enabled/disabled. possible values:\
+                    \ true for enabled, else false"
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /i18n/bundle/{name}-{lang}.json:
+    get:
+      operationId: getBundleContent
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: lang
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: v
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /managed-components:
+    get:
+      operationId: xmlGetRequest
+      responses:
+        default:
+          description: default response
+          content:
+            application/xml: {}
+    put:
+      operationId: xmlPutRequest
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              type: object
+      responses:
+        default:
+          description: default response
+          content:
+            application/xml: {}
+    post:
+      operationId: xmlPostRequest
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              type: object
+      responses:
+        default:
+          description: default response
+          content:
+            application/xml: {}
+    delete:
+      operationId: xmlDeleteRequest
+      responses:
+        default:
+          description: default response
+          content:
+            application/xml: {}
+  /managed-components/{path}:
+    get:
+      operationId: zipGetRequest
+      parameters:
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/zip: {}
+    put:
+      operationId: zipPutRequest
+      parameters:
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/zip:
+            schema:
+              type: object
+      responses:
+        default:
+          description: default response
+          content:
+            application/xml: {}
+            application/json: {}
+    post:
+      operationId: xmlPostRequest_1
+      parameters:
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              type: object
+      responses:
+        default:
+          description: default response
+          content:
+            application/xml: {}
+    delete:
+      operationId: xmlDeleteRequest_1
+      parameters:
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/xml: {}
+  /management:
+    get:
+      operationId: list_1
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: object
+  /platform/info:
+    get:
+      operationId: getPlatformInformation
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /proxy:
+    get:
+      operationId: doProxyGet
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+    put:
+      operationId: doProxyPut
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+    post:
+      operationId: doProxyPost
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+    delete:
+      operationId: doProxyDelete
+      parameters:
+      - name: url
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /registration/settings:
+    get:
+      tags:
+      - /registration/settings
+      summary: Get user registraion settings
+      description: Get user registraion settings
+      operationId: getRegistrationSetting
+      responses:
+        "200":
+          description: Request fulfilled
+    put:
+      tags:
+      - /registration/settings
+      summary: Update user registraion settings and flow
+      description: Update user registraion settings and flow
+      operationId: updateRegistrationSetting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationSetting'
+      responses:
+        "204":
+          description: Request fulfilled
+  /state/status:
+    get:
+      operationId: online
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    put:
+      operationId: setStatus
+      parameters:
+      - name: status
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /state/status/{userId}:
+    get:
+      operationId: getStatus
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    put:
+      operationId: setStatus_1
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+      deprecated: true
+  /v1/features/{featureName}:
+    get:
+      tags:
+      - /v1/features
+      summary: Check if a feature is enabled for a user
+      description: Check if a feature is enabled for a user
+      operationId: isFeatureActiveForUser
+      parameters:
+      - name: featureName
+        in: path
+        description: Feature name identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /v1/groups:
+    get:
+      tags:
+      - v1/groups
+      summary: Gets groups
+      description: Gets groups
+      operationId: getGroups
+      parameters:
+      - name: q
+        in: query
+        description: Search text to filter groups
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Offset
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Limit
+        schema:
+          type: integer
+          format: int32
+      - name: tree
+        in: query
+        description: Whether build tree until results or not
+        schema:
+          type: boolean
+          default: false
+      - name: returnSize
+        in: query
+        schema:
+          type: boolean
+      - name: expand
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+    put:
+      tags:
+      - v1/groups
+      summary: Updates an existing Group
+      description: Updates an existing Group
+      operationId: updateGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupImpl'
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+    post:
+      tags:
+      - v1/groups
+      summary: Creates a new group
+      description: Creates a new group
+      operationId: createGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupImpl'
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+      - v1/groups
+      summary: Deletes an existing Group
+      description: Deletes an existing Group
+      operationId: deleteGroup
+      parameters:
+      - name: groupId
+        in: query
+        description: Group id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+  /v1/groups/memberships:
+    get:
+      tags:
+      - v1/groups
+      summary: Gets Group memberships list
+      description: Gets Group memberships list
+      operationId: getGroupMemberships
+      parameters:
+      - name: groupId
+        in: query
+        description: Group identifier
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Offset
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Limit
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      - name: returnSize
+        in: query
+        description: Returning the number of users found or not
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: Request fulfilled
+        "404":
+          description: Group not found
+        "500":
+          description: Internal server error due to data encoding
+    put:
+      tags:
+      - v1/groups
+      summary: Updates an existing membership
+      description: Updates an existing membership
+      operationId: updateMembership
+      parameters:
+      - name: membershipId
+        in: query
+        description: "Membership identifier with format: MEMBERSHIP_TYPE:GROUP_ID:USER_NAME"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Membership object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipImpl'
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+    post:
+      tags:
+      - v1/groups
+      summary: Creates a new membership
+      description: Creates a new membership
+      operationId: createMembership
+      requestBody:
+        description: Membership Object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipImpl'
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+      - v1/groups
+      summary: Deletes an existing membership
+      description: Deletes an existing membership
+      operationId: deleteMembership
+      parameters:
+      - name: membershipId
+        in: query
+        description: "Membership identifier with format: MEMBERSHIP_TYPE:USER_NAME:GROUP_ID"
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+  /v1/groups/memberships/bulk:
+    post:
+      tags:
+      - v1/groups
+      summary: Creates new memberships
+      description: Creates new memberships
+      operationId: createMultipleMembership
+      requestBody:
+        description: List of membership objects
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/MembershipImpl'
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+  /v1/groups/tree:
+    get:
+      tags:
+      - v1/groups
+      summary: Gets groups tree
+      description: Gets groups tree
+      operationId: getGroupsTree
+      parameters:
+      - name: parentId
+        in: query
+        description: Parent groupId to search
+        schema:
+          type: string
+      - name: q
+        in: query
+        description: Search text to filter groups
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Offset
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Limit
+        schema:
+          type: integer
+          format: int32
+      - name: returnSize
+        in: query
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+  /v1/groups/treeMembers:
+    get:
+      tags:
+      - v1/groups
+      summary: Gets groups tree
+      description: Gets groups tree
+      operationId: getGroupsTreeMembers
+      parameters:
+      - name: q
+        in: query
+        description: Search text to filter groups
+        schema:
+          type: string
+      - name: groupMember
+        in: query
+        description: Group member
+        schema:
+          type: string
+      - name: groupType
+        in: query
+        description: Group type
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Offset
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Limit
+        schema:
+          type: integer
+          format: int32
+      - name: returnSize
+        in: query
+        schema:
+          type: boolean
+      - name: allGroupsForAdmin
+        in: query
+        description: allGroupsForAdmin
+        schema:
+          type: boolean
+      - name: excludeParentGroup
+        in: query
+        description: List of excluded parent/type groups
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionEntity'
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+  /v1/membershipTypes:
+    get:
+      tags:
+      - v1/membershipTypes
+      summary: Gets membership types
+      description: Gets membership types
+      operationId: getMembershipType
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+    put:
+      tags:
+      - v1/membershipTypes
+      summary: Updates an existing membership type
+      description: Updates an existing membership type
+      operationId: updateMembershipType
+      requestBody:
+        description: Membership type object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipTypeImpl'
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+    post:
+      tags:
+      - v1/membershipTypes
+      summary: Creates a new membership type
+      description: Creates a new membership type
+      operationId: createMembershipType
+      requestBody:
+        description: Membership type object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipTypeImpl'
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+  /v1/membershipTypes/{membershipType}:
+    delete:
+      tags:
+      - v1/membershipTypes
+      summary: Deletes an existing membership type
+      description: Deletes an existing membership type
+      operationId: deleteMembershipType
+      parameters:
+      - name: membershipType
+        in: path
+        description: Membership type name
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized to call this endpoint
+        "500":
+          description: Internal server error
+  /v1/navigations:
+    get:
+      tags:
+      - v1/navigations
+      summary: Gets navigations
+      description: Gets navigations
+      operationId: getSiteNavigation
+      parameters:
+      - name: offset
+        in: query
+        description: Offset
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: "Limit, if equals to 0, it will use default limit."
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "404":
+          description: Navigation does not exist
+        "500":
+          description: Internal server error
+  /v1/navigations/{siteType}:
+    get:
+      tags:
+      - v1/navigations
+      summary: Gets navigations of one or multiple site navigations
+      description: Gets navigations of one or multiple site navigations
+      operationId: getSiteTypeNavigations
+      parameters:
+      - name: siteType
+        in: path
+        description: "Portal site type, possible values: PORTAL, GROUP or USER"
+        required: true
+        schema:
+          type: string
+      - name: siteName
+        in: query
+        description: Portal site name
+        required: true
+        schema:
+          type: string
+      - name: scope
+        in: query
+        description: "Scope of navigations tree to retrieve, possible values: ALL,\
+          \ CHILDREN, GRANDCHILDREN, SINGLE"
+        schema:
+          type: string
+          default: ALL
+      - name: nodeId
+        in: query
+        description: parent navigation node id
+        schema:
+          type: string
+      - name: visibility
+        in: query
+        description: "Multivalued visibilities of navigation nodes to retrieve, possible\
+          \ values: DISPLAYED, HIDDEN, SYSTEM or TEMPORAL. If empty, all visibilities\
+          \ will be used."
+        schema:
+          type: array
+          items:
+            type: string
+            default: All possible values combined
+          default: All possible values combined
+      - name: includeGlobal
+        in: query
+        description: if to include Global site in results in portal type case
+        schema:
+          type: boolean
+          default: true
+      - name: expand
+        in: query
+        description: to include extra node page details in results
+        schema:
+          type: boolean
+      - name: temporalCheck
+        in: query
+        description: to check the navigation nodes scheduling start and end dates
+        schema:
+          type: boolean
+          default: true
+      - name: expandBreadcrumb
+        in: query
+        description: to expand the navigation breadcrumb
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "404":
+          description: Navigation does not exist
+        "500":
+          description: Internal server error
+  /v1/platform/branding:
+    get:
+      tags:
+      - /v1/platform/branding
+      summary: Get Branding information
+      description: Get Branding information
+      operationId: getBrandingInformation
+      responses:
+        "200":
+          description: Request fulfilled
+        "304":
+          description: Resource not modified
+        "500":
+          description: Server error when retrieving branding information
+    put:
+      tags:
+      - /v1/platform/branding
+      summary: Update Branding information
+      description: Update Branding information
+      operationId: updateBrandingInformation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Branding'
+      responses:
+        "204":
+          description: Branding information updated
+        "500":
+          description: Server error when updating branding information
+  /v1/platform/branding/css:
+    get:
+      tags:
+      - /v1/platform/branding
+      summary: Get Branding CSS content
+      description: Get Branding CSS content
+      operationId: getBrandingCSS
+      parameters:
+      - name: v
+        in: query
+        description: "The value of lastModified parameter will determine whether the\
+          \ query should be cached by browser or not. If not set, no 'expires HTTP\
+          \ Header will be sent'"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Branding css retrieved
+        "304":
+          description: Branding css not modified
+        "500":
+          description: Server error when retrieving branding css
+  /v1/platform/branding/favicon:
+    get:
+      tags:
+      - /v1/platform/branding
+      summary: Get Branding favicon
+      description: Get Branding favicon
+      operationId: getBrandingFavicon
+      parameters:
+      - name: lastModified
+        in: query
+        description: "The value of lastModified parameter will determine whether the\
+          \ query should be cached by browser or not. If not set, no 'expires HTTP\
+          \ Header will be sent'"
+        schema:
+          type: string
+      - name: v
+        in: query
+        description: "The value of version parameter will determine whether the query\
+          \ should be cached by browser or not. If not set, no 'expires HTTP Header\
+          \ will be sent'"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Branding favicon retrieved
+        "404":
+          description: Branding favicon not found
+        "500":
+          description: Server error when retrieving branding favicon
+  /v1/platform/branding/loginBackground:
+    get:
+      tags:
+      - /v1/platform/branding
+      summary: Get authentication pages left panel background
+      description: Get authentication pages left panel background
+      operationId: getLoginBackground
+      parameters:
+      - name: lastModified
+        in: query
+        description: "The value of lastModified parameter will determine whether the\
+          \ query should be cached by browser or not. If not set, no 'expires HTTP\
+          \ Header will be sent'"
+        schema:
+          type: string
+      - name: v
+        in: query
+        description: "The value of version parameter will determine whether the query\
+          \ should be cached by browser or not. If not set, no 'expires HTTP Header\
+          \ will be sent'"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Resource not found
+        "500":
+          description: Server error when retrieving resource
+  /v1/platform/branding/logo:
+    get:
+      tags:
+      - /v1/platform/branding
+      summary: Get Branding logo
+      description: Get Branding logo
+      operationId: getBrandingLogo
+      parameters:
+      - name: lastModified
+        in: query
+        description: "The value of lastModified parameter will determine whether the\
+          \ query should be cached by browser or not. If not set, no 'expires HTTP\
+          \ Header will be sent'"
+        schema:
+          type: string
+      - name: v
+        in: query
+        description: "The value of version parameter will determine whether the query\
+          \ should be cached by browser or not. If not set, no 'expires HTTP Header\
+          \ will be sent'"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Branding logo retrieved
+        "404":
+          description: Branding logo not found
+        "500":
+          description: Server error when retrieving branding logo
+  /v1/settings/{context}/{scope}/{settingKey}:
+    get:
+      tags:
+      - /v1/settings
+      summary: Gets a specific setting value
+      description: Gets a specific setting value
+      operationId: getSetting
+      parameters:
+      - name: context
+        in: path
+        description: "Context - Format 'contextName,contextId' where 'contextId' is\
+          \ optional. Example: GLOBAL or USER,john"
+        required: true
+        schema:
+          type: string
+      - name: scope
+        in: path
+        description: "Scope - Format 'scopeName,scopeId' where 'scopeId' is optional.\
+          \ Example: GLOBAL or APPLICATION,wiki or SPACE,marketing"
+        required: true
+        schema:
+          type: string
+      - name: settingKey
+        in: path
+        description: Setting key
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: User does not have permissions to get it
+        "404":
+          description: Setting does not exist
+        "500":
+          description: Internal server error
+    put:
+      tags:
+      - /v1/settings
+      summary: Sets a specific setting value
+      description: Sets a specific setting value
+      operationId: setSetting
+      parameters:
+      - name: context
+        in: path
+        description: "Context - Format 'contextName,contextId' where 'contextId' is\
+          \ optional. Example: GLOBAL or USER,john"
+        required: true
+        schema:
+          type: string
+      - name: scope
+        in: path
+        description: "Scope - Format 'scopeName,scopeId' where 'scopeId' is optional.\
+          \ Example: GLOBAL or APPLICATION,wiki or SPACE,marketing"
+        required: true
+        schema:
+          type: string
+      - name: settingKey
+        in: path
+        description: Setting key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Setting value
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingValueEntity'
+        required: true
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: User does not have permissions to update it
+        "500":
+          description: Internal server error
+  /v1/users:
+    get:
+      tags:
+      - v1/users
+      summary: Gets all users
+      description: Gets all users
+      operationId: getUsers
+      parameters:
+      - name: q
+        in: query
+        description: "User name information to filter, ex: user name, last name, first\
+          \ name or full name"
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: "User status : ANY, ENABLED or DISABLED"
+        schema:
+          type: string
+          default: ANY
+      - name: offset
+        in: query
+        description: Offset
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Limit
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: returnSize
+        in: query
+        description: Returning the number of users found or not
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error due to data encoding
+    put:
+      tags:
+      - v1/users
+      summary: Update an existing user
+      description: Update an existing user
+      operationId: updateUser
+      requestBody:
+        description: User Object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UserRestEntity'
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "500":
+          description: Internal server error due to data encoding
+    post:
+      tags:
+      - v1/users
+      summary: Create new user
+      description: Create new user
+      operationId: createUser
+      requestBody:
+        description: User Object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UserRestEntity'
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "500":
+          description: Internal server error due to data encoding
+  /v1/users/isDelegatedAdministrator:
+    get:
+      tags:
+      - v1/users
+      summary: Check if current user is a delegated administrator
+      description: Check if current user is a delegated administrator
+      operationId: isDelegatedAdministrator
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error due to data encoding
+  /v1/users/isSuperUser:
+    get:
+      tags:
+      - v1/users
+      summary: Check if current user is a superUser
+      description: Check if current user is a superUser
+      operationId: isSuperUser
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error due to data encoding
+  /v1/users/isSynchronizedUserAllowedToChangePassword:
+    get:
+      tags:
+      - v1/users
+      summary: Check if synchronized user is allowed to change his password
+      description: Check if synchronized user is allowed to change his password
+      operationId: isSynchronizedUserAllowedToChangePassword
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error due to data encoding
+  /v1/users/{id}:
+    get:
+      tags:
+      - v1/users
+      summary: Gets a user identified by its id
+      description: Gets a user identified by its id
+      operationId: getUser
+      parameters:
+      - name: id
+        in: path
+        description: User name identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: User not authorized to call this endpoint
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+      - v1/users
+      summary: Deletes a user identified by its id
+      description: Deletes a user identified by its id
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        description: User name identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: User not authorized to call this endpoint
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+  /v1/users/{id}/changePassword:
+    patch:
+      tags:
+      - v1/users
+      summary: Changes user password
+      description: Changes user password
+      operationId: changePassword
+      parameters:
+      - name: id
+        in: path
+        description: username to change his password
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              required:
+              - currentPassword
+              - newPassword
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  description: Current user password
+                newPassword:
+                  type: string
+                  description: New user password
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: User not authorized to call this endpoint
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+  /v1/users/{id}/memberships:
+    get:
+      tags:
+      - v1/users
+      summary: Gets User memberships list
+      description: Gets User memberships list
+      operationId: getUserMemberships
+      parameters:
+      - name: id
+        in: path
+        description: User name identifier
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Offset
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Limit
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      - name: returnSize
+        in: query
+        description: Returning the number of users found or not
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: Request fulfilled
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error due to data encoding
+  /welcomeScreen/checkUsername:
+    get:
+      operationId: checkUsername
+      parameters:
+      - name: username
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+components:
+  schemas:
+    AnnouncementActivity:
+      type: object
+      properties:
+        activityId:
+          type: integer
+          format: int64
+        assignee:
+          type: integer
+          format: int64
+        challengeId:
+          type: integer
+          format: int64
+        challengeTitle:
+          type: string
+        comment:
+          type: string
+        createdDate:
+          type: string
+        creator:
+          type: integer
+          format: int64
+        id:
+          type: integer
+          format: int64
+        templateParams:
+          type: object
+          additionalProperties:
+            type: string
+    Background:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+            format: byte
+        fileId:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+        updatedDate:
+          type: integer
+          format: int64
+        uploadId:
+          type: string
+    BadgeDTO:
+      type: object
+      properties:
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+        deleted:
+          type: boolean
+        description:
+          type: string
+        enabled:
+          type: boolean
+        endValidityDate:
+          type: string
+        icon:
+          type: array
+          items:
+            type: string
+            format: byte
+        iconFileId:
+          type: integer
+          format: int64
+        id:
+          type: integer
+          format: int64
+        lastModifiedBy:
+          type: string
+        lastModifiedDate:
+          type: string
+        neededScore:
+          type: integer
+          format: int32
+        program:
+          $ref: '#/components/schemas/ProgramDTO'
+        startValidityDate:
+          type: string
+        title:
+          type: string
+        uploadId:
+          type: string
+    Branding:
+      type: object
+      properties:
+        companyLink:
+          type: string
+        companyName:
+          type: string
+        defaultLanguage:
+          type: string
+        favicon:
+          $ref: '#/components/schemas/Favicon'
+        lastUpdatedTime:
+          type: integer
+          format: int64
+        loginBackground:
+          $ref: '#/components/schemas/Background'
+        loginBackgroundTextColor:
+          type: string
+        loginSubtitle:
+          type: object
+          additionalProperties:
+            type: string
+        loginTitle:
+          type: object
+          additionalProperties:
+            type: string
+        logo:
+          $ref: '#/components/schemas/Logo'
+        siteName:
+          type: string
+        supportedLanguages:
+          type: object
+          additionalProperties:
+            type: string
+        themeStyle:
+          type: object
+          additionalProperties:
+            type: string
+        topBarTheme:
+          type: string
+    CollectionEntity:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        entities:
+          type: array
+          items:
+            type: object
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+      additionalProperties:
+        type: object
+    DelegateMessage:
+      type: object
+      properties:
+        channel:
+          type: string
+        exoId:
+          type: string
+        id:
+          type: string
+        message:
+          type: string
+    EventDTO:
+      type: object
+      properties:
+        cancellerEvents:
+          type: array
+          items:
+            type: string
+        id:
+          type: integer
+          format: int64
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+        title:
+          type: string
+        trigger:
+          type: string
+        type:
+          type: string
+    Favicon:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+            format: byte
+        fileId:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+        updatedDate:
+          type: integer
+          format: int64
+        uploadId:
+          type: string
+    GroupImpl:
+      type: object
+      properties:
+        description:
+          type: string
+        groupName:
+          type: string
+        id:
+          type: string
+        internalStore:
+          type: boolean
+        label:
+          type: string
+        originatingStore:
+          type: string
+        parentId:
+          type: string
+    Logo:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+            format: byte
+        fileId:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+        updatedDate:
+          type: integer
+          format: int64
+        uploadId:
+          type: string
+    MembershipImpl:
+      type: object
+      properties:
+        groupId:
+          type: string
+        id:
+          type: string
+        membershipType:
+          type: string
+        userName:
+          type: string
+    MembershipTypeImpl:
+      type: object
+      properties:
+        createdDate:
+          type: string
+          format: date-time
+        description:
+          type: string
+        modifiedDate:
+          type: string
+          format: date-time
+        name:
+          type: string
+        owner:
+          type: string
+    ProgramDTO:
+      type: object
+      properties:
+        audienceId:
+          type: integer
+          format: int64
+        avatarFileId:
+          type: integer
+          format: int64
+        avatarUploadId:
+          type: string
+        avatarUrl:
+          type: string
+        budget:
+          type: integer
+          format: int64
+        color:
+          type: string
+        coverFileId:
+          type: integer
+          format: int64
+        coverUploadId:
+          type: string
+        coverUrl:
+          type: string
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+        deleted:
+          type: boolean
+        description:
+          type: string
+        enabled:
+          type: boolean
+        id:
+          type: integer
+          format: int64
+        lastModifiedBy:
+          type: string
+        lastModifiedDate:
+          type: string
+        open:
+          type: boolean
+        ownerIds:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int64
+        priority:
+          type: integer
+          format: int32
+        rulesTotalScore:
+          type: integer
+          format: int64
+        spaceId:
+          type: integer
+          format: int64
+        title:
+          type: string
+        type:
+          type: string
+        visibility:
+          type: string
+          enum:
+          - RESTRICTED
+          - OPEN
+    RegistrationSetting:
+      type: object
+      properties:
+        externalUser:
+          type: boolean
+        extraGroupIds:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+          enum:
+          - OPEN
+          - RESTRICTED
+    RootResource:
+      type: object
+      properties:
+        fqn:
+          type: string
+        path:
+          type: string
+        regex:
+          type: string
+    RootResourcesList:
+      type: object
+      properties:
+        rootResources:
+          type: array
+          items:
+            $ref: '#/components/schemas/RootResource'
+    RulePublication:
+      type: object
+      properties:
+        activityId:
+          type: integer
+          format: int64
+        audienceId:
+          type: integer
+          format: int64
+        cacheTime:
+          type: integer
+          format: int64
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+        deleted:
+          type: boolean
+        description:
+          type: string
+        enabled:
+          type: boolean
+        endDate:
+          type: string
+        event:
+          $ref: '#/components/schemas/EventDTO'
+        id:
+          type: integer
+          format: int64
+        lastModifiedBy:
+          type: string
+        lastModifiedDate:
+          type: string
+        managers:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int64
+        message:
+          type: string
+        open:
+          type: boolean
+        prerequisiteRuleIds:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int64
+        program:
+          $ref: '#/components/schemas/ProgramDTO'
+        programId:
+          type: integer
+          format: int64
+        publish:
+          type: boolean
+        recurrence:
+          type: string
+          enum:
+          - NONE
+          - ONCE
+          - DAILY
+          - WEEKLY
+          - MONTHLY
+        score:
+          type: integer
+          format: int32
+        spaceId:
+          type: integer
+          format: int64
+        startDate:
+          type: string
+        templateParams:
+          type: object
+          additionalProperties:
+            type: string
+        title:
+          type: string
+        type:
+          type: string
+          enum:
+          - AUTOMATIC
+          - MANUAL
+    SettingValueEntity:
+      type: object
+      properties:
+        value:
+          type: string
+    UserRestEntity:
+      type: object
+      properties:
+        email:
+          type: string
+        enabled:
+          type: boolean
+        firstName:
+          type: string
+        fullName:
+          type: string
+        lastName:
+          type: string
+        password:
+          type: string
+        platformAdministrator:
+          type: boolean
+        userName:
+          type: string
