@@ -78,6 +78,7 @@ If your IDP send username in assertion with some char in capital letter, and you
 ```properties
 gatein.sso.saml.username.forcelowercase=true
 ```
+::: 
 
 3. Download and import your generated IDP certificate to your keystore
    using this command:
@@ -88,6 +89,7 @@ keytool -import -keystore $PLATFORM_SP/gatein/conf/saml/jbid_test_keystore.jks -
 
 ::: tip
 The Default password of the keystore jbid\_test\_keystore.jks is **store123**.
+:::
 
 4. Start up the platform: use the following command on Linux operating systems:
 ```bash
@@ -132,6 +134,9 @@ gatein.sso.picketlink.keystore=${exo.conf.dir}/saml2/jbid_test_keystore.jks
 
 ::: tip
 On Windows, you should use the absolute link to the keystore file, for the property `gatein.sso.picketlink.keystore`.
+:::
 
 
+## Configure NameId Format in SAMLRequest
 
+The property `gatein.sso.saml.nameid.format` allow to configure the wanted nameid format. By dafault, value is `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`. It can be changed to `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` if needed
