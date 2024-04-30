@@ -357,7 +357,7 @@ Let's build an application that will consume both REST endpoints above.
                 const app = 'my-connections-birthday-webapp';
 
                 // add the server path to your server location path
-                const exoServerPath = "/mnt/work/exo/binaries/snapshots/plf-enterprise-tomcat-standalone-6.4.x-20221008";
+                const exoServerPath = "/mnt/work/exo/binaries/snapshots/plf-enterprise-tomcat-standalone-6.5.x-SNAPSHOT";
 
                 let config = merge(webpackProductionConfig, {
                     mode: "development",

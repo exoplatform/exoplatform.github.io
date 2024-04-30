@@ -64,7 +64,7 @@ Here is the pom.xml:
         <dependency>
             <groupId>org.exoplatform.kernel</groupId>
             <artifactId>exo.kernel.commons</artifactId>
-            <version>6.4.0</version> <!-- could be replaced by the version of your eXo platform server -->
+            <version>6.5.0</version> <!-- could be replaced by the version of your eXo platform server -->
         </dependency>
     </dependencies>
     <build>

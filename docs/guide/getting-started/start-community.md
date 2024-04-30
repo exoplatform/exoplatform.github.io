@@ -11,7 +11,7 @@ This chapter covers the following topics:
 The requirements cited below are provisional and may change according to quality tests findings.
 :::
 
-To run the Docker compose of eXo Platform 6.4, your system is required
+To run the Docker compose of eXo Platform 6.5, your system is required
 to meet the following specifications or higher:
 
 - CPU: Multi-core recommended, 2GHz minimum.
@@ -60,10 +60,10 @@ docker-compose -f docker-compose.yml up
 
 Alternatively, you may want to run each component separately with containers. Required images are :
 
-- [Mongo](https://hub.docker.com/_/mongo) 4.4
-- [eXo Platform Elastic Search](https://hub.docker.com/r/exoplatform/elasticsearch) 2.0.4. This image is build by eXo with all
+- [Mongo](https://hub.docker.com/_/mongo) 6.0
+- [eXo Platform Elastic Search](https://hub.docker.com/r/exoplatform/elasticsearch) 2.1.0. This image is build by eXo with all
   needed ES addons
-- [eXo Platform Community](https://hub.docker.com/r/exoplatform/exo-community) 6.4
+- [eXo Platform Community](https://hub.docker.com/r/exoplatform/exo-community) 6.5
 
 To do this, you can use properties described in [this page](https://hub.docker.com/r/exoplatform/exo-community) to configure eXo Community docker image.
 
@@ -91,7 +91,7 @@ docker run -e ES_JAVA_OPTS="-Xms2048m -Xmx2048m" -e node.name=exo -e cluster.nam
 
 - Start eXo Platform Server
 ```bash
-docker run -v exo_data:/srv/exo -p 8080:8080 -e EXO_ES_HOST=es --name exo --network=exo-network exoplatform/exo-community:6.4
+docker run -v exo_data:/srv/exo -p 8080:8080 -e EXO_ES_HOST=es --name exo --network=exo-network exoplatform/exo-community:6.5
 ```
 
 and then waiting the log line which say that the server is started
