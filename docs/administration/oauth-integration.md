@@ -80,15 +80,15 @@ After finishing the whole process, you should see in the **Details** tab as belo
 
 ### LinkedIn
 
-1. Go to <https://www.linkedin.com/developer/apps/>. From this page, register your application by selecting **Create Application**.
-2. Fill values for Name, Description, Application Logo URL, Application User, Business Email and Business Phone. For Website URL, enter <http://server.local.network.com:8080>.
+1. Go to <https://www.linkedin.com/developer/apps/>. From this page, register your application by selecting **Create App**.
+2. Fill values for Name, Linkedin Page, Application Logo URL, and create App
 
-![image9](/img/administration/oauth/linkedIn_create_new_app_form.png)
+   ![image9](/img/administration/oauth/linkedIn_create_new_app_form.png)
 
-3. Click **Submit**.
-4. In the Authentication part, tick two checkboxes: **r_basicprofile** and **r_emailaddress**, then input <http://server.local.network.com:8080/portal/linkedinAuth> for the Authorized Redirect URLs field and click Update.
+3. On `Product` tab, choose `Sign In with LinkedIn using OpenID Connect` and click on `Request Access` to add OpenIdConnect to your app
+4. On `Auth` tab, in part `OAuth 2.0 settings, add and authorized redirect url :  https://${domainName}/portal/linkedinAuth (Replace domainName with your real domain name)
+5. Get ClientId and ClientSecret for the next step of configuration.
 
-![image10](/img/administration/oauth/linkedIn_authentication_keys.png)
 
 ### Google
 
