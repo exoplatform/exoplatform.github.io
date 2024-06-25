@@ -100,17 +100,33 @@ start_eXo.bat
 ```
 
 
+## Use Encrypted Assertions
 
-## Generating and using your own keystore
+To increase the security of your transactions, it is possible to encrypt assertions between eXo Platform as Service Provider and the IDP.
+
+For that, you will need to generate a couple private key/public key, stored in the keystore of eXo Platform, and then provide it to the IDP.
+
+### Generating and using your own keystore
 
 The default `jbid_test_keystore.jks` is useful for testing purpose,
 but in eXo Platform you need to generate and use your own keystore as
-follows:
+follows. Remark : in this example, the certificate is self-signed, which have no impact on key usage in IDP. 
+If necessary, you can sign your certificate with a Certificate Authority.
 
-1. Generate your file using the **keytool** command:
+1. Create private key and certificate :
+```bash
+openssl req -newkey rsa:4096 -keyout private.key -x509 -days 365 -out certificate.crt
+```
+
+2. Transform certificate and private key in p12 file : 
+```bash
+openssl pkcs12 -export -out certificate.p12 -inkey private.key -in certificate.crt
+```
+
+3. Add p12 file in jsk store
    
 ```bash
-keytool -genkey -alias secure-key -keyalg RSA -keystore secure-keystore.jks
+keytool -v -importkeystore -srckeystore certificate.p12 -srcstoretype PKCS12 -destkeystore secure-key.jks -deststoretype JKS
 ```
 
 You will be asked to enter a *keystore password* and a *key password*. 
@@ -124,14 +140,31 @@ Then, when eXo receive the assertion, it uses the privateKey present in the keys
 3. Modify picketlink configuration properties to provide your **keystore
    password** and a **key password**. In exo.properties file, change properties
 ```properties
-gatein.sso.idp.alias=fellowtest
+gatein.sso.idp.alias=1
 gatein.sso.idp.keystorepass=store123
 gatein.sso.idp.signingkeypass=password
-gatein.sso.picketlink.keystore=${exo.conf.dir}/saml2/jbid_test_keystore.jks
+gatein.sso.picketlink.keystore=${exo.conf.dir}/saml2/secure-key.jks
 ```
+::: tip
+During the import of the key in the keystore, the alias used is 1
+:::
 
 ::: tip
 On Windows, you should use the absolute link to the keystore file, for the property `gatein.sso.picketlink.keystore`.
+
+### Configure IDP
+After creating your jks file, you need to configure the IDP to encrypt assertions, and provide him the public key.
+
+If you need to display the public key from the certificate in the jks file :
+```bash
+keytool --list -rfc -keystore secure-key.jks
+```
+
+For example in Keycloack, you can provide the jks file when activating assertion encryptions :
+
+![image1](/img/saml/keycloak-activate-saml-encryption.png)
+
+Now, when you log into eXo, the assertions responses coming from the IDP are encrypted.
 
 
 
