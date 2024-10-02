@@ -37,34 +37,51 @@ Pay attention to the Redirect URL that should match your server host and port. I
 ### Facebook
 
 1. Go to <https://developers.facebook.com/apps> and register as a Facebook developer if not yet.
+   
+2. Click **Create a New App**. Choose the usecase 'Authenticate and request data from users with Facebook Login'
 
-2. Click **Create a New App**. Here, enter Display Name, Namespace and select one Category, then click Create App ID.
+   ![image2](/img/administration/oauth/facebook_app_usecase.png)
 
-    ![image2](/img/administration/oauth/facebook_create_new_app.png)
+3. Here, enter appName and the application contact email 
 
-3. In your created application, select **Settings**. Here, input the values:
+   ![image3](/img/administration/oauth/facebook_app_name.png)
 
-    - [local.network.com](local.network.com) for **App Domains**.
-    - <http://server.local.network.com:8080> for **Site URL** (by selecting Add PlatformWebsite).
+4. Click Create App
 
-![image3](/img/administration/oauth/facebook_app_settings.png)
+::: warning
+To be able to publish the application and read user data, you will have to follow some verification steps required by Facebook : 'Business Verification', 'App Review'. Without these step, the application cannot be published. 
 
-Before going to the production environment, you need to disable the development mode in your registered application. If not, your application is available only for you, your developers and users created for your application.
+until the application is published only declared users in 'Roles' can use the application, and so connect to your platform.
+:::
 
-![image4](/img/administration/oauth/facebook_app_dashboard.png)
+5. In your created application, select **Usecases** and click on 'Customize' for 'Authenticate and request data from users'
+6. In 'Permissions' tab, ensure to active scopes 'email' and 'public_profile'
 
-To switch the development mode to the public one, go to **Status & Review**, then click
+   ![image4](/img/administration/oauth/facebook_app_permissions.png)
 
-![image5](/img/administration/oauth/facebook_app_enable_public_button.png)Confirm.
+7. In 'Settings' tab, in 'Client OAuth settings', add the valid oauth redirect uri : `https://{domainName}/portal/facebookAuth`
 
-![image6](/img/administration/oauth/facebook_app_status_review_section.png)
+   ![image5](/img/administration/oauth/facebook_app_settings_valid_url.png)
+
+8. In your created application, select **Settings**. Here, input the values:
+
+    - [yourdomain.com](local.network.com) for **App Domains**.
+    - <https://www.yourdomain.com> for **Site URL** (by selecting Add PlatformWebsite).
+    - Add required informations like logo, privacy policy urls ...
+    - Get clientId and clientSecret to provide it to eXo
+
+   ![image6](/img/administration/oauth/facebook_app_settings.png)
+
+   ![image7](/img/administration/oauth/facebook_app_settings_2.png)
+
+Now, users registred in roles part use this application. To open it to all facebook users, you need to follow the validation process 
 
 ### Twitter
 
 1. Go to the [Twitter Developer page](https://dev.twitter.com/). From this page, go to the **Manage Your Apps** page (in the **TOOLS** category near the bottom), then register your application by clicking **Create New App**.
 2. Fill values for Name and Description. Use <http://server.local.network.com:8080> and <http://server.local.network.com:8080/portal/twitterAuth> for Website and Callback URL respectively.
 
-![image7](/img/administration/oauth/twitter_create_app_form.png)
+![image8](/img/administration/oauth/twitter_create_app_form.png)
 
 ::: tip
 
@@ -74,7 +91,7 @@ The **Callback URL** must be filled for Twitter to recognize that it is a web ap
 3. In the created application, optionally edit it. In the **Settings** tab, you may need to enable the **Sign in with Twitter** feature (by ticking the **Allow this application to be used to Sign in with Twitter** checkbox). It is recommended you enable it, otherwise your users will need to authorize in Twitter after each login into eXo Platform. For the Access option, the default value as **Read only** is sufficient.
 After finishing the whole process, you should see in the **Details** tab as below:
 
-![image8](/img/administration/oauth/twitter_app_registration_details.png)
+![image9](/img/administration/oauth/twitter_app_registration_details.png)
 
 **Consumer Key** and **Consumer Secret** (in *Keys and Access Token* tab) will be used to configure Client ID and Client Secret later.
 
@@ -83,12 +100,20 @@ After finishing the whole process, you should see in the **Details** tab as belo
 1. Go to <https://www.linkedin.com/developer/apps/>. From this page, register your application by selecting **Create App**.
 2. Fill values for Name, Linkedin Page, Application Logo URL, and create App
 
+<<<<<<< HEAD
    ![image9](/img/administration/oauth/linkedIn_create_new_app_form.png)
+=======
+![image10](/img/administration/oauth/linkedIn_create_new_app_form.png)
+>>>>>>> 1ebe18a (fix: update documentation for facebook authentication - EXO-74546)
 
 3. On `Product` tab, choose `Sign In with LinkedIn using OpenID Connect` and click on `Request Access` to add OpenIdConnect to your app
 4. On `Auth` tab, in part `OAuth 2.0 settings, add and authorized redirect url :  https://${domainName}/portal/linkedinAuth (Replace domainName with your real domain name)
 5. Get ClientId and ClientSecret for the next step of configuration.
 
+<<<<<<< HEAD
+=======
+![image11](/img/administration/oauth/linkedIn_authentication_keys.png)
+>>>>>>> 1ebe18a (fix: update documentation for facebook authentication - EXO-74546)
 
 ### Google
 
@@ -97,15 +122,15 @@ After finishing the whole process, you should see in the **Details** tab as belo
 3. In the Gallery icon \--\> API Manager part \--\> Overview, make sure **Google+ API** is enabled.
 4. In the **Credentials** part, click Add credentials and select **Oauth 2.0 client ID**.
 
-![image11](/img/administration/oauth/googleplus_add_credentials.png)
+![image12](/img/administration/oauth/googleplus_add_credentials.png)
 
 5. Select *Web application*. In the Authorized redirect URIs field, input <http://server.local.network.com:8080/portal/googleAuth>.
 
-![image12](/img/administration/oauth/googleplus_create_client_id.png)
+![image13](/img/administration/oauth/googleplus_create_client_id.png)
 
 6. Click Create and view information of Client ID, Client Secret and Redirect URIs.
 
-![image13](/img/administration/oauth/googleplus_oauth_client.png)
+![image14](/img/administration/oauth/googleplus_oauth_client.png)
 
 ### OpenId
 
@@ -188,7 +213,7 @@ Finally, for OpenId, you need a redirectUrl which will be called by your openid 
 
 The on-the-fly registration mode is option that allows administrator to skip the Registration form for the new social accounts that log into eXo for the first time. If the option is not turned on, users will have to edit their social information for the first login into eXo Platform.
 
-![image14](/img/administration/oauth/register_new_account_form.png)
+![image15](/img/administration/oauth/register_new_account_form.png)
 
 1. Configuring the on-the-fly registration
 
