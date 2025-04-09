@@ -31,7 +31,8 @@ In terms of product functionalities, both editions are based on **the same core*
 There are however a few **notable exceptions** :
 
 - **Connectors to paid third party software** (Microsoft, Google) are excluded from the community edition
-- **OnlyOffice** and **Jitsi** modules are not distributed with the community edition. However, connectors are included and can be used to package open source versions of those tools
+- **OnlyOffice** is distributed with the community edition. 
+- **Jitsi** and **MatrixChat** modules are not packaged with the community edition. However, these modules are open-source aand available for packaging. A documentation explaining how to deploy is in construction
 - **Advanced administration** and **security** features are excluded from the community edition
 Moreover, eXo Platform CE does not benefit from professional grade **support** and **maintenance** programs, included in the subscription, nor from our enterprise **on demand services**.
 
@@ -39,12 +40,11 @@ Moreover, eXo Platform CE does not benefit from professional grade **support** a
 eXo Platform includes several third party open-source modules to power up some user facing features. In particular these features are based on integrations with third party tools  :
 
 - eXo Platform **unified search** module is based on Elastic Search
-- eXo **Chat** module on MongoDB
+- eXo **mChat** module on Matrix
 - eXo **videoconferencing** is based on Jitsi
 - eXo **co-editing** is based on OnlyOffice
 Regarding Jitsi and OnlyOffice, those tools are distributed under their own licensing conditions. Depending on the edition, open-source licensing or commercial licensing may apply. For that reason, we do not package and distribute them with the eXo Platform CE.
 
-However, connectors developed for eXo Platform EE (which packages both OnlyOffice and Jitsi) can be used to package open-source distributions of those tools. In this documentation, we include a guide as to how to do so (in progress).
 
 ## Architecture
 

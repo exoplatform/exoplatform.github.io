@@ -11,7 +11,7 @@ This chapter covers the following topics:
 The requirements cited below are provisional and may change according to quality tests findings.
 :::
 
-To run the Docker compose of eXo Platform 6.5, your system is required
+To run the Docker compose of eXo Platform 7.0, your system is required
 to meet the following specifications or higher:
 
 - CPU: Multi-core recommended, 2GHz minimum.
@@ -35,7 +35,7 @@ Make sure to allow enough resources (Memory, disk, CPU) to the docker containers
 
 ## Start eXo platform
 
-### With Dockerfile
+### With Docker-compose
 
 - Create a new folder $EXO\_HOME, this folder will contain all files needed to run the eXo platform environment.
 
@@ -52,7 +52,23 @@ It is recommended to add **$EXO_HOME** as an environment variable in your system
 docker-compose -f docker-compose.yml up
 ```
 
-- Open your browser and open the URL : <http://localhost/>
+The default domain name `exoapp.local` can be changed by setting the environment variable `EXO_PROXY_VHOST` in the start command, as shown above:
+
+```shell
+EXO_PROXY_VHOST=exoapp2.local docker-compose -f docker-compose.yml up
+```
+::: warning
+It is strongly recommended to use a custom domain name instead of `localhost` to ensure that the OnlyOffice Document Server functions properly.
+:::
+::: warning
+If you use domain name exoapp.local, you need to ensure that this domain name is resolvable by your system. You can do this by adding the following line to your hosts file (/etc/hosts):
+
+```shell
+127.0.0.1 exoapp.local
+```
+:::
+
+- Open your browser and open the URL : <http://exoapp.local/> or the custom domain name
 - You can create a new user using the form that will be displayed with the first server startup
 - If you skip the step above, you can still connect with the super-user of the platform. Its username is **root** and password **password**
 
@@ -60,10 +76,9 @@ docker-compose -f docker-compose.yml up
 
 Alternatively, you may want to run each component separately with containers. Required images are :
 
-- [Mongo](https://hub.docker.com/_/mongo) 6.0
-- [eXo Platform Elastic Search](https://hub.docker.com/r/exoplatform/elasticsearch) 2.1.0. This image is build by eXo with all
-  needed ES addons
-- [eXo Platform Community](https://hub.docker.com/r/exoplatform/exo-community) 6.5
+- [OnlyOffice](https://hub.docker.com/r/onlyoffice/documentserver) 8.2.
+- [eXo Platform Elastic Search](https://hub.docker.com/_/elasticsearch) 8.14.3.
+- [eXo Platform Community](https://hub.docker.com/r/exoplatform/exo-community) 7.0
 
 To do this, you can use properties described in [this page](https://hub.docker.com/r/exoplatform/exo-community) to configure eXo Community docker image.
 
@@ -79,19 +94,38 @@ The most basic way to start eXo Platform Community edition for *evaluation* purp
 docker network create -d bridge exo-network
 ```
 
-- Start Mongo Server
+- Start OnlyOffice DocumentServer
 ```bash
-docker run -v mongo_data:/data/db -p 27017:27017 --name mongo --network=exo-network mongo:4.4
+docker run \
+      -p ${ONLYOFFICE_HTTP_PORT:-9090}:80 \
+      -e JWT_ENABLED=true \
+      -e JWT_SECRET=${ONLYOFFICE_SECRET:-d24079cba6ea93aab7a0efcde5143673e8e4cd32be51519112ca604cf4f9bbb6} \
+      -e SECURE_LINK_SECRET=${ONLYOFFICE_LINK_SECRET:-fe6c434c36ee04031718b3c53b1d803739da880a142baf17b8f56dc2520877dd} \
+      --name onlyoffice --network=exo-network onlyoffice/documentserver:8.2
 ```
- 
+
 - Start ElasticSearch Server
 ```bash
-docker run -e ES_JAVA_OPTS="-Xms2048m -Xmx2048m" -e node.name=exo -e cluster.name=exo -e cluster.initial_master_nodes=exo -e network.host=_site_ -v search_data:/usr/share/elasticsearch/data --name es --network=exo-network exoplatform/elasticsearch:2.0.4
+docker run -e ES_JAVA_OPTS="-Xms2048m -Xmx2048m" -e node.name=exo -e cluster.name=exo -e cluster.initial_master_nodes=exo -e network.host=_site_ -v search_data:/usr/share/elasticsearch/data --name es --network=exo-network elasticsearch:8.14.3
 ```
 
 - Start eXo Platform Server
+Replace the value of ONLYOFFICE_PUBLIC_IP with the public (local) IP address of the machine hosting the OnlyOffice Document Server, for example, `192.168.1.3`.
+
+::: warning
+In this deployment mode, eXo Platform and OnlyOffice should be able to communicate with each other using the same network IP, both for internal interaction and access via the browser (since direct communication using container services does not succeed). Alternatively, they can communicate through an intermediate reverse proxy, as outlined in the provided Docker Compose file section.
+:::
+
 ```bash
-docker run -v exo_data:/srv/exo -p 8080:8080 -e EXO_ES_HOST=es --name exo --network=exo-network exoplatform/exo-community:6.5
+ONLYOFFICE_PUBLIC_IP="10.0.0.1" # Replace this value with a public (local) ip address
+docker run -v exo_data:/srv/exo -p 8080:8080 \
+ -e EXO_ES_HOST=es \
+ -e JAVA_OPTS="-Donlyoffice.documentserver.host=${ONLYOFFICE_PUBLIC_IP} \
+-Donlyoffice.documentserver.schema=${ONLYOFFICE_SCHEMA:-http} \
+-Donlyoffice.documentserver.allowedhosts=localhost,${ONLYOFFICE_PUBLIC_IP} \
+-Donlyoffice.documentserver.accessOnly=false \
+-Donlyoffice.documentserver.secret=${ONLYOFFICE_JWT_SECRET:-d24079cba6ea93aab7a0efcde5143673e8e4cd32be51519112ca604cf4f9bbb6}" \
+ --name exo --network=exo-network exoplatform/exo-community:7.0
 ```
 
 and then waiting the log line which say that the server is started
