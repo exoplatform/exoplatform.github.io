@@ -200,7 +200,18 @@ Finally, for OpenId, you need a redirectUrl which will be called by your openid 
    exo.oauth.openid.redirectURL=http://server.local.network.com:8080/portal/openidAuth
 ```
 
-1. Restart eXo Platform server. Your users should be able to register or log in with their social network accounts.
+When using OpenId, the eXo session can expire before the IDP session. 
+In order to transparently relog the user in eXo when the session is expired, we use a cookie. The default lifetime of this cookie is 24 hour. This mean that, during 24 hours, even if the user session is expired in eXo, the user will be reconnected using the OIDC flow. 
+During this time, if the session have expired on IDP side, the login in eXo will not be possible, and we will display the eXo login page.
+
+To configure the lifetime of this cookie, you can set this property :
+
+```properties
+   #oidc cookie lifetime (in seconds). Default Value : 86400
+   exo.oauth.openid.cookie.lifetime=86400
+```
+
+Restart eXo Platform server. Your users should be able to register or log in with their social network accounts.
 
 ## On-the-fly registration
 
