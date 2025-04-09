@@ -60,6 +60,13 @@ EXO_PROXY_VHOST=exoapp2.local docker-compose -f docker-compose.yml up
 ::: warning
 It is strongly recommended to use a custom domain name instead of `localhost` to ensure that the OnlyOffice Document Server functions properly.
 :::
+::: warning
+If you use domain name exoapp.local, you need to ensure that this domain name is resolvable by your system. You can do this by adding the following line to your hosts file (/etc/hosts):
+
+```shell
+127.0.0.1 exoapp.local
+```
+:::
 
 - Open your browser and open the URL : <http://exoapp.local/> or the custom domain name
 - You can create a new user using the form that will be displayed with the first server startup
