@@ -30,7 +30,7 @@ The full environment will be provided as Docker containers assembled together us
 
 ::: warning
 If you are using Docker desktop, there is a default limitation for resources that may prevent eXo platform server from starting.
-Make sure to allow enough resources (Memory, disk, CPU) to the docker containers as explained in [Docker desktop documentation](https://docs.docker.com/desktop/settings/mac/#resources) for different Operating systems.
+Make sure to allow enough resources (Memory, disk, CPU) to the docker containers as explained in [Docker desktop documentation].(https://docs.docker.com/desktop/settings/mac/#resources) for different Operating systems.
 :::
 
 ## Start eXo platform
@@ -135,7 +135,7 @@ and then waiting the log line which say that the server is started
 exo_1    | 2022-09-20 16:55:43,009 | INFO  | Server startup in [58805] milliseconds [org.apache.catalina.startup.Catalina<main>] 
 ```
 
-When ready just go to <http://{the_ip_you_choose}> for example <http://192.168.1.3> and follow the instructions ;-)
+When ready just go to <http://{the_ip_you_choose}> (for example <http://192.168.1.3>) and follow the instructions ;-)
 
 Once containers successfully start, you can stop/start them with
 ```bash
