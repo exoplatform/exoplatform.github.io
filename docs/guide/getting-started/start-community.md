@@ -126,7 +126,7 @@ docker run -v exo_data:/srv/exo -p 8080:8080 \
 -Donlyoffice.documentserver.allowedhosts=localhost,${ONLYOFFICE_PUBLIC_IP} \
 -Donlyoffice.documentserver.accessOnly=false \
 -Donlyoffice.documentserver.secret=${ONLYOFFICE_JWT_SECRET:-d24079cba6ea93aab7a0efcde5143673e8e4cd32be51519112ca604cf4f9bbb6}" \
- --name exo --network=exo-network exoplatform/exo-community:7.0
+ --name exo --network=exo-network exoplatform/exo-community:7.0.0
 ```
 
 and then waiting the log line which say that the server is started
