@@ -32,9 +32,8 @@ There are however a few **notable exceptions** :
 
 - **Connectors to paid third party software** (Microsoft, Google) are excluded from the community edition
 - **OnlyOffice** is distributed with the community edition. 
-- **Jitsi** and **MatrixChat** modules are not packaged with the community edition. However, these modules are open-source aand available for packaging. A documentation explaining how to deploy is in construction
-- **Advanced administration** and **security** features are excluded from the community edition
-Moreover, eXo Platform CE does not benefit from professional grade **support** and **maintenance** programs, included in the subscription, nor from our enterprise **on demand services**.
+- **Jitsi** and **MatrixChat** modules are not packaged with the community edition. However, these modules are open-source and available for packaging. A documentation explaining how to deploy is in construction
+- **Advanced administration** and **security** features are excluded from the community edition. Moreover, eXo Platform CE does not benefit from professional grade **support** and **maintenance** programs, included in the subscription, nor from our enterprise **on demand services**.
 
 ## Third-Party Software
 eXo Platform includes several third party open-source modules to power up some user facing features. In particular these features are based on integrations with third party tools  :
