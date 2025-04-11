@@ -55,7 +55,7 @@ docker-compose -f docker-compose.yml up
 The default domain name `exoapp.local` can be changed by setting the environment variable `EXO_PROXY_VHOST` in the start command, as shown above:
 
 ```shell
-EXO_PROXY_VHOST=exoapp2.local
+export EXO_PROXY_VHOST=exoapp2.local
 docker-compose -f docker-compose.yml up
 ```
 ::: warning
