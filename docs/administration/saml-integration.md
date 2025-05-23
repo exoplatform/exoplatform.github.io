@@ -186,3 +186,15 @@ Now, when you log into eXo, the assertions responses coming from the IDP are enc
 ## Configure NameId Format in SAMLRequest
 
 The property `gatein.sso.saml.nameid.format` allow to configure the wanted nameid format. By dafault, value is `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`. It can be changed to `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` if needed
+
+## Use assertion with persistent or transient nameid
+Some IDP requires that nameid contains a unique identifier, which will not change during this. 
+In this case, we need that IDP provide the user name or the email in another assertion attribute.
+
+- On IDP side, configure the Client scope to provide username or email in an attribute of the assertion. Note the name of the attribute, for example `uid`.
+- on eXo side, set the property `gatein.sso.saml.use.namedid=false` and `gatein.sso.saml.subject.attribute` to the name of the attribute you want to use. For example, if you set `gatein.sso.saml.subject.attribute=uid`, eXo will use the value of the `uid` attribute in the assertion as username.
+
+::: tip 
+
+The user can be identified by his username or by his email.
+:::
