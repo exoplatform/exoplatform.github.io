@@ -228,3 +228,29 @@ By default, the Registration form is skipped for the three networks following:
 ```
 
 The on-the-fly registration option is not turned on for Twitter by default. In case of the on-the-fly registration, a random password will be generated for the new user. So the only way for the user to know his password is via the `Forget password` function (which will require email address). The Twitter site does not allow third-party application to get user email, so it is recommended you do not enable this option for Twitter.
+
+
+### On-the-fly registration with OpenId
+With OpenId Connect, you can add properties in the token, other than the mandatory ones. This properties can be used to fill the user profile in eXo Platform.
+
+For that, you will need to define this properties in exo.properties : 
+
+``` properties
+   exo.oauth.openid.scope=openid email profile customScope 
+```
+
+This property will indicate to OIDC the custom scope to require. By default, the scope is `openid email profile`. In this example, we add `customScope` which add properties defined by the OpenId provider.
+
+``` properties
+   exo.oauth.custom.claims=property1,property2,property3
+```
+
+This property will indicate to eXo which properties to read from the token, and to fill in the user profile. The properties are separated by a comma. 
+Theses properties must be also defined in the eXo Profile configuration. You can set it in the Administration menu in eXo Platform. Be sure to set the same name as in the token.
+
+``` properties
+   exo.oauth.custom.claims.multivalue.separator=;
+```
+
+If some properties are multivalued, you can set the separator used in the token to separate values. By default, the separator is `;`.
+Be sure to configure the property in the eXo Profile configuration as multivalued too.
