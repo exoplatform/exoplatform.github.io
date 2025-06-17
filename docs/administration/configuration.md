@@ -1619,21 +1619,6 @@ Here under is the list of related properties that you can configure via `exo.pro
 - `exo.notification.WebNotificationCleanJob.expression` : The Cron expression to schedule the WebNotificationJob. By default
     it runs at 11:00pm every day (*0 0 23 ? \* \**).
 
-### Notification channels configuration
-
-In eXo Platform, two notification channels are available by default:
-
-- Web channel: notifications are sent on the web browser.
-- Email channel: notifications are sent via the email.
-
-It is possible to define which channels to activate through the parameter `exo.notification.channels` in `exo.properties` file.
-It is a comma separated property which could take these values:
-
-- MAIL_CHANNEL
-- WEB_CHANNEL
-
-By default (when the property is not customized or empty), all the available channels are activated. When a notification channel is added through an extension, it is automatically activated.
-
 ## Document versioning
 
 By default, versioning is enabled for documents contained in the **Managed Sites**, **Groups** and **Personal Documents** drives. To change this configuration, edit the `exo.ecms.documents.versioning.drives` property in the `exo.properties` file.
