@@ -20,7 +20,6 @@ jobs:
            r=meeds-snapshots&g=io.meeds.perk-store&a=perk-store-services&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
            r=meeds-snapshots&g=io.meeds.notes&a=notes-service&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
            r=meeds-snapshots&g=io.meeds.task&a=task-management-services&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
-#           r=meeds-snapshots&g=io.meeds.wallet&a=wallet-api&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
            r=meeds-snapshots&g=io.meeds.gamification&a=gamification-services&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
            r=meeds-snapshots&g=io.meeds.app-center&a=app-center-services&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
            r=meeds-snapshots&g=io.meeds.kudos&a=kudos-services&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
