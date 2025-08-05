@@ -21,7 +21,6 @@ jobs:
            r=meeds-snapshots&g=io.meeds.notes&a=notes-service&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
            r=meeds-snapshots&g=io.meeds.task&a=task-management-services&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
            r=meeds-snapshots&g=io.meeds.gamification&a=gamification-services&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
-           r=meeds-snapshots&g=io.meeds.kudos&a=kudos-services&v=7.1.x-exo-SNAPSHOT&c=swagger&e=yaml
            r=exo-snapshots&g=org.exoplatform.documents&a=documents-services&v=7.1.x-SNAPSHOT&c=swagger&e=yaml
            r=exo-snapshots&g=org.exoplatform.agenda&a=agenda-services&v=7.1.x-SNAPSHOT&c=swagger&e=yaml
            r=exo-snapshots&g=org.exoplatform.ecms&a=ecms-core-services&v=7.1.x-SNAPSHOT&c=swagger&e=yaml
