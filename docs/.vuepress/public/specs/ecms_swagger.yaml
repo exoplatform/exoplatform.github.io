@@ -7,8 +7,6 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.en.html
   version: "1.0"
 tags:
-- name: /clouddrive/settings
-  description: Manages clouddrive connectors settings associated to users
 - name: /attachments
   description: Managing attachments
 - name: /documents
@@ -439,57 +437,6 @@ paths:
           description: default response
           content:
             '*/*': {}
-  /clouddrive/settings:
-    get:
-      tags:
-      - /clouddrive/settings
-      summary: Get clouddrive connectors settings for authenticated user
-      operationId: getUserSettings
-      responses:
-        "204":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
-    put:
-      tags:
-      - /clouddrive/settings
-      summary: Saves clouddrive connectors settings for authenticated user
-      operationId: saveUserSettings
-      requestBody:
-        description: User's clouddrive connectors settings to update
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CloudDriveSettingsRestEntity'
-        required: true
-      responses:
-        "204":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
-  /clouddrive/settings/providers:
-    get:
-      tags:
-      - /clouddrive/settings
-      summary: Retrieves cloud drive providers
-      operationId: getCloudDriveProviders
-      responses:
-        "204":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
   /documents/favorite:
     get:
       tags:
@@ -2033,13 +1980,6 @@ components:
         systemParameterUpdater:
           $ref: '#/components/schemas/SystemParameterUpdater'
         type:
-          type: string
-    CloudDriveSettingsRestEntity:
-      type: object
-      properties:
-        account:
-          type: string
-        connector:
           type: string
     ContainerEntry:
       type: object

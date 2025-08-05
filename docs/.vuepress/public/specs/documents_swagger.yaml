@@ -49,6 +49,7 @@ paths:
           enum:
           - TIMELINE
           - FOLDER
+          - FAVORITES
       - name: query
         in: query
         description: Search query entered by the user
@@ -110,6 +111,22 @@ paths:
         description: fileType
         schema:
           type: string
+      - name: categoryId
+        in: query
+        description: Category id used to search associated document
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: excludedCategoryId
+        in: query
+        description: Category IDs to exclude from the result
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
       - name: afterDate
         in: query
         description: afterDate
@@ -415,42 +432,49 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/documents/description:
-    put:
+  /v1/documents/deleted:
+    get:
       tags:
       - /v1/documents
-      summary: update or create a document's description
-      description: This creates or updates a given document's description.
-      operationId: updateDocumentDescription
+      summary: Fetch trash documents
+      description: Fetch trash document
+      operationId: getDeletedDocuments
       parameters:
-      - name: ownerId
+      - name: sortField
         in: query
-        description: owner id
-        required: true
+        description: Sort filed
+        schema:
+          type: string
+          default: modifiedDate
+      - name: sortDirection
+        in: query
+        description: Sort ascending or descending
+        schema:
+          type: string
+          default: desc
+      - name: offset
+        in: query
+        description: Offset of results to return
         schema:
           type: integer
-          format: int64
-      - name: documentId
+          format: int32
+          default: 0
+      - name: limit
         in: query
-        description: document id
-        required: true
+        description: Limit of results to return
         schema:
-          type: string
-      - name: description
-        in: query
-        description: document id
-        required: true
-        schema:
-          type: string
+          type: integer
+          format: int32
+          default: 20
       responses:
         "200":
           description: Request fulfilled
         "400":
           description: Invalid query input
-        "403":
+        "401":
           description: Unauthorized operation
-        "404":
-          description: Resource not found
+        "500":
+          description: Internal server error
   /v1/documents/download:
     get:
       tags:
@@ -498,6 +522,11 @@ paths:
         description: File technical identifier
         schema:
           type: string
+      - name: destinationId
+        in: query
+        description: File prefix Clone
+        schema:
+          type: string
       - name: prefixClone
         in: query
         description: File prefix Clone
@@ -519,6 +548,38 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
+  /v1/documents/favoriteIds:
+    get:
+      tags:
+      - /v1/documents
+      description: Retrieves the list of favorite documents for an authenticated
+      operationId: getFavoriteDocumentIds
+      parameters:
+      - name: offset
+        in: query
+        description: Offset of results to return
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Limit of results to return
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: afterDate
+        in: query
+        description: afterDate
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
   /v1/documents/folder:
     post:
       tags:
@@ -576,9 +637,18 @@ paths:
         description: Folder technical identifier
         schema:
           type: string
+      - name: destination folder path
+        in: query
+        schema:
+          type: string
       - name: withChildren
         in: query
-        description: Folder technical identifier
+        description: include children
+        schema:
+          type: boolean
+      - name: showHidden
+        in: query
+        description: show hidden folder
         schema:
           type: boolean
       responses:
@@ -680,7 +750,7 @@ paths:
       tags:
       - /v1/documents
       summary: Move documents
-      description: This rename a giving document.
+      description: This move a giving document.
       operationId: moveDocument
       parameters:
       - name: documentID
@@ -824,39 +894,6 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/documents/rename:
-    put:
-      tags:
-      - /v1/documents
-      summary: Rename documents
-      description: This rename a giving document.
-      operationId: renameDocument
-      parameters:
-      - name: documentID
-        in: query
-        description: document id
-        schema:
-          type: string
-      - name: ownerId
-        in: query
-        description: ownerId
-        schema:
-          type: integer
-          format: int64
-      - name: newName
-        in: query
-        description: new name
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "403":
-          description: Unauthorized operation
-        "404":
-          description: Resource not found
   /v1/documents/settings/{ownerId}:
     get:
       tags:
@@ -867,31 +904,6 @@ paths:
       - name: ownerId
         in: path
         description: "Identity technical identifier, required = true"
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: Request fulfilled
-        "500":
-          description: Internal server error
-  /v1/documents/settings/{ownerId}/{view}:
-    post:
-      tags:
-      - /v1/documents
-      summary: Set the user default view settings
-      operationId: setDefaultView
-      parameters:
-      - name: view
-        in: path
-        description: view
-        required: true
-        schema:
-          type: string
-      - name: ownerId
-        in: path
-        description: Identity technical identifier
         required: true
         schema:
           type: integer
@@ -968,6 +980,118 @@ paths:
       responses:
         "200":
           description: Request fulfilled
+        "500":
+          description: Internal server error
+  /v1/documents/trash/bulk/delete/{actionId}:
+    delete:
+      tags:
+      - /v1/documents
+      summary: Delete list of documents permanently
+      description: This deletes a list of documents permanently
+      operationId: deleteDocumentsPermanently
+      parameters:
+      - name: actionId
+        in: path
+        description: action ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: documents List
+        content:
+          '*/*':
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/TrashElementEntity'
+        required: true
+      responses:
+        "200":
+          description: Document deleted
+        "401":
+          description: Unauthorized operation
+        "400":
+          description: Invalid request body input
+        "500":
+          description: Internal server error
+  /v1/documents/trash/bulk/restore/{actionId}:
+    put:
+      tags:
+      - /v1/documents
+      summary: Restore list of documents
+      description: This restore a list of documents
+      operationId: restoreDocuments
+      parameters:
+      - name: actionId
+        in: path
+        description: action ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: documents List
+        content:
+          '*/*':
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/TrashElementEntity'
+        required: true
+      responses:
+        "200":
+          description: Document deleted
+        "401":
+          description: Unauthorized operation
+        "400":
+          description: Invalid request body input
+        "500":
+          description: Internal server error
+  /v1/documents/trash/delete:
+    delete:
+      tags:
+      - /v1/documents
+      summary: Delete a document from the trash
+      description: Delete a document from the trash based on the specified trash node
+        path
+      operationId: deleteDocumentPermanently
+      parameters:
+      - name: documentPath
+        in: query
+        description: node path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "404":
+          description: Document not found
+        "500":
+          description: Internal server error
+  /v1/documents/trash/restore:
+    put:
+      tags:
+      - /v1/documents
+      summary: Restores a document from the trash
+      description: Restores a document from the trash based on the specified trash
+        node path
+      operationId: restoreDocumentFromTrash
+      parameters:
+      - name: documentPath
+        in: query
+        description: node path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
         "500":
           description: Internal server error
   /v1/documents/versions:
@@ -1059,6 +1183,35 @@ paths:
         "500":
           description: Internal server error
   /v1/documents/{documentId}:
+    get:
+      tags:
+      - /v1/documents
+      summary: Get all details of a given document
+      description: Get versions list of a a given document
+      operationId: getDocument
+      parameters:
+      - name: documentId
+        in: path
+        description: Document identifier
+        required: true
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: File properties to expand.
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "404":
+          description: Not found
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
     delete:
       tags:
       - /v1/documents
@@ -1117,6 +1270,139 @@ paths:
           description: Invalid query input
         "403":
           description: Forbidden operation
+  /v1/documents/{fileType}/{documentId}:
+    get:
+      tags:
+      - /v1/documents
+      summary: Get content of a given document
+      description: Get content a a given document
+      operationId: getDocumentContent
+      parameters:
+      - name: documentId
+        in: path
+        description: Document identifier
+        required: true
+        schema:
+          type: string
+      - name: fileType
+        in: path
+        description: Document type to be able to get the content
+        required: true
+        schema:
+          type: string
+      - name: lastModified
+        in: query
+        description: "The value of lastModified parameter will determine whether the\
+          \ query should be cached by browser or not. If not set, no 'expires HTTP\
+          \ Header will be sent'"
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: Resized image size. Use 250x250 as default size.
+        schema:
+          type: string
+          default: 0x0
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "404":
+          description: Not found
+        "500":
+          description: Internal server error
+    post:
+      tags:
+      - /v1/documents
+      summary: Create a thumbnail with provided content
+      description: Create a thumbnail with provided content
+      operationId: createVideoThumbnail
+      parameters:
+      - name: documentId
+        in: path
+        description: Document identifier
+        required: true
+        schema:
+          type: string
+      - name: fileType
+        in: path
+        description: Document type for created thumb
+        required: true
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: Resized image size. Use 250x250 as default size.
+        schema:
+          type: string
+          default: 250x250
+      requestBody:
+        description: image content
+        content:
+          '*/*':
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /v1/documents/{property}:
+    patch:
+      tags:
+      - /v1/documents
+      summary: Update a document property
+      description: This updates a document prperty.
+      operationId: updateDocument
+      parameters:
+      - name: property
+        in: path
+        description: Property to update
+        required: true
+        schema:
+          type: string
+      - name: documentId
+        in: query
+        description: document id
+        required: true
+        schema:
+          type: string
+      - name: ownerId
+        in: query
+        description: ownerId
+        schema:
+          type: integer
+          format: int64
+      - name: newName
+        in: query
+        description: new name
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: new description
+        schema:
+          type: string
+      - name: hidden
+        in: query
+        description: new document hidden value
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "403":
+          description: Unauthorized operation
+        "404":
+          description: Resource not found
 components:
   schemas:
     AbstractNodeEntity:
@@ -1144,6 +1430,8 @@ components:
         favorite:
           type: boolean
         folder:
+          type: boolean
+        hidden:
           type: boolean
         id:
           type: string
@@ -1179,6 +1467,11 @@ components:
           $ref: '#/components/schemas/NodePermissionEntity'
         auditTrails:
           $ref: '#/components/schemas/NodeAuditTrailsEntity'
+        categoryIds:
+          type: array
+          items:
+            type: integer
+            format: int64
         cloudDriveFile:
           type: boolean
         cloudDriveFolder:
@@ -1197,6 +1490,8 @@ components:
         favorite:
           type: boolean
         folder:
+          type: boolean
+        hidden:
           type: boolean
         id:
           type: string
@@ -1394,3 +1689,26 @@ components:
           type: boolean
         password:
           type: string
+    TrashElementEntity:
+      type: object
+      properties:
+        folder:
+          type: boolean
+        id:
+          type: string
+        lastModificationDate:
+          type: integer
+          format: int64
+        mimeType:
+          type: string
+        name:
+          type: string
+        origin:
+          type: string
+        path:
+          type: string
+        restorePath:
+          type: string
+        size:
+          type: integer
+          format: int64

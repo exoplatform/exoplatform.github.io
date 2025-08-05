@@ -633,6 +633,8 @@ components:
           format: int64
         downloadUrl:
           type: string
+        exoDrive:
+          type: boolean
         id:
           type: string
         isPublic:
@@ -866,8 +868,6 @@ components:
     Space:
       type: object
       properties:
-        app:
-          type: string
         avatarAttachment:
           $ref: '#/components/schemas/AvatarAttachment'
         avatarLastUpdated:
@@ -885,11 +885,18 @@ components:
         cacheTime:
           type: integer
           format: int64
+        categoryIds:
+          type: array
+          items:
+            type: integer
+            format: int64
         createdTime:
           type: integer
           format: int64
-        creator:
-          type: string
+        deletePermissions:
+          type: array
+          items:
+            type: string
         description:
           type: string
         displayName:
@@ -914,6 +921,10 @@ components:
         lastUpdatedTime:
           type: integer
           format: int64
+        layoutPermissions:
+          type: array
+          items:
+            type: string
         managers:
           type: array
           items:
@@ -922,17 +933,20 @@ components:
           type: array
           items:
             type: string
-        name:
-          type: string
-        parent:
-          type: string
         pendingUsers:
           type: array
           items:
             type: string
         prettyName:
           type: string
-        priority:
+        publicSiteId:
+          type: integer
+          format: int64
+        publicSitePermissions:
+          type: array
+          items:
+            type: string
+        publicSiteVisibility:
           type: string
         publishers:
           type: array
@@ -946,12 +960,12 @@ components:
           type: string
         shortName:
           type: string
-        tag:
-          type: string
-        template:
-          type: string
-        type:
-          type: string
+        spaceId:
+          type: integer
+          format: int64
+        templateId:
+          type: integer
+          format: int64
         url:
           type: string
         visibility:
@@ -1057,6 +1071,10 @@ components:
     WorkEntity:
       type: object
       properties:
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
         completed:
           type: boolean
         createdBy:
