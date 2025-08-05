@@ -42,7 +42,7 @@ jobs:
          cd $TARGET_FOLDER
          for item in ${url}
          do
-          file_name=$(echo ${item} | grep -o -P '(?<=m.).*(?=&a)')
+          file_name=$(echo ${item} | grep -o -P '(?<=&g=io\.meeds\.|org\.exoplatform\.).*(?=&a)')
           final_name=${file_name//./_}
          STATUSCODE=$(curl -s -L ${SERVER_URL}/${M2_REPO_PREFIX}${item} --write-out '%{http_code}' --output ${final_name}_swagger.yaml)
          if test $STATUSCODE -ne 200; then
