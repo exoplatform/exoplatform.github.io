@@ -708,6 +708,49 @@ components:
           type: string
         size:
           type: string
+    ChangeLog:
+      type: object
+      properties:
+        actionName:
+          type: string
+        author:
+          type: string
+        createdTime:
+          type: integer
+          format: int64
+        id:
+          type: integer
+          format: int64
+        target:
+          type: string
+        task:
+          $ref: '#/components/schemas/Task'
+    Comment:
+      type: object
+      properties:
+        author:
+          type: string
+        comment:
+          type: string
+        createdTime:
+          type: string
+          format: date-time
+        id:
+          type: integer
+          format: int64
+        mentionedUsers:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        parentComment:
+          $ref: '#/components/schemas/Comment'
+        subComments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+        task:
+          $ref: '#/components/schemas/Task'
     CreatorIdentityEntity:
       type: object
       properties:
@@ -746,6 +789,40 @@ components:
           type: string
         toDelete:
           type: boolean
+    Label:
+      type: object
+      properties:
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Label'
+        color:
+          type: string
+        hidden:
+          type: boolean
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        parent:
+          $ref: '#/components/schemas/Label'
+        project:
+          $ref: '#/components/schemas/Project'
+        tasks:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/LabelTaskMapping'
+        username:
+          type: string
+    LabelTaskMapping:
+      type: object
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        task:
+          $ref: '#/components/schemas/Task'
     Permission:
       type: object
       properties:
@@ -797,6 +874,11 @@ components:
         id:
           type: integer
           format: int64
+        labels:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Label'
         lastModifiedDate:
           type: integer
           format: int64
@@ -983,6 +1065,10 @@ components:
         rank:
           type: integer
           format: int32
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
     StatusDto:
       type: object
       properties:
@@ -1007,6 +1093,10 @@ components:
           type: string
         assignee:
           type: string
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
         completed:
           type: boolean
         context:
@@ -1032,6 +1122,14 @@ components:
         id:
           type: integer
           format: int64
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabelTaskMapping'
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeLog'
         priority:
           type: string
           enum:
