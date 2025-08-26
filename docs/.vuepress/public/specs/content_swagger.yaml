@@ -6869,8 +6869,8 @@ paths:
           type: string
       requestBody:
         description: "User object to be updated, ex:<br />{<br />\"username\": \"\
-          john\",<br />\"password\": \"gtngtn\",<br />\"email\": \"john@exoplatform.com\"\
-          ,<br />\"firstname\": \"John\",<br />\"lastname\": \"Smith\"<br />}"
+          john\",<br />\"password\": \"gtngtn\",<br />\"firstname\": \"John\",<br\
+          \ />\"lastname\": \"Smith\"<br />}"
         content:
           '*/*':
             schema:
@@ -6934,6 +6934,12 @@ paths:
                 value:
                   type: string
                   description: User profile attribute value
+                otpMethod:
+                  type: string
+                  description: OTP Method
+                otpCode:
+                  type: string
+                  description: OTP Code
       responses:
         "204":
           description: Request fulfilled but not content returned
@@ -7086,6 +7092,16 @@ paths:
         in: path
         description: User name
         required: true
+        schema:
+          type: string
+      - name: otpMethod
+        in: query
+        description: OTP Method
+        schema:
+          type: string
+      - name: otpCode
+        in: query
+        description: OTP Code
         schema:
           type: string
       requestBody:
