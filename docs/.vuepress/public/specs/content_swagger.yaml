@@ -2421,8 +2421,7 @@ paths:
         description: Object technical identifier
         required: true
         schema:
-          type: integer
-          format: int64
+          type: string
       responses:
         "204":
           description: Request fulfilled
@@ -2451,8 +2450,7 @@ paths:
         description: Object technical identifier
         required: true
         schema:
-          type: integer
-          format: int64
+          type: string
       - name: fieldName
         in: path
         description: Object field name
@@ -2486,8 +2484,7 @@ paths:
         description: Object technical identifier
         required: true
         schema:
-          type: integer
-          format: int64
+          type: string
       - name: fieldName
         in: path
         description: Object field name
