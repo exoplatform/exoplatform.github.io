@@ -490,6 +490,16 @@ paths:
           items:
             type: integer
             format: int64
+      - name: sortField
+        in: query
+        description: Sort filed
+        schema:
+          type: string
+      - name: sortDirection
+        in: query
+        description: Sort order (asc or desc)
+        schema:
+          type: string
       - name: offset
         in: query
         description: Offset

@@ -55,6 +55,16 @@ paths:
         in: query
         schema:
           type: boolean
+      - name: sortField
+        in: query
+        description: Field to sort by
+        schema:
+          type: string
+      - name: sortDirection
+        in: query
+        description: Sort order (asc or desc)
+        schema:
+          type: string
       responses:
         default:
           description: default response

@@ -475,6 +475,16 @@ paths:
         in: query
         schema:
           type: boolean
+      - name: sortField
+        in: query
+        description: Field to sort by
+        schema:
+          type: string
+      - name: sortDirection
+        in: query
+        description: Sort order (asc or desc)
+        schema:
+          type: string
       responses:
         default:
           description: default response
@@ -3562,6 +3572,16 @@ paths:
           items:
             type: integer
             format: int64
+      - name: sortField
+        in: query
+        description: Field to sort by
+        schema:
+          type: string
+      - name: sortDirection
+        in: query
+        description: Sort order (asc or desc)
+        schema:
+          type: string
       - name: offset
         in: query
         description: Offset
@@ -6485,6 +6505,16 @@ paths:
       - name: enrollmentStatus
         in: query
         description: "Enrollment status, ex: enrolled, not enrolled, no possible enrollment"
+        schema:
+          type: string
+      - name: sortField
+        in: query
+        description: sort Field
+        schema:
+          type: string
+      - name: sortDirection
+        in: query
+        description: sort Direction
         schema:
           type: string
       - name: offset
