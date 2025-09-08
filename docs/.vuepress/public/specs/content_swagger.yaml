@@ -6507,6 +6507,39 @@ paths:
         description: "Enrollment status, ex: enrolled, not enrolled, no possible enrollment"
         schema:
           type: string
+      - name: excludeCurrentUser
+        in: query
+        description: the current user will be excluded in the list
+        schema:
+          type: boolean
+          default: false
+      - name: includeUser
+        in: query
+        description: List of included users
+        schema:
+          type: array
+          items:
+            type: string
+            default: "false"
+          default: "false"
+      - name: exportId
+        in: query
+        description: 'Returning the progress of a '
+        schema:
+          type: string
+          default: "false"
+      - name: export
+        in: query
+        description: Whether to export users or not
+        schema:
+          type: boolean
+          default: false
+      - name: download
+        in: query
+        description: Whether to download exported users
+        schema:
+          type: boolean
+          default: false
       - name: sortField
         in: query
         description: sort Field
@@ -6543,12 +6576,6 @@ paths:
           any
         schema:
           type: string
-      - name: excludeCurrentUser
-        in: query
-        description: the current user will be excluded in the list
-        schema:
-          type: boolean
-          default: false
       responses:
         "200":
           description: Request fulfilled
@@ -6665,12 +6692,10 @@ paths:
       responses:
         "200":
           description: Request fulfilled
-        "404":
-          description: Resource not found
-        "500":
-          description: Internal server error due to data encoding
         "400":
           description: Invalid query input
+        "404":
+          description: Resource not found
   /v1/social/users/bulk/{action}:
     patch:
       tags:
