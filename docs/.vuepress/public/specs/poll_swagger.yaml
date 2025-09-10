@@ -473,10 +473,10 @@ paths:
         description: "Type of leaderboard, whether users or spaces"
         schema:
           type: string
-          default: USER
           enum:
           - USER
           - SPACE
+          default: USER
       - name: identityId
         in: query
         description: Identity technical identifier to include in results
@@ -579,11 +579,11 @@ paths:
           \ and ALL. Default value = ENABLED."
         schema:
           type: string
-          default: ENABLED
           enum:
           - ENABLED
           - DISABLED
           - ALL
+          default: ENABLED
       - name: owned
         in: query
         description: Whether retrieve owned programs only or not
@@ -957,10 +957,10 @@ paths:
         description: "Earner type, either USER or SPACE. Default: USER"
         schema:
           type: string
-          default: USER
           enum:
           - USER
           - SPACE
+          default: USER
       - name: statuses
         in: query
         description: "Realization status list. Possible values: ACCEPTED, PENDING,\
@@ -1278,40 +1278,39 @@ paths:
           \ ALL. Default value = ALL."
         schema:
           type: string
-          default: ALL
           enum:
           - AUTOMATIC
           - MANUAL
           - ALL
+          default: ALL
       - name: programStatus
         in: query
         description: "Programs status filtering, possible values: ENABLED, DISABLED\
           \ and ALL. Default value = ENABLED."
         schema:
           type: string
-          default: ALL
           enum:
           - ENABLED
           - DISABLED
           - ALL
+          default: ALL
       - name: status
         in: query
         description: "Rules status filtering, possible values: ENABLED, DISABLED and\
           \ ALL. Default value = ALL."
         schema:
           type: string
-          default: ALL
           enum:
           - ENABLED
           - DISABLED
           - ALL
+          default: ALL
       - name: dateFilter
         in: query
         description: "Rule period filtering. Possible values: STARTED, NOT_STARTED,\
           \ ENDED, ALL"
         schema:
           type: string
-          default: ALL
           enum:
           - ACTIVE
           - STARTED
@@ -1319,6 +1318,7 @@ paths:
           - UPCOMING
           - ENDED
           - ALL
+          default: ALL
       - name: term
         in: query
         description: term to search rules with
@@ -1389,12 +1389,12 @@ paths:
         description: "Rule period filtering. Possible values: WEEK, MONTH, YEAR, ALL"
         schema:
           type: string
-          default: ALL
           enum:
           - WEEK
           - MONTH
           - YEAR
           - ALL
+          default: ALL
       - name: returnSize
         in: query
         description: "If true, this will return the total count of filtered programs.\
