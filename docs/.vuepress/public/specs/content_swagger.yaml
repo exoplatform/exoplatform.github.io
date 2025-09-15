@@ -3474,6 +3474,11 @@ paths:
           \ ex: <em>comments</em> or <em>likes</em>"
         schema:
           type: string
+      - name: showPinned
+        in: query
+        description: Returning the pinned activities sorted in order or not
+        schema:
+          type: boolean
       - name: streamType
         in: query
         description: "Activity stream type. Possible values: ALL_STREAM, USER_STREAM,\
