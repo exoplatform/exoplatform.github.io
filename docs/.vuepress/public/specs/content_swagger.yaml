@@ -8886,6 +8886,8 @@ components:
         updated:
           type: integer
           format: int64
+        userCardFieldSettings:
+          type: boolean
         value:
           type: string
         visible:
