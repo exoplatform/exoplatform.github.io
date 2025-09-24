@@ -637,8 +637,9 @@ paths:
         description: Folder technical identifier
         schema:
           type: string
-      - name: destination folder path
+      - name: destinationFolderPath
         in: query
+        description: destination folder path
         schema:
           type: string
       - name: withChildren
