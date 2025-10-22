@@ -843,6 +843,29 @@ paths:
           description: Invalid query input
         "403":
           description: Forbidden operation
+  /v1/documents/publicAccessDocument:
+    get:
+      tags:
+      - /v1/documents
+      summary: Get public access information
+      description: Get public access document
+      operationId: publicAccessDocument
+      parameters:
+      - name: nodeId
+        in: query
+        description: public link node id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
   /v1/documents/publicAccessLink:
     get:
       tags:
