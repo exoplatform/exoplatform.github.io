@@ -2410,6 +2410,41 @@ paths:
       responses:
         "204":
           description: Request fulfilled
+  /social/translations/rich/{objectType}/{objectId}/{fieldName}:
+    post:
+      tags:
+      - translations
+      summary: "Saves the list of sanitized translation labels for a given Object's\
+        \ field identified by its type, id and field name"
+      description: "Saves the list of translation labels for a given Object's field\
+        \ identified by its type, id and field name"
+      operationId: saveRichTranslationLabels
+      parameters:
+      - name: objectType
+        in: path
+        description: "Object type, like 'activity', 'task' ..."
+        required: true
+        schema:
+          type: string
+      - name: objectId
+        in: path
+        description: Object technical identifier
+        required: true
+        schema:
+          type: string
+      - name: fieldName
+        in: path
+        description: Object field name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
   /social/translations/{objectType}/{objectId}:
     delete:
       tags:
