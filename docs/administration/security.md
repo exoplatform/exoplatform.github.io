@@ -397,7 +397,7 @@ Read [MongoDB documentation](http://docs.mongodb.org) for MongoDB security. This
 
 2. Edit MongoDB configuration to turn on authentication, then restart the server.
 
-   ```conf
+   ```properties
         # mongodb.conf
         # Your MongoDB host.
         bind_ip = 192.168.1.81
