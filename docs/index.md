@@ -1,7 +1,7 @@
 ---
 home: true
 heroImage: img/eXo.png
-tagline: eXo documentation
+tagline: Technical and Developer guides
 actionText: Quick Start →
 actionLink: /guide/getting-started/Introduction.html
 customFeatures:
@@ -14,7 +14,7 @@ customFeatures:
 - title: Developer Guides
   details: Guides to follow
   link: /guide/developer-guide/getting-started.html
-footer: Made by eXo Platform
+footer: Made by eXo
 ---
 
 <div class="features">
