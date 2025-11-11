@@ -498,7 +498,7 @@ The *require.config()* will be replaced by GMD configuration (later in `gatein-r
 
 It changes much because you no longer write a global named function (myClick) and attach it to a button directly in HTML. Instead you use jQuery and a CSS selector. The selector should point to the right HTML element that you write in your portlet template, in this example it is `counter.jsp`:
 
-``` JSP
+``` HTML
 <div class='counter-portlet'>
     <h2>The Counter Portlet</h2>
     <p>You've clicked <span id="result">0</span> times.</p>
@@ -1284,7 +1284,7 @@ The minification can be disabled with the new module attribute \'minify\' :
 
 This option could be set in `gatein-resources.xml` in script tag:
 
-```javscript
+```javascript
     <module>
         <name>myModule</name>
          <script>
