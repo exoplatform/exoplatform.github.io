@@ -581,6 +581,12 @@ paths:
         schema:
           type: integer
           format: int64
+      - name: versionNumber
+        in: query
+        description: Optional version number
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: Request fulfilled
