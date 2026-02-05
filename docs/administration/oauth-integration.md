@@ -211,6 +211,13 @@ To configure the lifetime of this cookie, you can set this property :
    exo.oauth.openid.cookie.lifetime=86400
 ```
 
+When using OpenId, when a user logs out, you can decide if you want to propagate the logout to the IDP. If the well-known configuration file contains an url for `end_session_endpoint`, eXo Platform can call this url to logout the user from the IDP too.
+By default, the logout propagation is disabled. To enable it, you can set this property in exo.properties :
+
+```properties 
+   exo.oauth.openid.propagate.logout=true
+```
+
 Restart eXo Platform server. Your users should be able to register or log in with their social network accounts.
 
 ## On-the-fly registration
