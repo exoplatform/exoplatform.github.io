@@ -5367,12 +5367,6 @@ paths:
         schema:
           type: boolean
           default: false
-      - name: filterByPermissions
-        in: query
-        description: to filter sites by view/edit permissions
-        schema:
-          type: boolean
-          default: false
       - name: offset
         in: query
         description: Offset of results to retrieve
