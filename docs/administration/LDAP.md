@@ -82,6 +82,8 @@ Name | Description | Value | Default | Example
  exo.ldap.users.attributes.{name}.isRequired | Is the attribute required | `false` | `true` or `false`
  exo.ldap.users.attributes.{name}.isMultivalued |  Is the attribute multi-valued | `false` | `true` or   `false`
  exo.ldap.users.search.scope | Scope of the search for users | `subtree` | `base`,  `one` or `subtree`
+ exo.ldap.users.childMembershipAttributeName | LDAP attribute that defines parents of IdentityObject. Used to retrieved relationships from IdentityObject entry. Good example of such attribute in LDAP schema is `memberOf`. | |
+  exo.ldap.users.childMembershipAttributeDN | Defines if values of attribute defined in childMembershipAttributeName are fully qualified LDAP DNs. | `true` or `false` | `false`
  exo.ldap.groups.base.dn | Semicolon-separated list of full DNs of the objects containing the groups. An empty value means groups are not synchronized. | `ou=groups,dc=company,dc=org` | `ou=groups1,dc=org;ou=groups2,dc=org`
  exo.ldap.groups.id | Attribute used to identify the groups | `cn`
  exo.ldap.groups.filter | Filter used to fetch the groups | `(&(cn={0})(objectClass=Group))`
