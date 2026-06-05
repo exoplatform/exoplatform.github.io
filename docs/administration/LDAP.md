@@ -84,6 +84,7 @@ Name | Description | Value | Default | Example
  exo.ldap.users.search.scope | Scope of the search for users | `subtree` | `base`,  `one` or `subtree`
  exo.ldap.users.childMembershipAttributeName | LDAP attribute that defines parents of IdentityObject. Used to retrieved relationships from IdentityObject entry. Good example of such attribute in LDAP schema is `memberOf`. | |
   exo.ldap.users.childMembershipAttributeDN | Defines if values of attribute defined in childMembershipAttributeName are fully qualified LDAP DNs. | `true` or `false` | `false`
+ exo.idm.externalStore.user.memberships.update.delete | Remove membership if the information is no more present in the user object | true |
  exo.ldap.groups.base.dn | Semicolon-separated list of full DNs of the objects containing the groups. An empty value means groups are not synchronized. | `ou=groups,dc=company,dc=org` | `ou=groups1,dc=org;ou=groups2,dc=org`
  exo.ldap.groups.id | Attribute used to identify the groups | `cn`
  exo.ldap.groups.filter | Filter used to fetch the groups | `(&(cn={0})(objectClass=Group))`
@@ -96,6 +97,7 @@ Name | Description | Value | Default | Example
  exo.ldap.groups.parentMembershipAttributeName | LDAP attribute that defines children of IdentityObject.Used to retrieved relationships from IdentityObject entry. Option is required if IdentityObject can be part of relationship. | `member`
  exo.ldap.groups.isParentMembershipAttributeDN | Defines if values of attribute defined in childMembershipAttributeName are fully qualified LDAP DNs. | `false` | `true` or   `true`
  exo.ldap.groups.childMembershipAttributeName | LDAP attribute that defines parents of IdentityObject. Used to retrieved relationships from IdentityObject entry. Good example of such attribute in LDAP schema is `memberOf`. | |
+ exo.idm.externalStore.group.memberships.update.delete | Remove membership if the information is no more present in the group object | true |
  exo.ldap.groups.childMembershipAttributeDN | Defines if values of attribute defined in childMembershipAttributeName are fully qualified LDAP DNs. | `true` or `false` | `false`
  exo.ldap.groups.rootGroup | Root group to bind LDAP/AD groups, all LDAP/AD groups will id, ending be available under this group.  with `/` It must end with `/`. Root group (\"/\") cannot be used. | Any group | `/platform/*`
 
@@ -154,6 +156,7 @@ This chapter covers the following topics:
 > - `How to map additional user attributes?` A step by step tutorial to map additional users attributes than the default ones.
 > - `How to map multiple DNs for groups?` A tutorial allowing to map multiple DNs for groups from your directory to eXo platform.
 > - `How to map directory groups to a new eXo Platform group?` A tutorial allowing to map your directory groups to new eXo platform groups.
+> - `How to synchronize user/group membership when the LDAP does not have standard configuration`
 > - `Configuration reference` A reference guide about PicketLink IDM configuration and eXO Platform configuration.
 
 ### Quick start
@@ -559,7 +562,7 @@ In the `Quick start chapter` we map the directory groups to default eXo Platform
           </identity-object-types>
       </identity-store-mapping>...
      </repository>
-    ```
+   ```
 
 2. eXo configuration
 
@@ -588,6 +591,30 @@ In the `Quick start chapter` we map the directory groups to default eXo Platform
           ...
       </component>
      ```
+     
+### How to synchronize user/group membership when the LDAP does not have standard configuration
+
+In standard LDAP implementations, the membership information is bi-directionnal in users and groups object :
+- in user object, you have an attribute generally named 'memberOf' which list groups in which the use is.
+- in group object, you have an attribute generally named 'member' which list users in the group.
+
+When you add a user in a group, both attributes are automatically updated, allowing to read the membership information in the user object or in the group object.
+
+When eXo Platform synchronizes this information, it doesn't matter whether the synchronization is done at the user level or the group level, since the information is the same on both sides.
+
+This standard is not mandatory. It happens that in some configurations, the information is only on one side, in the group object, or in the user object.
+
+To prevent eXo Platform from considering that a membership is no longer present, and therefore deleting it, when it reads the object that does not contain the information, it is possible to add a property in the exo.properties file. If the membership information is only in the user object:
+
+``` properties
+exo.idm.externalStore.group.memberships.update.delete=false
+```
+If the membership information is only in the group object:
+
+``` properties
+exo.idm.externalStore.user.memberships.update.delete=false
+```
+
 
 ### Advanced Configuration reference
 
