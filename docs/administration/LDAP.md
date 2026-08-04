@@ -9,7 +9,7 @@ Please notice that this integration is not SSO (Single Sign On). If SSO is what 
 ::: warning
 
 - eXo Platform supports only the **read-only** mode with a directory (LDAP/AD).
-- Only one single directory is allowed.
+- Only one single directory (one LDAP directory or one Active Directory) is allowed - it is not possible to combine two different directories (for example an LDAP and an AD) at the same time. That single directory can however be served by several redundant servers for high availability, see [High availability](#high-availability-failover-and-load-balancing).
 - The mapped organizational entities from directory are imported in one way direction: **from the directory to eXo Platform**.
 :::
 
@@ -19,6 +19,7 @@ This chapter covers the following topics:
 > - `Quick start` A quick start for eXo Platform configuration with a directory server.
 > - `Configuration reference` A reference guide of all available configuration parameters.
 > - `Synchronization Configuration` A guide of all available configuration parameters for directory synchronization.
+> - `High availability` A guide to configure directory connection failover, DNS SRV-based load balancing and SNI-safe multi-homed LDAPS.
 > - `Advanced configuration` A guide about advanced configuration using PicketLink IDM configuration.
 > - `Frequently asked questions` How to resolve some possible issues of a directory integration.
 
@@ -140,6 +141,99 @@ The user data sync tasks (one per user) are executed asynchronously via a queue.
 ``` properties
   # Max retries to process Data synchronization from queue
   exo.idm.externalStore.queue.processing.error.retries.max=5
+```
+
+## High availability: failover and load balancing
+
+By default, eXo Platform connects to a single directory server, defined by `exo.ldap.url`. On top of this, three independent mechanisms are available to make the directory connection resilient to a server outage and to spread connections across several servers.
+
+All of them are gated by a single master flag, disabled by default:
+
+Name | Description | Default | Example
+-----|-------------|---------|--------
+exo.ldap.failover.enabled | Enables the failover/DNS SRV/SNI support described in this section. When `false`, none of the properties below have any effect and the original directory connection code path is used unchanged | `false` | `true`
+
+``` properties
+  exo.ldap.failover.enabled=true
+```
+
+Once enabled, the following mechanisms can be combined. For every new directory connection, the server list is built in this order:
+
+1. Servers resolved via DNS SRV discovery, if enabled (ordered and load-balanced as described below).
+2. The main server (`exo.ldap.url`), followed by any explicit secondary servers (`exo.ldap.failover.urls`), used as a fallback if DNS SRV is disabled, not configured, or temporarily unavailable.
+
+### Static failover: main and secondary servers
+
+A main server plus one or more secondary/backup servers can be configured directly, without any DNS setup. If the main server (or any server tried before it) cannot be reached, the next one in the list is tried automatically.
+
+Name | Description | Default | Example
+-----|-------------|---------|--------
+exo.ldap.failover.urls | Comma or space-separated list of secondary/backup directory server URLs, tried in order after `exo.ldap.url` | Empty | `ldap://ldap2.example.com:389,ldap://ldap3.example.com:389`
+
+Example:
+
+``` properties
+  exo.ldap.failover.enabled=true
+  exo.ldap.url=ldap://ldap1.example.com:389
+  exo.ldap.failover.urls=ldap://ldap2.example.com:389,ldap://ldap3.example.com:389
+```
+
+### DNS SRV-based discovery and load balancing
+
+Instead of (or in addition to) listing servers explicitly, eXo Platform can discover them dynamically by querying a DNS SRV record set, as defined by [RFC 2782](https://www.rfc-editor.org/rfc/rfc2782). This is how Microsoft Active Directory advertises its domain controllers, for example through the well-known `_ldap._tcp.dc._msdcs.<domain>` record.
+
+The resolved server list is ordered by SRV priority, and servers sharing the same priority are picked in a weighted-random order on every connection, so load is spread across them. The result is cached for a configurable period to avoid querying DNS on every single directory operation. If DNS resolution fails, the last known server list is reused, and the statically configured servers (`exo.ldap.url` and `exo.ldap.failover.urls`) remain available as an ultimate fallback.
+
+Name | Description | Default | Example
+-----|-------------|---------|--------
+exo.ldap.srv.enabled | Enables DNS SRV-based server discovery | `false` | `true`
+exo.ldap.srv.domain | DNS domain to query. Mandatory when SRV lookup is enabled | Empty | `example.com`
+exo.ldap.srv.service | SRV service/protocol prefix to query | `_ldap._tcp` | `_ldap._tcp.dc._msdcs` (Active Directory domain controllers)
+exo.ldap.srv.scheme | URL scheme used to build server URLs from the resolved host/port | `ldap` | `ldaps`
+exo.ldap.srv.refresh.period | How long (in milliseconds) a successful resolution is cached before being refreshed | `300000` (5 minutes) | `60000`
+exo.ldap.srv.timeout | DNS query timeout, in milliseconds | `5000` | `2000`
+exo.ldap.srv.dns.servers | Comma-separated list of `host[:port]` DNS servers to query. Defaults to the JVM/OS-configured resolver | Empty | `10.0.0.1,10.0.0.2:53`
+
+Example, for an Active Directory domain:
+
+``` properties
+  exo.ldap.failover.enabled=true
+  exo.ldap.type=ad
+  exo.ldap.url=ldap://dc1.example.com:389
+  exo.ldap.srv.enabled=true
+  exo.ldap.srv.domain=example.com
+  exo.ldap.srv.service=_ldap._tcp.dc._msdcs
+```
+
+### SNI-safe failover for round-robin/CNAME LDAPS hosts
+
+When using `ldaps://` with a host name that itself resolves to several addresses (a CNAME, or a round-robin DNS entry pointing to more than one server), the JVM by default only ever connects to a single one of those addresses and never retries the others if that first attempt fails.
+
+Enabling this option makes eXo Platform try every address behind the configured host name in turn, while still presenting the *original* host name for TLS SNI and certificate hostname verification, not the numeric address it actually connects to. This distinction matters: verifying against a raw IP address instead of the configured host name would silently defeat hostname verification, since server certificates are not normally issued for IP addresses.
+
+Name | Description | Default | Example
+-----|-------------|---------|--------
+exo.ldap.sni.enabled | Enables SNI-safe multi-address failover for `ldaps://` connections | `false` | `true`
+exo.ldap.sni.connect.timeout | Connect timeout (in milliseconds) used for each candidate address | `10000` | `5000`
+
+Example:
+
+``` properties
+  exo.ldap.failover.enabled=true
+  exo.ldap.url=ldaps://ldap-cluster.example.com:636
+  exo.ldap.sni.enabled=true
+```
+
+### Combining all three
+
+``` properties
+  exo.ldap.failover.enabled=true
+  exo.ldap.url=ldaps://ldap-primary.example.com:636
+  exo.ldap.failover.urls=ldaps://ldap-backup.example.com:636
+  exo.ldap.srv.enabled=true
+  exo.ldap.srv.domain=example.com
+  exo.ldap.srv.scheme=ldaps
+  exo.ldap.sni.enabled=true
 ```
 
 ## Advanced configuration
