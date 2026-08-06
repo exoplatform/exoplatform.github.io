@@ -1,0 +1,33 @@
+# robots.txt
+User-agent: *
+Allow: /
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+
+# Google AI (Gemini, SGE)
+User-agent: Google-Extended
+Allow: /
+
+# Common Crawl
+User-agent: CCBot
+Allow: /
+
+# Amazon AI
+User-agent: Amazonbot
+Allow: /
+
+# Sitemap
+Sitemap: https://docs.exoplatform.org/sitemap.xml
+
+# LLM Context Map
+llms: https://docs.exoplatform.org/llms.txt

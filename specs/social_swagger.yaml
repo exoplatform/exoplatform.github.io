@@ -1,0 +1,35 @@
+openapi: 3.0.1
+info:
+  title: Social Rest Api
+  description: All used social rest endpoints
+  license:
+    name: LGPL
+    url: https://www.gnu.org/licenses/lgpl-3.0.en.html
+  version: "1.0"
+tags:
+- name: richeditor/configuration
+  description: Retrieves Rich Editor configurations
+paths:
+  /richeditor/configuration:
+    get:
+      tags:
+      - richeditor/configuration
+      summary: Retrieves rich editor configuration Javascript file
+      description: Returns list of tags
+      operationId: getRichEditorConfiguration
+      parameters:
+      - name: type
+        in: query
+        description: Rich Editor Type
+        schema:
+          type: string
+      - name: v
+        in: query
+        description: "The value of v parameter will determine whether the query should\
+          \ be cached by browser or not. If not set, no 'expires HTTP Header will\
+          \ be sent'"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Request fulfilled
