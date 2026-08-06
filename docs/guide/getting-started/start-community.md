@@ -142,3 +142,98 @@ Once containers successfully start, you can stop/start them with
 docker stop $CONTAINER_NAME
 docker start $CONTAINER_NAME
 ```
+
+## Start eXo Platform without docker
+
+The eXo Platform Community edition can also be installed from a standalone ZIP / Tomcat bundle, without Docker. The steps below are for Linux (Debian).
+
+### Prerequisites
+
+- A JDK 21 installed (required for eXo 7.2.0):
+
+```shell
+sudo apt install openjdk-21-jdk
+```
+
+- The `JAVA_HOME` variable pointing to this JDK (it is auto-detected in most cases, but it's best to set it explicitly):
+
+```shell
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+```
+
+### Download and extraction
+
+Download the eXo 7.2.0 standalone Tomcat bundle (Community edition):
+
+<https://github.com/exoplatform/platform-public-distributions/releases/download/7.2.0/plf-community-tomcat-standalone-7.2.0.zip>
+
+Extract it wherever you want on the server, e.g. `/opt/exo`:
+
+```shell
+unzip plf-community-tomcat-standalone-7.2.0.zip -d /opt/exo
+```
+
+This folder becomes `$PLATFORM_TOMCAT_HOME`.
+
+### Permissions
+
+On Linux, the scripts need execute permission, otherwise you'll get an error like `Cannot find ./bin/catalina.sh`:
+
+```shell
+cd $PLATFORM_TOMCAT_HOME
+chmod +x bin/*.sh start_eXo.sh stop_eXo.sh
+```
+
+### Database
+
+By default the bundle starts with an embedded HSQLDB, handy for quick testing but should be reserved for testing only.
+
+::: tip Note
+For more serious use, configure an external database (PostgreSQL or MySQL) by following the [database configuration guide](https://docs.exoplatform.org/administration/database.html#configuring-exo-platform).
+:::
+
+### Elasticsearch
+
+eXo 7.2.0 requires Elasticsearch 8.18. By default, eXo expects an ES instance available at `https://localhost:9200`.
+
+Follow the official Elastic documentation for the installation:
+
+- [Install Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/8.18/install-elasticsearch.html)
+- [Install Elasticsearch on Debian](https://www.elastic.co/guide/en/elasticsearch/reference/8.18/deb.html)
+
+### Start / stop
+
+```shell
+# Start in the foreground
+./start_eXo.sh
+
+# Start in the background
+./start_eXo.sh --background
+
+# Stop
+./stop_eXo.sh
+```
+
+::: tip Note
+As a last resort, a background instance can also be stopped with `./stop_eXo.sh -force` or `kill -9`.
+:::
+
+Startup is complete when you see a message like this in the logs:
+
+```log
+Server startup in [...] milliseconds [org.apache.catalina.startup.Catalina<main>]
+```
+
+### Logs
+
+Check `$PLATFORM_TOMCAT_HOME/logs` if there's an issue at startup.
+
+### First access
+
+Once started, the platform is accessible at <http://your-server:8080/portal> (Tomcat's default port).
+
+For more details, the official documentation covers system and database configuration in depth:
+
+- [Installation (Tomcat bundle)](https://github.com/exoplatform/exo-documentation/blob/master/docs/Installation.rst)
+- [Database configuration](https://github.com/exoplatform/exo-documentation/blob/master/docs/database_configuration.rst)
+- [Getting started](https://docs.exoplatform.org/guide/developer-guide/getting-started.html)
