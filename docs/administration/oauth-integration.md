@@ -255,6 +255,15 @@ This property will indicate to OIDC the custom scope to require. By default, the
 This property will indicate to eXo which properties to read from the token, and to fill in the user profile. The properties are separated by a comma. 
 Theses properties must be also defined in the eXo Profile configuration. You can set it in the Administration menu in eXo Platform. Be sure to set the same name as in the token.
 
+Some OpenId providers do not use the standard `given_name` and `family_name` claim names to expose the user's first and last name. In that case, you can configure the attribute names to read from the userinfo response / token :
+
+``` properties
+   exo.oauth.openid.scope.firstname=customFirstNameAttribute
+   exo.oauth.openid.scope.lastname=customLastNameAttribute
+```
+
+By default, `exo.oauth.openid.scope.firstname` is `given_name` and `exo.oauth.openid.scope.lastname` is `family_name`.
+
 ``` properties
    exo.oauth.custom.claims.multivalue.separator=;
 ```
