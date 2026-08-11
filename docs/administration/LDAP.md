@@ -211,10 +211,14 @@ When using `ldaps://` with a host name that itself resolves to several addresses
 
 Enabling this option makes eXo Platform try every address behind the configured host name in turn, while still presenting the *original* host name for TLS SNI and certificate hostname verification, not the numeric address it actually connects to. This distinction matters: verifying against a raw IP address instead of the configured host name would silently defeat hostname verification, since server certificates are not normally issued for IP addresses.
 
+::: warning
+`exo.ldap.sni.enabled=true` only takes effect when **every** server this configuration can ever connect to uses `ldaps://` - the main server (`exo.ldap.url`), every secondary server (`exo.ldap.failover.urls`) and, when DNS SRV discovery is used, `exo.ldap.srv.scheme` must also be `ldaps`. This is because the underlying JNDI setting is not scheme-specific: registering a TLS-only socket factory while any configured server is plain `ldap://` would force a TLS handshake on a plaintext connection and break it. If the condition is not met, eXo Platform silently skips registering the SNI-aware factory and logs a warning explaining why - check the logs if you enabled this option and connections still fail over only to a single address.
+:::
+
 Name | Description | Default | Example
 -----|-------------|---------|--------
-exo.ldap.sni.enabled | Enables SNI-safe multi-address failover for `ldaps://` connections | `false` | `true`
-exo.ldap.sni.connect.timeout | Connect timeout (in milliseconds) used for each candidate address | `10000` | `5000`
+exo.ldap.sni.enabled | Enables SNI-safe multi-address failover for `ldaps://` connections (only takes effect when every configured server is `ldaps://`, see warning above) | `false` | `true`
+exo.ldap.sni.connect.timeout | Connect timeout (in milliseconds) used for each candidate address. If unset, falls back to the already-configured `com.sun.jndi.ldap.connect.timeout` (as a `customJNDIConnectionParameters` entry - the way it is shipped by default - or as a JVM system property), and finally to `10000` if neither is set | `10000` (when nothing else is configured) | `5000`
 
 Example:
 
