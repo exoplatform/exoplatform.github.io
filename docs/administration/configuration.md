@@ -613,6 +613,44 @@ To do so, follow [this guide of Google](https://support.google.com/mail/answer/2
 
 In case the *from* parameter is not valid, it does not fail the email sending and the main account will be displayed instead.
 
+### DKIM signing of outgoing mail
+
+eXo Platform can sign outgoing emails with [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (DomainKeys Identified Mail), which lets receiving mail servers verify that a message was really sent from your domain and was not altered in transit. This helps outgoing notifications avoid being flagged as spam.
+
+DKIM signing is disabled by default. To enable it, add the following properties to `exo.properties`:
+
+```properties
+    # True to sign outgoing emails with DKIM. Disabled by default.
+    gatein.email.dkim.enabled=false
+    # The signing domain, must match (or be a parent of) the domain used in the "From" address.
+    gatein.email.dkim.domain=
+    # The DKIM selector, must match the name of the TXT record published in your domain's DNS.
+    gatein.email.dkim.selector=
+    # Absolute path to the RSA private key used to sign, as a raw PKCS#8 DER file (not PEM).
+    gatein.email.dkim.privateKeyPath=
+    # Optional. One of SHA256_WITH_RSA (default), SHA1_WITH_RSA, SHA256_WITH_ED25519.
+    gatein.email.dkim.signingAlgorithm=
+    # Optional. Sets the DKIM "i=" identity tag.
+    gatein.email.dkim.identity=
+    # Optional, defaults to false. When true, each send looks up the selector's DNS TXT record
+    # and verifies it matches the private key before signing; a DNS lookup failure then blocks the send.
+    gatein.email.dkim.checkDomainKey=false
+```
+
+::: tip
+The private key must be converted to a raw PKCS#8 DER file before use, it cannot be a PEM file. If you generated a standard PEM private key, convert it with:
+
+```sh
+openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem -out private.der -nocrypt
+```
+
+Then point `gatein.email.dkim.privateKeyPath` to the resulting `private.der` file.
+:::
+
+::: warning
+Publish a DKIM TXT record for your selector and domain (`<selector>._domainkey.<domain>`) before enabling this feature, otherwise receiving servers will fail to validate the signature.
+:::
+
 ### Changing sender information of email notification
 
 In eXo Platform, email notifications are sent to users when significant actions involving them occur (for example, new users, connection request, space invitation, and more). These emails help them to track of activities taking place in their Digital Workplace.
