@@ -218,6 +218,18 @@ By default, the logout propagation is disabled. To enable it, you can set this p
    exo.oauth.openid.propagate.logout=true
 ```
 
+eXo Platform only accepts a token signature algorithm that the IDP's well-known configuration file actually advertises (`id_token_signing_alg_values_supported`). If that field is missing from the well-known document, eXo Platform falls back to this property, which defaults to `RS256`:
+
+```properties
+   exo.oauth.openid.signature.algorithms=RS256
+```
+
+Several algorithms can be listed, separated by a comma, if the IDP can sign with more than one of them:
+
+```properties
+   exo.oauth.openid.signature.algorithms=RS256,ES256
+```
+
 Restart eXo Platform server. Your users should be able to register or log in with their social network accounts.
 
 ## On-the-fly registration
