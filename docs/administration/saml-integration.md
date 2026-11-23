@@ -156,6 +156,53 @@ and use this command for Windows operating systems:
 start_eXo.bat
 ```
 
+## Keep the portal login page next to the SAML login
+
+By default, once the SAML2 add-on is configured, eXo Platform has no login page of its own: every visitor who needs to sign in is redirected to the IDP, and local passwords cannot be used. From eXo Platform 7.3, the add-on can keep the portal login page and add a **Sign in with SAML** button next to the login form (and next to the other providers, such as OpenID). Nothing changes unless you enable it.
+
+Add these properties to `$PLATFORM_SP/gatein/conf/exo.properties`, in addition to the SAML properties above:
+
+```properties
+gatein.sso.skip.jsp.redirection=false
+gatein.sso.saml.login.page.enabled=true
+gatein.sso.filter.logout.class=org.exoplatform.addons.saml.extensions.HybridSAML2LogoutFilter
+gatein.sso.valve.class=org.exoplatform.addons.saml.extensions.SamlServiceProviderAuthenticator
+# Optional: clients that must use the SAML login
+gatein.sso.saml.login.enforced.ips=10.0.0.0/8, 192.168.1.10, 172.16.5.1-172.16.5.50
+```
+
+| Property | Description |
+|----|----|
+| `gatein.sso.skip.jsp.redirection` | Must be exactly `false`, so that the portal login page is displayed instead of redirecting to the IDP. |
+| `gatein.sso.saml.login.page.enabled` | Displays the SAML button on the login page and enables the list of enforced addresses. `false` by default. |
+| `gatein.sso.filter.logout.class` | Replaces the SAML logout filter of the setup above. The users who signed in with SAML are logged out at the IDP too; the users who signed in with a local password get the regular portal logout (with the stock filter, their logout ends on a blank page and the session stays half closed). `gatein.sso.filter.logout.enabled` must stay `true`. |
+| `gatein.sso.valve.class` | Replaces the SAML valve of the setup above. Used together with the logout filter, it keeps the logout of a SAML user whose portal session expired working, see [Logout of a user whose portal session expired](#logout-of-a-user-whose-portal-session-expired). |
+| `gatein.sso.saml.login.enforced.ips` | Optional. IP addresses, CIDR blocks (`10.0.0.0/8`, `2001:db8::/32`) and ranges (`10.1.1.10-10.1.1.20`), separated by comma, semicolon or space. Host names are not accepted. |
+
+::: warning
+Do not enable the SAML login module of the SSO integration (`gatein.sso.login.module.enabled=true` with `org.gatein.sso.agent.login.SAML2IntegrationLoginModule`) with the login page: this login module refuses the logins that do not come from SAML, so local passwords and OpenID would no longer work. The SAML valve and callback sign the SAML users in without it.
+:::
+
+### Send some clients straight to the IDP
+
+With `gatein.sso.saml.login.enforced.ips`, an anonymous client whose address is listed is redirected to the IDP when it opens the login page or submits a password: it cannot sign in with a local password, and the other clients keep the login page. An address that cannot be parsed is treated as listed. An invalid entry of the list is ignored and logged at error level (the startup log shows `SAML login enforced for the client addresses`), so check that line after a change.
+
+::: warning
+This is not an access control. It does not cover the HTTP Basic and Digest authentication of the REST (`/rest/private`) and WebDAV applications, nor the remember-me cookie sent to the REST endpoints of the other web applications. Block these at the reverse proxy for the networks that must use SAML.
+:::
+
+The address used is the one Tomcat reports for the request. Behind a reverse proxy it is the client address read from `X-Forwarded-For` by the `RemoteIpValve` of the server, when the proxy is one of its trusted proxies (`internalProxies`, every private range by default). With these default settings, a client of a private network can choose the address it is seen with by sending that header: restrict `internalProxies` to your own reverse proxies, otherwise the list can be bypassed. A list that has only IPv4 entries does not match a client that reaches the server over IPv6, and conversely.
+
+### Logout of a user whose portal session expired
+
+The logout filter knows that a user signed in with SAML from a marker stored in the portal session. If this session expires while the user keeps a session in another web application (REST or WebDAV, which also give a session through the `SingleSignOn` valve of Tomcat), Tomcat signs the user back in to a new portal session that has no marker. The logout is then the regular portal logout, the session at the IDP stays open, and the next **Sign in with SAML** needs no password. This is not specific to the login page: any SAML setup whose users keep such a session meets it, and the stock SAML logout filter does not avoid it.
+
+The `gatein.sso.valve.class` and `gatein.sso.filter.logout.class` of the properties above are the pair that closes it: neither works alone. The valve gives the SAML user a principal that the `SingleSignOn` valve keeps, and the logout filter recognizes it. It needs the `SingleSignOn` valve of Tomcat at its default (not `requireReauthentication="true"`). Without the pair, close the browser after logging out on shared computers.
+
+### OpenID next to SAML
+
+The login page can show the OpenID button next to the SAML one. Configure OpenID as described in [OAuth integration](/docs/administration/oauth-integration.md) (`exo.oauth.openid.*`) in addition to the properties above. When the logout is propagated to an OpenID IDP (`exo.oauth.openid.propagate.logout=true`), an OpenID user is logged out at that IDP, and a SAML user at the SAML IDP.
+
 ## Use Another signature algotihm
 To sign assertion, we use RSA256 by default.
 If you want to change this, you can update theses properties :
