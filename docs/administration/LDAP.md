@@ -81,6 +81,7 @@ Name | Description | Value | Default | Example
  exo.ldap.users.attributes.{name}.type | Type of the custom user attribute | `text` | `text` or `binary`
  exo.ldap.users.attributes.{name}.isRequired | Is the attribute required | `false` | `true` or `false`
  exo.ldap.users.attributes.{name}.isMultivalued |  Is the attribute multi-valued | `false` | `true` or   `false`
+ exo.ldap.users.attributes.profilePicture.mapping | Directory attribute holding the user's profile picture (see [How to synchronize the profile picture?](#how-to-synchronize-the-profile-picture)) | `thumbnailPhoto` for AD, `jpegPhoto` for OpenLDAP | Empty (the picture is not synchronized) | `thumbnailPhoto`
  exo.ldap.users.search.scope | Scope of the search for users | `subtree` | `base`,  `one` or `subtree`
  exo.ldap.users.childMembershipAttributeName | LDAP attribute that defines parents of IdentityObject. Used to retrieved relationships from IdentityObject entry. Good example of such attribute in LDAP schema is `memberOf`. | |
   exo.ldap.users.childMembershipAttributeDN | Defines if values of attribute defined in childMembershipAttributeName are fully qualified LDAP DNs. | `true` or `false` | `false`
@@ -430,6 +431,40 @@ These attributes can be retrieved in the Portal User Profile with the Java API:
      String userName = "mary";
      UserProfile userProfile = organizationService.getUserProfileHandler().findUserProfileByName(userName);
      String jobTitle = (String) userProfile.getAttribute("user.jobtitle");          
+```
+
+### How to synchronize the profile picture?
+
+Since eXo Platform 7.3, the picture stored in the directory can become the user's avatar. It is off by default. To turn it on, set the directory attribute that holds the picture in `exo.properties`:
+
+``` properties
+  # Active Directory
+  exo.ldap.users.attributes.profilePicture.mapping=thumbnailPhoto
+  # OpenLDAP
+  # exo.ldap.users.attributes.profilePicture.mapping=jpegPhoto
+```
+
+What happens once it is set:
+
+- The picture is read when the user is synchronized, at sign-in and by the scheduled import (see [Synchronization configuration](#synchronization-configuration)). The scheduled import only handles the users the directory reports as modified since its last successful run.
+- The avatar is replaced only when the picture differs from the current one, so a sign-in does not upload the same picture again. A user without a picture in the directory keeps the current avatar, and removing the picture from the directory does not remove the avatar.
+- Only a JPEG, PNG or GIF of at most 1 MB and 2048 pixels a side is accepted. Any other value (too large, too wide or too tall, another format, a corrupt value) is ignored with a warning in the log, which does not contain the picture, and the avatar is kept.
+- The picture is not stored in the identity tables and it is not a profile field: it only becomes the avatar.
+
+Two points to check on a non-default setup:
+
+- `jpegPhoto`, `thumbnailPhoto` and `photo` are returned as binary by the JDK. Another attribute is read as text unless it is declared binary to JNDI with the system property `java.naming.ldap.attributes.binary`, and a text value is ignored with a warning.
+- The `profilePicture` attribute is declared in the files `picketlink-idm-ldap-config.xml` and `picketlink-idm-msad-config.xml` shipped with the platform. If your deployment uses its own copy of one of these files, add the block below to the `attributes` section of its USER identity object type, otherwise the property has no effect:
+
+``` xml
+ <attribute>
+     <name>profilePicture</name>
+     <mapping>${exo.ldap.users.attributes.profilePicture.mapping:}</mapping>
+     <type>text</type>
+     <isRequired>false</isRequired>
+     <isMultivalued>false</isMultivalued>
+     <isReadOnly>false</isReadOnly>
+ </attribute>
 ```
 
 ### How to map multiple DNs for groups?
