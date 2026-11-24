@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[64],{401:function(t,e,n){"use strict";n.r(e);var s=n(13),l=Object(s.a)({},(function(){var t=this._self._c;return t("ContentSlotsDistributor",{attrs:{"slot-key":this.$parent.slotKey}},[t("OpenApi",{attrs:{page:"wallet_swagger"}})],1)}),[],!1,null,null,null);e.default=l.exports}}]);

@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[59],{396:function(t,e,s){"use strict";s.r(e);var n=s(13),r=Object(n.a)({},(function(){var t=this._self._c;return t("ContentSlotsDistributor",{attrs:{"slot-key":this.$parent.slotKey}},[t("OpenApi",{attrs:{page:"perk-store_swagger"}})],1)}),[],!1,null,null,null);e.default=r.exports}}]);

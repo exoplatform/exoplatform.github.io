@@ -1,0 +1,34 @@
+# eXo Platform Documentation
+
+> eXo Platform is an open-source digital workplace software that helps people work together, spanning communication, collaboration, knowledge management, and productivity. This site hosts the official developer, administrator, and user documentation for eXo Platform.
+
+This documentation is intended primarily for developers building extensions and integrations on eXo Platform, as well as administrators and end users of the platform.
+
+## Getting Started
+- [Introduction](https://docs.exoplatform.org/guide/getting-started/Introduction.html): Overview of eXo Platform, its editions, and what the documentation covers
+- [Start eXo community](https://docs.exoplatform.org/guide/getting-started/start-community.html): System requirements, prerequisites, and instructions to start the eXo Platform community edition (Docker-based setup)
+
+## User and Administrator Guides
+- [User and Administrator guides](https://docs.exoplatform.org/guide/): Documentation for using and administrating eXo Platform, packaged within the platform itself
+
+## Developer Guide
+- [Developer guide overview](https://docs.exoplatform.org/guide/developer-guide/): High-level tour of eXo Platform architecture and capabilities for developers
+- [Getting started](https://docs.exoplatform.org/guide/developer-guide/getting-started.html): Setting up Maven, GIT, and the eXo Platform Maven repository for extension development
+- Prepare extension project: First steps to set up an eXo Platform extension project
+- [Simple Integration](https://docs.exoplatform.org/guide/developer-guide/): Basic customization capabilities (look and feel, templates, pages, navigation, content)
+- [Intermediate Integration](https://docs.exoplatform.org/guide/developer-guide/intermediate-integration/): Building and integrating applications, including portlets and gadgets
+  - [Develop a front end application](https://docs.exoplatform.org/guide/developer-guide/intermediate-integration/front-end-application): Building portlets with JSP, JSF, Spring MVC, or JS frameworks (Angular, React, VueJS); project structure, REST services, deployment
+- REST API: Reference for eXo Platform's REST APIs
+- Miscellaneous: Additional developer topics
+- Product reference: Reference documentation for eXo Platform components
+- Internationalization configuration: Configuring i18n support
+- Developing JavaScript: Guidance for JavaScript development within eXo Platform
+
+## Optional
+- [eXo Platform website](https://www.exoplatform.com/): Official eXo Platform product website
+- [eXo Platform blog](https://www.exoplatform.com/blog/): News, updates, and articles about eXo Platform
+- [eXo Platform GitHub organization](https://github.com/exoplatform/): Source code repositories for eXo Platform and its modules
+- [eXo Platform Maven repository](https://repository.exoplatform.org/): Maven repository for eXo Platform artifacts
+- [eXo Community](https://community.exoplatform.com/portal/intranet/): eXo Tribe community labs platform to test and demo the latest lab version of eXo Platform
+- [Try eXo](https://trial.exoplatform.org/portal/login): Start a free hosted trial of eXo Platform
+- [eXo Hubs registration](https://hubs.exoplatform.org/portal/register): Register for eXo Hubs
