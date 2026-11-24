@@ -1,1 +1,1 @@
-<OpenApi page="addons_onlyoffice_swagger"/>
+<OpenApi page="onlyoffice_swagger"/>

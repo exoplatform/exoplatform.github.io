@@ -1,57 +1,60 @@
 openapi: 3.0.1
-info:
-  title: Agenda Rest APIs
-  description: Agenda addon Rest endpoints
-  license:
-    name: AGPL
-    url: https://www.gnu.org/licenses/agpl-3.0.en.html
-  version: "1.0"
 tags:
-- name: /v1/agenda/calendars
-  description: Manages agenda calendars associated to users and spaces
-- name: /v1/agenda/events
-  description: Manages agenda events associated to users and spaces
-- name: /v1/agenda/settings
-  description: Manages agenda settings associated to users
+  - name: /v1/agenda/calendars
+    description: Manages agenda calendars associated to users and spaces
+  - name: /v1/agenda/events
+    description: Manages agenda events associated to users and spaces
+  - name: /v1/agenda/settings
+    description: Manages agenda settings associated to users
+  - name: availability
+    description: Reads the busy time of the people a meeting is being scheduled with
+  - name: calendar-link
+    description: Private read-only iCal links of calendars
+  - name: calendar-share
+    description: Personal calendars shared with colleagues
+  - name: calendar-subscription
+    description: Subscriptions to calendar links (iCal / webcal)
+  - name: event-attendees
+    description: Participant lists of agenda events
+  - name: events
+    description: Agenda events
 paths:
-  /v1/agenda/calendars:
+  /rest/v1/agenda/calendars:
     get:
       tags:
-      - /v1/agenda/calendars
+        - /v1/agenda/calendars
       summary: Retrieves the list of calendars
-      description: "Retrieves the list of calendars available for an owner of type\
-        \ user or space, identitifed by its identity technical identifier. If no designated\
-        \ owner, all calendars available for authenticated user will be retrieved."
+      description: "Retrieves the list of calendars available for an owner of type user or space, identitifed by its identity technical identifier. If no designated owner, all calendars available for authenticated user will be retrieved."
       operationId: list
       parameters:
-      - name: ownerIds
-        in: query
-        description: Limit of calendar owner identity ids to incluse in results
-        schema:
-          type: array
-          items:
+        - name: ownerIds
+          in: query
+          description: Limit of calendar owner identity ids to incluse in results
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: returnSize
+          in: query
+          description: Whether return size of results or not
+          schema:
+            type: boolean
+            default: false
+        - name: offset
+          in: query
+          description: Offset of result
+          schema:
             type: integer
-            format: int64
-      - name: returnSize
-        in: query
-        description: Whether return size of results or not
-        schema:
-          type: boolean
-          default: false
-      - name: offset
-        in: query
-        description: Offset of result
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: limit
-        in: query
-        description: Limit of result
-        schema:
-          type: integer
-          format: int32
-          default: 10
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: Limit of result
+          schema:
+            type: integer
+            format: int32
+            default: 10
       responses:
         "200":
           description: Request fulfilled
@@ -61,7 +64,7 @@ paths:
           description: Internal server error
     put:
       tags:
-      - /v1/agenda/calendars
+        - /v1/agenda/calendars
       summary: Updates an existing calendar
       description: Updates an existing calendar
       operationId: updateCalendar
@@ -70,7 +73,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CalendarEntity'
+              $ref: "#/components/schemas/CalendarEntity"
         required: true
       responses:
         "204":
@@ -83,7 +86,7 @@ paths:
           description: Internal server error
     post:
       tags:
-      - /v1/agenda/calendars
+        - /v1/agenda/calendars
       summary: Creates a new calendar
       description: Creates a new calendar
       operationId: createCalendar
@@ -92,10 +95,34 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CalendarEntity'
+              $ref: "#/components/schemas/CalendarEntity"
         required: true
       responses:
         "204":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/calendars/{calendarId}:
+    get:
+      tags:
+        - /v1/agenda/calendars
+      summary: Retrieves a calendar identified by its technical identifier
+      description: Retrieves a calendar identified by its technical identifier
+      operationId: getCalendarById
+      parameters:
+        - name: calendarId
+          in: path
+          description: Calendar technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
           description: Request fulfilled
         "400":
           description: Invalid query input
@@ -105,18 +132,18 @@ paths:
           description: Internal server error
     delete:
       tags:
-      - /v1/agenda/calendars
+        - /v1/agenda/calendars
       summary: Deletes an existing calendar
-      description: Deletes an existing calendar
+      description: Deletes an existing user calendar after moving its events to the owner's default calendar. System (default) calendars can't be deleted.
       operationId: deleteCalendar
       parameters:
-      - name: calendarId
-        in: path
-        description: Calendar technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: calendarId
+          in: path
+          description: Calendar technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "204":
           description: Request fulfilled
@@ -126,97 +153,91 @@ paths:
           description: Invalid query input
         "500":
           description: Internal server error
-  /v1/agenda/calendars/{calendarId}:
+  /rest/v1/agenda/events:
     get:
       tags:
-      - /v1/agenda/calendars
-      summary: Retrieves a calendar identified by its technical identifier
-      description: Retrieves a calendar identified by its technical identifier
-      operationId: getCalendarById
-      parameters:
-      - name: calendarId
-        in: path
-        description: Calendar technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
-  /v1/agenda/events:
-    get:
-      tags:
-      - /v1/agenda/events
-      summary: Retrieves the list of events available for an owner of type user or
-        space
-      description: "Retrieves the list of events available for an owner of type user\
-        \ or space, identitifed by its identity technical identifier. If no designated\
-        \ owner, all events available for authenticated user will be retrieved."
+        - /v1/agenda/events
+      summary: Retrieves the list of events available for an owner of type user or space
+      description: "Retrieves the list of events available for an owner of type user or space, identitifed by its identity technical identifier. If no designated owner, all events available for authenticated user will be retrieved."
       operationId: getEvents
       parameters:
-      - name: ownerIds
-        in: query
-        description: Identity technical identifiers of calendar owners
-        schema:
-          type: array
-          items:
+        - name: ownerIds
+          in: query
+          description: Identity technical identifiers of calendar owners
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: attendeeIdentityId
+          in: query
+          description: Attendee identity identifier to filter on events where user is attendee
+          required: true
+          schema:
             type: integer
             format: int64
-      - name: attendeeIdentityId
-        in: query
-        description: Attendee identity identifier to filter on events where user is
-          attendee
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: expand
-        in: query
-        description: Properties to expand
-        schema:
-          type: string
-      - name: start
-        in: query
-        description: Start datetime using RFC-3339 representation
-        required: true
-        schema:
-          type: string
-      - name: end
-        in: query
-        description: End datetime using RFC-3339 representation
-        schema:
-          type: string
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: "Limit of results to return, used only when end date isn't set"
-        schema:
-          type: integer
-          format: int32
-          default: 10
-      - name: responseTypes
-        in: query
-        description: Attendee Response statuses to filter events by attendee response
-        schema:
-          type: array
-          items:
+        - name: expand
+          in: query
+          description: Properties to expand
+          schema:
             type: string
-            enum:
-            - NEEDS_ACTION
-            - ACCEPTED
-            - DECLINED
-            - TENTATIVE
+        - name: start
+          in: query
+          description: Start datetime using RFC-3339 representation
+          required: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          description: End datetime using RFC-3339 representation
+          schema:
+            type: string
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: "Maximum number of events to return. Honoured whenever it is greater than zero, including when an end date is set: the response is then capped at this many events inside the requested period. Omit it, or pass zero, to get every event of the period."
+          schema:
+            type: integer
+            format: int32
+            default: 10
+        - name: responseTypes
+          in: query
+          description: Attendee Response statuses to filter events by attendee response
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - NEEDS_ACTION
+                - ACCEPTED
+                - DECLINED
+                - TENTATIVE
+                - WAITING
+        - name: excludedCalendarIds
+          in: query
+          description: "Technical identifiers of the calendars whose events must be left out of the results, whatever the selected owners bring in. Every personal calendar of a user shares the user identity as owner, so ownerIds alone cannot express a selection inside them."
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: calendarIds
+          in: query
+          description: "Technical identifiers of the calendars other users shared with the authenticated user, whose events are wanted on top of the owner selection (EXO-90357). Each is checked against the user; a calendar they may not read refuses the whole request."
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: includeSubscribedCalendars
+          in: query
+          description: "With an attendee, also reads the calendars subscribed by the owners of this listing (EXO-90373), whatever the response types: their events carry no attendee row. Defaults to false: they are left out."
+          schema:
+            type: boolean
       responses:
         "200":
           description: Request fulfilled
@@ -226,22 +247,28 @@ paths:
           description: Internal server error
     put:
       tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
       summary: Update an existing event
       description: Update an existing event
       operationId: updateEvent
       parameters:
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+        - name: confirmClose
+          in: query
+          description: Whether the user confirmed that closing the event removes its capacity limit and confirms its waiting list
+          schema:
+            type: boolean
+            default: false
       requestBody:
         description: Event object to update
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventEntity'
+              $ref: "#/components/schemas/EventEntity"
         required: true
       responses:
         "204":
@@ -256,22 +283,28 @@ paths:
           description: Internal server error
     post:
       tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
       summary: Create a new event
       description: Create a new event
       operationId: createEvent
       parameters:
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+        - name: confirmClose
+          in: query
+          description: "Whether the user confirmed closing the date of a series saved, while people are waiting for a seat"
+          schema:
+            type: boolean
+            default: false
       requestBody:
         description: Event object to create
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventEntity'
+              $ref: "#/components/schemas/EventEntity"
         required: true
       responses:
         "204":
@@ -282,275 +315,36 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/events/datePolls:
+  /rest/v1/agenda/events/{eventId}:
     get:
       tags:
-      - /v1/agenda/events
-      summary: Retrieves the list of pending date polls for currently authenticated
-        user
-      description: Retrieves the list of pending date polls for currently authenticated
-        user.
-      operationId: getDatePolls
-      parameters:
-      - name: ownerIds
-        in: query
-        description: Identity technical identifiers of calendar owners
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: limit
-        in: query
-        description: Limit of results to return
-        schema:
-          type: integer
-          format: int32
-      - name: start
-        in: query
-        description: Start datetime using RFC-3339 representation
-        required: true
-        schema:
-          type: string
-      - name: end
-        in: query
-        description: End datetime using RFC-3339 representation
-        schema:
-          type: string
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
-      - name: expand
-        in: query
-        description: Properties to expand
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Request fulfilled
-        "403":
-          description: Forbidden operation
-        "500":
-          description: Internal server error
-  /v1/agenda/events/ics:
-    get:
-      tags:
-      - /v1/agenda/events
-      summary: Returns the ICS file generated from this event
-      description: Returns the ICS file generated from this event.
-      operationId: getICSOfEvent
-      parameters:
-      - name: eventId
-        in: query
-        description: The event Id
-        schema:
-          type: integer
-          format: int64
-      - name: timeZoneId
-        in: query
-        description: the timezone ID of the target user
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query parameters
-        "500":
-          description: Internal server error
-  /v1/agenda/events/occurrence/{parentEventId}/{occurrenceId}:
-    get:
-      tags:
-      - /v1/agenda/events
-      summary: Retrieves an event identified by its technical identifier
-      description: Retrieves an event identified by its technical identifier
-      operationId: getEventOccurrence
-      parameters:
-      - name: parentEventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: occurrenceId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: string
-      - name: expand
-        in: query
-        description: Properties to expand
-        schema:
-          type: string
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
-  /v1/agenda/events/pending:
-    get:
-      tags:
-      - /v1/agenda/events
-      summary: Retrieves the list of pending events for currently authenticated user
-      description: Retrieves the list of pending events for currently authenticated
-        user.
-      operationId: getPendingEvents
-      parameters:
-      - name: ownerIds
-        in: query
-        description: Identity technical identifiers of calendar owners
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: limit
-        in: query
-        description: Limit of results to return
-        schema:
-          type: integer
-          format: int32
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
-      - name: expand
-        in: query
-        description: Properties to expand
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Request fulfilled
-        "403":
-          description: Forbidden operation
-        "500":
-          description: Internal server error
-  /v1/agenda/events/search:
-    get:
-      tags:
-      - /v1/agenda/events
-      summary: Search the list of events available with query for an owner of type
-        user or space
-      description: "Search the list of events available with query for an owner of\
-        \ type user or space, identified by its identity technical identifier. If\
-        \ no designated owner, all events available for authenticated user will be\
-        \ retrieved."
-      operationId: search
-      parameters:
-      - name: query
-        in: query
-        description: Term to search
-        required: true
-        schema:
-          type: string
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
-      - name: expand
-        in: query
-        description: Properties to expand
-        schema:
-          type: string
-      - name: spaceId
-        in: query
-        description: Space identifier used to search event
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      - name: sortField
-        in: query
-        description: Sort filed
-        schema:
-          type: string
-      - name: sortDirection
-        in: query
-        description: Sort order (asc or desc)
-        schema:
-          type: string
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: limit
-        in: query
-        description: Limit
-        schema:
-          type: integer
-          format: int32
-          default: 20
-      responses:
-        "200":
-          description: Request fulfilled
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
-  /v1/agenda/events/{eventId}:
-    get:
-      tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
       summary: Retrieves an event identified by its technical identifier
       description: Retrieves an event identified by its technical identifier
       operationId: getEventById
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: expand
-        in: query
-        description: Properties to expand
-        schema:
-          type: string
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
-      - name: firstOccurrence
-        in: query
-        description: Whether to retrieve first occurrence or not
-        schema:
-          type: boolean
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: expand
+          in: query
+          description: Properties to expand
+          schema:
+            type: string
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+        - name: firstOccurrence
+          in: query
+          description: Whether to retrieve first occurrence or not
+          schema:
+            type: boolean
       responses:
         "200":
           description: Request fulfilled
@@ -562,29 +356,28 @@ paths:
           description: Internal server error
     delete:
       tags:
-      - /v1/agenda/events
-      summary: Delete an existing event or delay deleting an existing event with a
-        fixed period.
+        - /v1/agenda/events
+      summary: Delete an existing event or delay deleting an existing event with a fixed period.
       operationId: deleteEvent
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: delay
-        in: query
-        description: Time to effectively delete event
-        schema:
-          type: integer
-          format: int64
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: delay
+          in: query
+          description: Time to effectively delete event
+          schema:
+            type: integer
+            format: int64
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
       responses:
         "200":
           description: Request fulfilled
@@ -598,71 +391,199 @@ paths:
           description: Internal server error
     patch:
       tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
       summary: Update an attribute of an existing event
       description: Update an attribute of an existing event
       operationId: updateEventFields
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: updateAllOccurrences
-        in: query
-        description: Update all event occurrences or only parent occurrence
-        schema:
-          type: boolean
-          default: false
-      - name: sendInvitations
-        in: query
-        description: Whether notify attendees about the modification or not
-        schema:
-          type: boolean
-          default: false
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: updateAllOccurrences
+          in: query
+          description: Update all event occurrences or only parent occurrence
+          schema:
+            type: boolean
+            default: false
+        - name: sendInvitations
+          in: query
+          description: Whether notify attendees about the modification or not
+          schema:
+            type: boolean
+            default: false
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+        - name: confirmClose
+          in: query
+          description: Whether the user confirmed that closing the event removes its capacity limit and confirms its waiting list
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: Request fulfilled
         "404":
           description: Object not found
         "400":
+          description: "Invalid query input: unsupported field, or a value the event's invariants refuse. The body carries the message code; a limit of a series below the Yes answers of one of its dates is answered with an object carrying the code and that date"
+        "403":
+          description: Forbidden operation
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/events/{eventId}/votes/{dateOptionId}:
+    post:
+      tags:
+        - /v1/agenda/events
+      summary: Registers voted date poll option for currently authenticated user
+      description: Registers voted date poll option for currently authenticated user
+      operationId: voteEventDateOption
+      parameters:
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dateOptionId
+          in: path
+          description: Event date option technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
           description: Invalid query input
+        "403":
+          description: Forbidden operation
         "401":
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/events/{eventId}/exceptionalOccurrences:
+    delete:
+      tags:
+        - /v1/agenda/events
+      summary: Dismisses vote on date poll option for currently authenticated user
+      description: Dismisses vote on date poll option for currently authenticated user
+      operationId: dismissEventDateOption
+      parameters:
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dateOptionId
+          in: path
+          description: Event date option technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "403":
+          description: Forbidden operation
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/events/datePolls:
     get:
       tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
+      summary: Retrieves the list of pending date polls for currently authenticated user
+      description: Retrieves the list of pending date polls for currently authenticated user.
+      operationId: getDatePolls
+      parameters:
+        - name: ownerIds
+          in: query
+          description: Identity technical identifiers of calendar owners
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: Limit of results to return
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: Start datetime using RFC-3339 representation
+          required: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          description: End datetime using RFC-3339 representation
+          schema:
+            type: string
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+        - name: expand
+          in: query
+          description: Properties to expand
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "403":
+          description: Forbidden operation
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/events/{eventId}/exceptionalOccurrences:
+    get:
+      tags:
+        - /v1/agenda/events
       summary: Retrieves the list of exceptional occurrences of an event
       description: Retrieves the list of exceptional occurrences of an event
       operationId: getEventExceptionalOccurrences
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: expand
-        in: query
-        description: Properties to expand
-        schema:
-          type: string
-      - name: timeZoneId
-        in: query
-        description: IANA Time zone identitifer
-        schema:
-          type: string
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: expand
+          in: query
+          description: Properties to expand
+          schema:
+            type: string
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
       responses:
         "200":
           description: Request fulfilled
@@ -670,23 +591,63 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/events/{eventId}/reminders:
+  /rest/v1/agenda/events/occurrence/{parentEventId}/{occurrenceId}:
     get:
       tags:
-      - /v1/agenda/events
-      summary: Retrieve preferred reminders for currently authenticated user for an
-        event
-      description: Retrieve preferred reminders for currently authenticated user for
-        an event identified by its technical identifier.
+        - /v1/agenda/events
+      summary: "Retrieves an occurrence of a recurring event, identified by the parent event identifier and the occurrence date"
+      description: "Retrieves an occurrence of a recurring event, identified by the parent event identifier and the occurrence date. The caller must be able to access the occurrence served: a stored exceptional occurrence is checked against its own row (member of the calendar owner, or attendee of that date), a computed occurrence against its series. 403 otherwise."
+      operationId: getEventOccurrence
+      parameters:
+        - name: parentEventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: occurrenceId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: string
+        - name: expand
+          in: query
+          description: Properties to expand
+          schema:
+            type: string
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "403":
+          description: "Forbidden operation: the caller can't access the parent event"
+        "404":
+          description: Event not found
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/events/{eventId}/reminders:
+    get:
+      tags:
+        - /v1/agenda/events
+      summary: Retrieve preferred reminders for currently authenticated user for an event
+      description: Retrieve preferred reminders for currently authenticated user for an event identified by its technical identifier.
       operationId: getEventRemindersById
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: Request fulfilled
@@ -698,41 +659,38 @@ paths:
           description: Internal server error
     put:
       tags:
-      - /v1/agenda/events
-      summary: Update the list of preferred reminders for authenticated user on a
-        selected event.
-      description: Update the list of preferred reminders for authenticated user on
-        a selected event
+        - /v1/agenda/events
+      summary: Update the list of preferred reminders for authenticated user on a selected event.
+      description: Update the list of preferred reminders for authenticated user on a selected event
       operationId: saveEventReminders
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: occurrenceId
-        in: query
-        description: Event occurrence identifier
-        required: true
-        schema:
-          type: string
-      - name: upcoming
-        in: query
-        description: Whether apply on Event occurrence and its upcoming or not
-        required: true
-        schema:
-          type: boolean
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: occurrenceId
+          in: query
+          description: Event occurrence identifier
+          required: true
+          schema:
+            type: string
+        - name: upcoming
+          in: query
+          description: Whether apply on Event occurrence and its upcoming or not
+          required: true
+          schema:
+            type: boolean
       requestBody:
-        description: List of reminders to store on event for currently authenticated
-          user
+        description: List of reminders to store on event for currently authenticated user
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/EventReminder'
+                $ref: "#/components/schemas/EventReminder"
         required: true
       responses:
         "204":
@@ -743,121 +701,238 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/events/{eventId}/response:
+  /rest/v1/agenda/events/{eventId}/response:
     get:
       tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
       summary: Retrieves currently authenticated user response to an event
-      description: Retrieves currently authenticated (using token or effectively authenticated)
-        user response to an event.
+      description: "Retrieves currently authenticated (using token or effectively authenticated) user response to an event. An invited attendee may always read it; on an open event, so may any user who can access it."
       operationId: getEventResponse
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: occurrenceId
-        in: query
-        description: Event occurrence identifier
-        schema:
-          type: string
-      - name: token
-        in: query
-        description: 'User token to '
-        schema:
-          type: string
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: occurrenceId
+          in: query
+          description: Event occurrence identifier
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: 'User token to '
+          schema:
+            type: string
       responses:
         "200":
           description: Request fulfilled
         "400":
           description: Invalid query input
         "403":
-          description: Forbidden operation
-        "401":
-          description: Unauthorized operation
+          description: "Forbidden operation: not an attendee, and the event isn't open to the caller, or the caller could not be identified from the token"
+        "404":
+          description: Event not found
         "500":
           description: Internal server error
-  /v1/agenda/events/{eventId}/response/send:
+  /rest/v1/agenda/events/ics:
     get:
       tags:
-      - /v1/agenda/events
-      summary: Send event invitation response for currently authenticated user
-      description: Send event invitation response for currently authenticated user
-        (using token or effectively authenticated)
-      operationId: sendEventResponse
+        - /v1/agenda/events
+      summary: Returns the ICS file generated from this event
+      description: Returns the ICS file generated from this event.
+      operationId: getICSOfEvent
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: occurrenceId
-        in: query
-        description: Event occurrence identifier
-        schema:
-          type: string
-      - name: response
-        in: query
-        description: "Response to event invitation. Possible values: ACCEPTED, DECLINED\
-          \ or TENTATIVE."
-        required: true
-        schema:
-          type: string
-      - name: upcoming
-        in: query
-        description: Whether apply response on upcoming event of a recurrent event
-          or not
-        schema:
-          type: boolean
-      - name: token
-        in: query
-        description: User token used to identify user and his response to apply new
-          reponse even when user is not authenticated
-        schema:
-          type: string
-      - name: redirect
-        in: query
-        description: Whether redirect to Event details after applying new response
-          or not
-        schema:
-          type: boolean
-          default: false
+        - name: eventId
+          in: query
+          description: The event Id
+          schema:
+            type: integer
+            format: int64
+        - name: timeZoneId
+          in: query
+          description: the timezone ID of the target user
+          schema:
+            type: string
       responses:
-        "204":
+        "200":
           description: Request fulfilled
         "400":
-          description: Invalid query input
+          description: Invalid query parameters
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/events/pending:
+    get:
+      tags:
+        - /v1/agenda/events
+      summary: Retrieves the list of pending events for currently authenticated user
+      description: Retrieves the list of pending events for currently authenticated user.
+      operationId: getPendingEvents
+      parameters:
+        - name: ownerIds
+          in: query
+          description: Identity technical identifiers of calendar owners
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: Limit of results to return
+          schema:
+            type: integer
+            format: int32
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+        - name: expand
+          in: query
+          description: Properties to expand
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "403":
+          description: Forbidden operation
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/events/{eventId}/exceptionalOccurrences/move:
+    post:
+      tags:
+        - /v1/agenda/events
+      summary: Moves the exceptional occurrences of a recurring event dated from a day on under another recurring event
+      description: "The second half of a 'this and upcoming' split: the dates the organiser had customised from the split day on move under the series that continues the first one, and are merged into it as a series change merges them — what was customised on a date is kept, what was not follows the new series, a day the new series does not produce is dropped. Called after the continuing series is created and before the first series is shortened"
+      operationId: moveEventExceptionalOccurrences
+      parameters:
+        - name: eventId
+          in: path
+          description: Technical identifier of the recurring event the rows belong to
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: toEventId
+          in: query
+          description: Technical identifier of the recurring event they move under
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: from
+          in: query
+          description: "First day moved, inclusive, as an RFC 3339 date-time"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Request fulfilled: the identifiers of the rows moved and kept"
+        "400":
+          description: "Invalid query input: a missing or malformed parameter, two events a split cannot join, or a person from outside the platform the merge would leave on an open date. The body carries the message code"
+        "403":
+          description: Forbidden operation
+        "404":
+          description: Object not found
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/events/search:
+    get:
+      tags:
+        - /v1/agenda/events
+      summary: Search the list of events available with query for an owner of type user or space
+      description: "Search the list of events available with query for an owner of type user or space, identified by its identity technical identifier. If no designated owner, all events available for authenticated user will be retrieved."
+      operationId: search
+      parameters:
+        - name: query
+          in: query
+          description: Term to search
+          required: true
+          schema:
+            type: string
+        - name: timeZoneId
+          in: query
+          description: IANA Time zone identitifer
+          schema:
+            type: string
+        - name: expand
+          in: query
+          description: Properties to expand
+          schema:
+            type: string
+        - name: spaceId
+          in: query
+          description: Space identifier used to search event
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: sortField
+          in: query
+          description: Sort filed
+          schema:
+            type: string
+        - name: sortDirection
+          in: query
+          description: Sort order (asc or desc)
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: Limit
+          schema:
+            type: integer
+            format: int32
+            default: 20
+      responses:
+        "200":
+          description: Request fulfilled
         "401":
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/events/{eventId}/selectDateOption/{dateOptionId}:
+  /rest/v1/agenda/events/{eventId}/selectDateOption/{dateOptionId}:
     post:
       tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
       summary: Select an Date Option for an event having multiple dates options
       description: Select an Date Option for an event having multiple dates options
       operationId: selectEventDateOption
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: dateOptionId
-        in: path
-        description: Event date option technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dateOptionId
+          in: path
+          description: Event date option technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "204":
           description: Request fulfilled
@@ -869,21 +944,76 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/events/{eventId}/undoDelete:
+  /rest/v1/agenda/events/{eventId}/response/send:
+    get:
+      tags:
+        - /v1/agenda/events
+      summary: Send event invitation response for currently authenticated user
+      description: "Send event invitation response for currently authenticated user (using token or effectively authenticated). An invited attendee may always answer; on an open event, so may any user who can access it."
+      operationId: sendEventResponse
+      parameters:
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: occurrenceId
+          in: query
+          description: Event occurrence identifier
+          schema:
+            type: string
+        - name: response
+          in: query
+          description: "Response to event invitation. Possible values: ACCEPTED, DECLINED, TENTATIVE or WAITING, which asks for a seat as ACCEPTED does."
+          required: true
+          schema:
+            type: string
+        - name: upcoming
+          in: query
+          description: Whether apply response on upcoming event of a recurrent event or not
+          schema:
+            type: boolean
+        - name: token
+          in: query
+          description: User token used to identify user and his response to apply new reponse even when user is not authenticated
+          schema:
+            type: string
+        - name: redirect
+          in: query
+          description: Whether redirect to Event details after applying new response or not
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: "Request fulfilled: without redirect, the answer stored at the date answered and the first date of a series it left waiting, in JSON; with a redirect, answer acknowledged by an HTML page shown to an external attendee"
+        "400":
+          description: Invalid query input
+        "403":
+          description: "Forbidden operation: not an attendee, and the event isn't open to the caller, or the caller could not be identified from the token"
+        "404":
+          description: Event not found
+        "410":
+          description: "The invitation link has expired: the meeting it answers is over"
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/events/{eventId}/undoDelete:
     post:
       tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
       summary: Undo deleting event if not yet effectively deleted
       description: Undo deleting event if not yet effectively deleted
       operationId: undoDeleteEvent
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "204":
           description: Request fulfilled
@@ -895,21 +1025,21 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/events/{eventId}/votes:
+  /rest/v1/agenda/events/{eventId}/votes:
     post:
       tags:
-      - /v1/agenda/events
+        - /v1/agenda/events
       summary: Registers voted date poll options for currently authenticated user
       description: Registers voted date poll options for currently authenticated user
       operationId: voteEvent
       parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: eventId
+          in: path
+          description: Event technical identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -933,114 +1063,19 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/events/{eventId}/votes/{dateOptionId}:
-    post:
-      tags:
-      - /v1/agenda/events
-      summary: Registers voted date poll option for currently authenticated user
-      description: Registers voted date poll option for currently authenticated user
-      operationId: voteEventDateOption
-      parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: dateOptionId
-        in: path
-        description: Event date option technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "204":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "403":
-          description: Forbidden operation
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
+  /rest/v1/agenda/settings/connector:
     delete:
       tags:
-      - /v1/agenda/events
-      summary: Dismisses vote on date poll option for currently authenticated user
-      description: Dismisses vote on date poll option for currently authenticated
-        user
-      operationId: dismissEventDateOption
-      parameters:
-      - name: eventId
-        in: path
-        description: Event technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: dateOptionId
-        in: path
-        description: Event date option technical identifier
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "204":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "403":
-          description: Forbidden operation
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
-  /v1/agenda/settings:
-    get:
-      tags:
-      - /v1/agenda/settings
-      summary: Get User agenda settings
-      operationId: getUserSettings
-      responses:
-        "200":
-          description: Request fulfilled
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
-    put:
-      tags:
-      - /v1/agenda/settings
-      summary: Saves agenda settings for authenticated user
-      description: Saves agenda settings for authenticated user
-      operationId: saveUserSettings
-      requestBody:
-        description: User agenda settings to update
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AgendaUserSettings'
-        required: true
-      responses:
-        "204":
-          description: Request fulfilled
-        "400":
-          description: Bad request
-        "401":
-          description: Unauthorized operation
-        "500":
-          description: Internal server error
-  /v1/agenda/settings/connector:
-    delete:
-      tags:
-      - /v1/agenda/settings
+        - /v1/agenda/settings
       summary: Deletes agenda connector settings for authenticated user
       description: Deletes agenda connector settings for authenticated user
       operationId: deleteUserConnectorSettings
+      parameters:
+        - name: connectorName
+          in: query
+          description: "Remote connector name of the account to disconnect; when absent, every connected account is disconnected"
+          schema:
+            type: string
       responses:
         "204":
           description: Request fulfilled
@@ -1052,7 +1087,7 @@ paths:
           description: Internal server error
     patch:
       tags:
-      - /v1/agenda/settings
+        - /v1/agenda/settings
       summary: Saves agenda connector settings for authenticated user
       description: Saves agenda connector settings for authenticated user
       operationId: saveUserConnectorSettings
@@ -1061,8 +1096,8 @@ paths:
           '*/*':
             schema:
               required:
-              - connectorName
-              - connectorUserId
+                - connectorName
+                - connectorUserId
               type: object
               properties:
                 connectorName:
@@ -1080,22 +1115,129 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/settings/connector/apiKey:
+  /rest/v1/agenda/settings/availabilitySharing:
+    get:
+      tags:
+        - /v1/agenda/settings
+      summary: Gets how widely the authenticated user shares their busy time
+      description: "Returns the authenticated user's own choice only. It never reports anyone else's, and it discloses no calendar content."
+      operationId: getAvailabilitySharing
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+    patch:
+      tags:
+        - /v1/agenda/settings
+      summary: Saves how widely the authenticated user shares their busy time
+      description: Accepts 'shared-spaces' (the default) or 'nobody'. Applies to the authenticated user only.
+      operationId: saveAvailabilitySharing
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              required:
+                - shareAvailability
+              type: object
+              properties:
+                shareAvailability:
+                  type: string
+                  description: "One of: shared-spaces, nobody"
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/settings:
+    get:
+      tags:
+        - /v1/agenda/settings
+      summary: Get User agenda settings
+      operationId: getUserSettings
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+    put:
+      tags:
+        - /v1/agenda/settings
+      summary: Saves agenda settings for authenticated user
+      description: Saves agenda settings for authenticated user
+      operationId: saveUserSettings
+      requestBody:
+        description: User agenda settings to update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgendaUserSettings"
+        required: true
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/settings/embedMapProvider:
+    delete:
+      tags:
+        - /v1/agenda/settings
+      summary: Removes the globally configured embed map provider
+      operationId: removeEmbedMapProvider
+      responses:
+        "204":
+          description: Request fulfilled
+        "500":
+          description: Internal server error
+    patch:
+      tags:
+        - /v1/agenda/settings
+      summary: Saves the embed map provider to use globally
+      operationId: saveEmbedMapProvider
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              required:
+                - providerId
+              type: object
+              properties:
+                providerId:
+                  type: string
+                  description: Map provider id
+      responses:
+        "204":
+          description: Request fulfilled
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+  /rest/v1/agenda/settings/connector/apiKey:
     post:
       tags:
-      - /v1/agenda/settings
-      summary: Saves agenda connector Client API Key that will be accessible by all
-        users to access connector remote API
-      description: Saves agenda connector Client API Key that will be accessible by
-        all users to access connector remote API
+        - /v1/agenda/settings
+      summary: Saves agenda connector Client API Key that will be accessible by all users to access connector remote API
+      description: Saves agenda connector Client API Key that will be accessible by all users to access connector remote API
       operationId: saveRemoteProviderApiKey
       requestBody:
         content:
           '*/*':
             schema:
               required:
-              - apiKey
-              - connectorName
+                - apiKey
+                - connectorName
               type: object
               properties:
                 connectorName:
@@ -1113,22 +1255,20 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/settings/connector/secretKey:
+  /rest/v1/agenda/settings/connector/secretKey:
     post:
       tags:
-      - /v1/agenda/settings
-      summary: Saves agenda connector Client Secret Key that will be accessible by
-        all users to access connector remote API
-      description: Saves agenda connector Client Secret Key that will be accessible
-        by all users to access connector remote API
+        - /v1/agenda/settings
+      summary: Saves agenda connector Client Secret Key that will be accessible by all users to access connector remote API
+      description: Saves agenda connector Client Secret Key that will be accessible by all users to access connector remote API
       operationId: saveRemoteProviderSecretKey
       requestBody:
         content:
           '*/*':
             schema:
               required:
-              - connectorName
-              - secretKey
+                - connectorName
+                - secretKey
               type: object
               properties:
                 connectorName:
@@ -1144,22 +1284,21 @@ paths:
           description: Bad request
         "500":
           description: Internal server error
-  /v1/agenda/settings/connector/status:
+  /rest/v1/agenda/settings/connector/status:
     post:
       tags:
-      - /v1/agenda/settings
+        - /v1/agenda/settings
       summary: Saves agenda connector status whether enabled or disabled for all users
-      description: Saves agenda connector status whether enabled or disabled for all
-        users
+      description: Saves agenda connector status whether enabled or disabled for all users
       operationId: saveRemoteProviderStatus
       requestBody:
         content:
           '*/*':
             schema:
               required:
-              - connectorName
-              - enabled
-              - isOauth
+                - connectorName
+                - enabled
+                - isOauth
               type: object
               properties:
                 connectorName:
@@ -1180,10 +1319,10 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
-  /v1/agenda/settings/timeZone:
+  /rest/v1/agenda/settings/timeZone:
     patch:
       tags:
-      - /v1/agenda/settings
+        - /v1/agenda/settings
       summary: Saves agenda time zone setting for authenticated user
       description: Saves agenda time zone setting for authenticated user
       operationId: saveUserTimeZoneSetting
@@ -1192,7 +1331,7 @@ paths:
           '*/*':
             schema:
               required:
-              - timeZoneId
+                - timeZoneId
               type: object
               properties:
                 timeZoneId:
@@ -1207,50 +1346,680 @@ paths:
           description: Unauthorized operation
         "500":
           description: Internal server error
+  "/agenda/rest/availability":
+    get:
+      tags:
+        - availability
+      operationId: AgendaAvailabilityRest.getBusyTime
+      description: "Answers one entry per user: their busy ranges when their availability is disclosed to the authenticated user, and otherwise the reason it is not. Only time ranges are ever returned."
+      summary: Get the busy time of a set of users over a window
+      parameters:
+        - name: identityIds
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: timeZoneId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserBusyTimeEntity"
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+      x-operation-name: getBusyTime
+  "/agenda/rest/calendars/links":
+    get:
+      tags:
+        - calendar-link
+      operationId: AgendaCalendarLinkRest.getCalendarLinks
+      description: "Answers one entry per calendar that has a link, among the user's own calendars and the calendars of the spaces they manage, with the same status as the per-calendar read plus the calendar's title and kind -- except the URL itself, which this listing never carries; read the per-calendar status to display or copy it."
+      summary: List the private links of the calendars the user manages
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema: {}
+        "403":
+          description: The user has no usable identity
+      x-operation-name: getCalendarLinks
+  "/agenda/rest/calendars/{calendarId}/link":
+    get:
+      tags:
+        - calendar-link
+      operationId: AgendaCalendarLinkRest.getCalendarLink
+      description: "Answers whether the calendar has a link, its creator and creation date, whether it still answers, and its URL while it answers and can be displayed. Owner or space managers only."
+      summary: Get the status of a calendar's private link
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: Invalid calendar identifier
+        "403":
+          description: The user may not manage the link of this calendar
+        "404":
+          description: Calendar not found
+      x-operation-name: getCalendarLink
+    post:
+      tags:
+        - calendar-link
+      operationId: AgendaCalendarLinkRest.saveCalendarLink
+      description: "Creates the link, replacing any existing one, and answers its URL."
+      summary: Create or reset a calendar's private link
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Link created
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: Invalid calendar identifier
+        "403":
+          description: The user may not manage the link of this calendar
+        "404":
+          description: Calendar not found
+      x-operation-name: saveCalendarLink
+    delete:
+      tags:
+        - calendar-link
+      operationId: AgendaCalendarLinkRest.deleteCalendarLink
+      description: Deletes the link; its URL stops answering at once. Deleting a missing link succeeds.
+      summary: Delete a calendar's private link
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Link deleted
+        "400":
+          description: Invalid calendar identifier
+        "403":
+          description: The user may not manage the link of this calendar
+        "404":
+          description: Calendar not found
+      x-operation-name: deleteCalendarLink
+  "/agenda/rest/ical/{token}.ics":
+    get:
+      tags:
+        - calendar-link
+      operationId: AgendaCalendarLinkRest.getCalendarFeed
+      description: "Anonymous: the token in the path is the credential. Answers text/calendar."
+      summary: Get the iCalendar document a private calendar link publishes
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The calendar document
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+        "304":
+          description: Unchanged since the entity tag the client holds
+        "404":
+          description: The link opens nothing
+      x-operation-name: getCalendarFeed
+  "/agenda/rest/calendars/share-counts":
+    get:
+      tags:
+        - calendar-share
+      operationId: AgendaCalendarShareRest.getShareCounts
+      description: "Answers, for the user's own calendars, how many colleagues each is shared with; a calendar shared with nobody is absent."
+      summary: Count the colleagues each own calendar is shared with
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+                  format: int64
+        "403":
+          description: The user has no usable identity
+      x-operation-name: getShareCounts
+  "/agenda/rest/calendars/shared-with-me":
+    get:
+      tags:
+        - calendar-share
+      operationId: AgendaCalendarShareRest.getSharedWithMe
+      description: "Answers each calendar with its owner and colour, whether the user hid it, and the channel also carrying it, so a client can leave out what that channel already lists."
+      summary: List the calendars shared with the user
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SharedCalendarEntity"
+        "403":
+          description: The user has no usable identity
+      x-operation-name: getSharedWithMe
+  "/agenda/rest/calendars/shared-with-me/{calendarId}/hidden":
+    put:
+      tags:
+        - calendar-share
+      operationId: AgendaCalendarShareRest.setHidden
+      description: "The sharee's own choice: the share is never deleted, and the calendar is shown again from the Hidden calendars of the agenda settings."
+      summary: Hide or show again a calendar shared with the user
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+      responses:
+        "204":
+          description: Choice recorded
+        "400":
+          description: Missing hidden flag
+        "403":
+          description: The user has no usable identity
+        "404":
+          description: The calendar is not shared with the user
+      x-operation-name: setHidden
+  "/agenda/rest/calendars/{calendarId}/external-shares/{channelId}/{externalId}":
+    delete:
+      tags:
+        - calendar-share
+      operationId: AgendaCalendarShareRest.removeExternalShare
+      description: "Owner only. The channel removes the grant on its server; a server that refuses, or cannot be reached, answers 409 with the code agenda.share.notRemoved and the grant stands where it was."
+      summary: Remove a share held on a channel's server
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: externalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Share removed
+        "400":
+          description: Invalid calendar identifier or missing share identifier
+        "403":
+          description: The user does not own the calendar
+        "404":
+          description: Calendar or channel not found
+        "409":
+          description: The channel could not remove the share on its server
+      x-operation-name: removeExternalShare
+  "/agenda/rest/calendars/{calendarId}/shares":
+    get:
+      tags:
+        - calendar-share
+      operationId: AgendaCalendarShareRest.getShares
+      description: "Owner only. Answers the eXo shares, each naming the colleague and the channel carrying it, the shares a channel's server holds that eXo does not record, and whether the calendar receives copies of the owner's eXo meetings, which a share would expose."
+      summary: List the colleagues a calendar is shared with
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+        "400":
+          description: Invalid calendar identifier
+        "403":
+          description: The user does not own the calendar
+        "404":
+          description: Calendar not found
+      x-operation-name: getShares
+    post:
+      tags:
+        - calendar-share
+      operationId: AgendaCalendarShareRest.share
+      description: "Owner only. Records the share in eXo, then asks every delivery channel to carry it; the record stands whatever the channels answer. A failed delivery is logged server-side and leaves the share eXo-only; the answer carries no warning."
+      summary: Share a calendar with a colleague
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+      responses:
+        "200":
+          description: Calendar shared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalendarShareeEntity"
+        "400":
+          description: "Unknown, disabled or self sharee, or invalid calendar identifier"
+        "403":
+          description: "The user does not own the calendar, or it cannot be shared"
+        "404":
+          description: Calendar not found
+      x-operation-name: share
+  "/agenda/rest/calendars/{calendarId}/shares/{shareeIdentityId}":
+    put:
+      tags:
+        - calendar-share
+      operationId: AgendaCalendarShareRest.setLevel
+      description: "Owner only. VIEW lets the colleague read the calendar, EDIT lets them create, change and delete events in it and nothing more — never move an event out of it, rename, publish, share on or level anyone. The channel carrying the share is asked to match its grant to the new level. A raise it cannot carry is logged server-side and the eXo level stands; a downgrade it cannot carry leaves the level unchanged and is answered 409, so the colleague never keeps a wider grant on the server than in eXo. Downgrading moves nothing: the events the colleague created stay in the owner's calendar."
+      summary: Change what a colleague may do with a shared calendar
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: shareeIdentityId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+      responses:
+        "204":
+          description: Level changed
+        "400":
+          description: "Missing or unknown access level, or invalid calendar identifier"
+        "403":
+          description: The user does not own the calendar
+        "404":
+          description: "Calendar not found, or not shared with that colleague"
+        "409":
+          description: The calendar server did not narrow the colleague's grant; the level is unchanged
+      x-operation-name: setLevel
+    delete:
+      tags:
+        - calendar-share
+      operationId: AgendaCalendarShareRest.unshare
+      description: "Owner only. Withdraws the share from the channel carrying it, then deletes the record; the record goes even when the channel could not withdraw. Unsharing a colleague without a share succeeds."
+      summary: Stop sharing a calendar with a colleague
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: shareeIdentityId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Share deleted
+        "400":
+          description: Invalid calendar identifier
+        "403":
+          description: The user does not own the calendar
+        "404":
+          description: Calendar not found
+      x-operation-name: unshare
+  "/agenda/rest/calendars/subscriptions":
+    get:
+      tags:
+        - calendar-subscription
+      operationId: AgendaCalendarSubscriptionRest.getSubscriptions
+      summary: "List the calendar subscriptions of the user, or of a space the user manages"
+      parameters:
+        - name: ownerId
+          description: "Identity identifier of the space, none for the user's own"
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema: {}
+        "403":
+          description: "The user has no usable identity, or does not manage the owner"
+        "404":
+          description: The owner does not exist
+      x-operation-name: getSubscriptions
+    post:
+      tags:
+        - calendar-subscription
+      operationId: AgendaCalendarSubscriptionRest.createSubscription
+      description: "Reads the link, creates a read-only calendar and imports its events."
+      summary: Subscribe to a calendar link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CalendarSubscriptionRequestEntity"
+      responses:
+        "200":
+          description: Subscribed
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: "The link is refused, already subscribed or serves no calendar"
+        "403":
+          description: "The user has no usable identity, or does not manage the owner"
+        "404":
+          description: The owner does not exist
+      x-operation-name: createSubscription
+  "/agenda/rest/calendars/subscriptions/check":
+    post:
+      tags:
+        - calendar-subscription
+      operationId: AgendaCalendarSubscriptionRest.checkUrl
+      description: "Reads the link once, stores nothing, and answers the calendar's own name."
+      summary: Check a calendar link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CalendarSubscriptionRequestEntity"
+      responses:
+        "200":
+          description: The link serves a calendar
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "400":
+          description: The link is refused or serves no calendar; the body carries the reason code
+        "403":
+          description: "The user has no usable identity, or does not manage the owner"
+        "404":
+          description: The owner does not exist
+      x-operation-name: checkUrl
+  "/agenda/rest/calendars/subscriptions/{subscriptionId}":
+    put:
+      tags:
+        - calendar-subscription
+      operationId: AgendaCalendarSubscriptionRest.updateSubscription
+      summary: Change a calendar subscription
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CalendarSubscriptionRequestEntity"
+      responses:
+        "200":
+          description: Changed
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: A value is refused; the body carries the reason code
+        "403":
+          description: Not the user's subscription
+        "404":
+          description: Subscription not found
+      x-operation-name: updateSubscription
+    delete:
+      tags:
+        - calendar-subscription
+      operationId: AgendaCalendarSubscriptionRest.deleteSubscription
+      summary: Unsubscribe from a calendar link
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Unsubscribed
+        "403":
+          description: Not the user's subscription
+        "404":
+          description: Subscription not found
+      x-operation-name: deleteSubscription
+  "/agenda/rest/calendars/subscriptions/{subscriptionId}/refresh":
+    post:
+      tags:
+        - calendar-subscription
+      operationId: AgendaCalendarSubscriptionRest.refreshSubscription
+      description: "A failure of the link is not an error of the request: it is answered as the subscription's last error."
+      summary: Refresh a calendar subscription now
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "Refreshed, or its failure recorded"
+          content:
+            application/json:
+              schema: {}
+        "403":
+          description: Not the user's subscription
+        "404":
+          description: Subscription not found
+        "409":
+          description: A refresh is running
+        "429":
+          description: Refreshed a moment ago
+      x-operation-name: refreshSubscription
+  "/agenda/rest/events/attendees/user":
+    get:
+      tags:
+        - event-attendees
+      operationId: AgendaEventAttendeeRest.getAttendeeUserByEmail
+      description: "Answers the enabled user whose e-mail address it is, looked up as given and in lower case, as the database collation compares, when the platform displays e-mail addresses and that user did not hide theirs; no content otherwise, and always to an external user. Never cached."
+      summary: Find the user an e-mail address typed to invite someone belongs to
+      parameters:
+        - name: email
+          description: The e-mail address typed
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The user
+        "204":
+          description: "No user to invite for that address, or an external caller"
+        "400":
+          description: No address given
+        "503":
+          description: "The user directory could not be read: the address was not checked"
+      x-operation-name: getAttendeeUserByEmail
+  "/agenda/rest/events/{eventId}/attendees/export":
+    get:
+      tags:
+        - event-attendees
+      operationId: AgendaEventAttendeeRest.exportEventAttendees
+      description: "Answers a CSV file with one row per participant of the date, as the participants drawer lists them: name, email when the platform displays it, and answer. Only someone allowed to update the event may export it, on a confirmed event; never cached."
+      summary: Export the participant list of an event as a CSV file
+      parameters:
+        - name: eventId
+          description: Event technical identifier
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: occurrenceId
+          description: "Occurrence id of a date of the series, RFC 3339"
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: timeZoneId
+          description: "IANA time zone of the user, dating the file name"
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The CSV file
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: "Invalid date or zone, or the event is a date poll"
+        "403":
+          description: The user may not update the event
+        "404":
+          description: "Event not found, or the date was cancelled"
+      x-operation-name: exportEventAttendees
+  "/agenda/rest/events/{eventId}/split":
+    post:
+      tags:
+        - events
+      operationId: AgendaEventSplitRest.splitEvent
+      description: "Creates the series that continues the recurring event from the date given, with the fields the user edited, in the event's calendar; moves the dates customised from that date on under it; and ends the event the day before. When no date moves, every participant keeps their answers and their places on the waiting list; when one does, every answer but the user's starts over. Everything is written at once, or nothing. Answers the identifier of the continuing series, which the event resource reads."
+      summary: "Splits a recurring event at one of its dates: a 'this and upcoming' change"
+      parameters:
+        - name: eventId
+          description: Technical identifier of the recurring event
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: timeZoneId
+          description: "IANA time zone identifier the event was read in. A change given in that zone, or in none, keeps the event's own zone, and a weekly rule naming the one weekday, or a monthly or yearly rule naming no weekday and the one day of the month, that its first date falls on in that zone names the one that date falls on in the event's zone; any other rule the change gives keeps the days it names. The dates of a change given in no zone are read in that zone, or in UTC when it is missing"
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: confirmClose
+          description: Whether the user confirmed closing the event while people are waiting for a seat
+          in: query
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventSplitEntity"
+      responses:
+        "200":
+          description: "The identifier of the continuing series: {\"id\": <id>}"
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: "Invalid input: a date that is not one of the event's after its first, an invalid limit, a limit below the Yes answers of a date, a closing of the event while people wait that is not confirmed, a person from outside the platform on an open continuation or on a date that stays open, or a date or a zone that does not parse. The body carries the message code, and the date for a limit below the Yes answers"
+        "403":
+          description: The user may not split the event
+        "404":
+          description: Event not found
+        "500":
+          description: The split failed; the body carries a fixed message code
+      x-operation-name: splitEvent
 components:
   schemas:
-    AgendaUserSettings:
-      type: object
-      properties:
-        agendaDefaultView:
-          type: string
-        agendaWeekStartOn:
-          type: string
-        automaticPushEvents:
-          type: boolean
-        cometdContextName:
-          type: string
-        cometdToken:
-          type: string
-        connectedRemoteProvider:
-          type: string
-        connectedRemoteUserId:
-          type: string
-        reminders:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventReminderParameter'
-        remoteProviders:
-          type: array
-          items:
-            $ref: '#/components/schemas/RemoteProvider'
-        showWorkingTime:
-          type: boolean
-        timeZoneId:
-          type: string
-        webConferenceProviders:
-          type: array
-          items:
-            type: string
-        workingTimeEnd:
-          type: string
-        workingTimeStart:
-          type: string
     CalendarEntity:
       type: object
       properties:
         acl:
-          $ref: '#/components/schemas/CalendarPermission'
+          $ref: "#/components/schemas/CalendarPermission"
         color:
           type: string
         created:
@@ -1260,8 +2029,14 @@ components:
         id:
           type: integer
           format: int64
+        name:
+          type: string
         owner:
-          $ref: '#/components/schemas/IdentityEntity'
+          $ref: "#/components/schemas/IdentityEntity"
+        sharedWithMe:
+          type: boolean
+        subscription:
+          type: boolean
         system:
           type: boolean
         title:
@@ -1277,6 +2052,10 @@ components:
           type: boolean
         canInviteeEdit:
           type: boolean
+        canPublish:
+          type: boolean
+        canShare:
+          type: boolean
     DataEntity:
       type: object
       properties:
@@ -1284,6 +2063,593 @@ components:
           type: boolean
       additionalProperties:
         type: object
+    ExperienceEntity:
+      type: object
+      properties:
+        company:
+          type: string
+        description:
+          type: string
+        endDate:
+          type: string
+        id:
+          type: string
+        isCurrent:
+          type: boolean
+        position:
+          type: string
+        skills:
+          type: string
+        startDate:
+          type: string
+    GlobalId:
+      type: object
+      properties:
+        domain:
+          type: string
+        localId:
+          type: string
+    Identity:
+      type: object
+      properties:
+        cacheTime:
+          type: integer
+          format: int64
+        deleted:
+          type: boolean
+        enable:
+          type: boolean
+        external:
+          type: boolean
+        globalId:
+          $ref: "#/components/schemas/GlobalId"
+        id:
+          type: string
+        identityId:
+          type: integer
+          format: int64
+        profile:
+          $ref: "#/components/schemas/Profile"
+        profileLoader:
+          $ref: "#/components/schemas/ProfileLoader"
+        providerId:
+          type: string
+        remoteId:
+          type: string
+        space:
+          type: boolean
+        user:
+          type: boolean
+    IdentityEntity:
+      type: object
+      properties:
+        dataEntity:
+          $ref: "#/components/schemas/DataEntity"
+          type: object
+          additionalProperties: {}
+        deleted:
+          type: string
+        globalId:
+          $ref: "#/components/schemas/GlobalId"
+        href:
+          type: string
+        id:
+          type: string
+        lastUpdatedTime:
+          type: integer
+          format: int64
+        profile:
+          $ref: "#/components/schemas/ProfileEntity"
+        providerId:
+          type: string
+        remoteId:
+          type: string
+        space:
+          $ref: "#/components/schemas/SpaceEntity"
+    Profile:
+      type: object
+      properties:
+        aboutMe:
+          type: string
+        attachedActivityType:
+          type: string
+          enum:
+            - USER
+            - SPACE
+            - RELATION
+            - RELATIONSHIP
+          $ref: "#/components/schemas/AttachedActivityType"
+        avatarImageSource:
+          type: string
+        avatarLastUpdated:
+          type: integer
+          format: int64
+        avatarUrl:
+          type: string
+        bannerLastUpdated:
+          type: integer
+          format: int64
+        bannerUrl:
+          type: string
+        city:
+          type: string
+        company:
+          type: string
+        country:
+          type: string
+        createdTime:
+          type: integer
+          format: int64
+        defaultAvatar:
+          type: boolean
+        department:
+          type: string
+        email:
+          type: string
+        fullName:
+          type: string
+        gender:
+          type: string
+        hasChanged:
+          type: boolean
+          writeOnly: true
+        id:
+          type: string
+        identity:
+          $ref: "#/components/schemas/Identity"
+        lastLoaded:
+          type: integer
+          format: int64
+        listUpdateTypes:
+          type: array
+          items:
+            type: string
+            enum:
+              - POSITION
+              - COMPANY
+              - LOCATION
+              - DEPARTMENT
+              - TEAM
+              - PROFESSION
+              - COUNTRY
+              - CITY
+              - BASIC_INFOR
+              - CONTACT
+              - EXPERIENCES
+              - AVATAR
+              - ABOUT_ME
+              - BANNER
+              - TECHNICAL
+            $ref: "#/components/schemas/UpdateType"
+        location:
+          type: string
+        position:
+          type: string
+        profession:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        synchronizedDate:
+          type: string
+        team:
+          type: string
+        timeZone:
+          type: string
+        timeZoneDSTSavings:
+          type: integer
+          format: int32
+        updateType:
+          type: string
+          enum:
+            - POSITION
+            - COMPANY
+            - LOCATION
+            - DEPARTMENT
+            - TEAM
+            - PROFESSION
+            - COUNTRY
+            - CITY
+            - BASIC_INFOR
+            - CONTACT
+            - EXPERIENCES
+            - AVATAR
+            - ABOUT_ME
+            - BANNER
+            - TECHNICAL
+          $ref: "#/components/schemas/UpdateType"
+        url:
+          type: string
+    ProfileEntity:
+      type: object
+      properties:
+        aboutMe:
+          type: string
+        avatar:
+          type: string
+        banner:
+          type: string
+        city:
+          type: string
+        company:
+          type: string
+        connectionsCount:
+          type: string
+        connectionsInCommonCount:
+          type: string
+        country:
+          type: string
+        createdDate:
+          type: string
+        dataEntity:
+          $ref: "#/components/schemas/DataEntity"
+          type: object
+          additionalProperties: {}
+        defaultAvatar:
+          type: boolean
+        deleted:
+          type: string
+        department:
+          type: string
+        email:
+          type: string
+        emailProperty:
+          type: string
+        enabled:
+          $ref: "#/components/schemas/ProfileEntity"
+          type: boolean
+        enrollmentDate:
+          type: string
+        enrollmentExpired:
+          type: boolean
+        experiences:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExperienceEntity"
+        firstname:
+          type: string
+        fullname:
+          type: string
+        href:
+          type: string
+        id:
+          type: string
+        identity:
+          type: string
+        isAdmin:
+          type: string
+        isExternal:
+          $ref: "#/components/schemas/ProfileEntity"
+          type: string
+        isGroupBound:
+          type: boolean
+        isInternal:
+          type: boolean
+        isInvited:
+          type: boolean
+        isManager:
+          type: boolean
+        isMember:
+          type: boolean
+        isPending:
+          type: boolean
+        isSpacePublisher:
+          type: boolean
+        isSpaceRedactor:
+          type: boolean
+        isSuperUser:
+          type: boolean
+        lastLoginTime:
+          type: string
+        lastUpdatedTime:
+          type: integer
+          format: int64
+        lastname:
+          type: string
+        location:
+          type: string
+        managedUsersCount:
+          type: string
+        managers:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataEntity"
+            type: object
+            additionalProperties: {}
+        neverConnected:
+          type: boolean
+        notValid:
+          type: boolean
+        phoneProperty:
+          type: string
+        position:
+          type: string
+        primaryProperty:
+          type: string
+        profession:
+          type: string
+        properties:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfilePropertySettingEntity"
+        relationshipStatus:
+          type: string
+        secondaryProperty:
+          type: string
+        spacesCount:
+          type: string
+        synchronizedDate:
+          type: string
+        team:
+          type: string
+        tertiaryProperty:
+          type: string
+        timeZone:
+          type: string
+        timeZoneDSTSavings:
+          type: string
+        urls:
+          type: array
+          items:
+            $ref: "#/components/schemas/URLEntity"
+        username:
+          type: string
+    ProfileLabel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        label:
+          type: string
+        language:
+          type: string
+        objectId:
+          type: string
+        objectType:
+          type: string
+    ProfileLoader:
+      type: object
+    ProfilePropertyOptionEntity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        propertySettingId:
+          type: integer
+          format: int64
+        translatedValue:
+          type: string
+        translations:
+          type: object
+          additionalProperties:
+            type: string
+        value:
+          type: string
+    ProfilePropertySettingEntity:
+      type: object
+      properties:
+        active:
+          type: boolean
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfilePropertySettingEntity"
+        default:
+          type: boolean
+        dropdownList:
+          type: boolean
+        editable:
+          type: boolean
+        groupSynchronizationEnabled:
+          type: boolean
+        groupSynchronized:
+          type: boolean
+        hidden:
+          type: boolean
+        hiddenable:
+          type: boolean
+        id:
+          type: integer
+          format: int64
+        indexInAnalytics:
+          type: boolean
+        internal:
+          type: boolean
+        labels:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfileLabel"
+        multiValued:
+          type: boolean
+        order:
+          type: integer
+          format: int64
+        parentId:
+          type: integer
+          format: int64
+        propertyName:
+          type: string
+        propertyOptions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfilePropertyOptionEntity"
+        propertyType:
+          type: string
+        required:
+          type: boolean
+        resolvedLabel:
+          type: string
+        toHide:
+          type: boolean
+        toShow:
+          type: boolean
+        updated:
+          type: integer
+          format: int64
+        userCardFieldSettings:
+          type: boolean
+        value:
+          type: string
+        visible:
+          type: boolean
+    SpaceEntity:
+      type: object
+      properties:
+        avatarId:
+          type: string
+        avatarUrl:
+          type: string
+        bannerId:
+          type: string
+        bannerUrl:
+          type: string
+        canDelete:
+          type: boolean
+        canEdit:
+          type: boolean
+        canEditNavigations:
+          type: boolean
+        canManagePublicSite:
+          type: boolean
+        canRedactOnSpace:
+          type: boolean
+        categoryIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        createdTime:
+          type: string
+        dataEntity:
+          $ref: "#/components/schemas/DataEntity"
+          type: object
+          additionalProperties: {}
+        description:
+          type: string
+        displayName:
+          type: string
+        extendedProperties:
+          type: object
+          additionalProperties:
+            type: string
+        externalInvitedUsers:
+          type: array
+          items:
+            type: string
+        groupId:
+          type: string
+        hasBindings:
+          $ref: "#/components/schemas/SpaceEntity"
+          type: boolean
+        href:
+          type: string
+        id:
+          type: string
+        identity:
+          $ref: "#/components/schemas/LinkEntity"
+        identityId:
+          $ref: "#/components/schemas/SpaceEntity"
+          type: string
+        invitedMembers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Identity"
+        invitedUsersCount:
+          $ref: "#/components/schemas/SpaceEntity"
+          type: integer
+          format: int32
+        invitedUsersCountCount:
+          type: integer
+          format: int32
+        isFavorite:
+          type: string
+        isInvited:
+          type: boolean
+        isManager:
+          type: boolean
+        isMember:
+          type: boolean
+        isMuted:
+          type: string
+        isParentSpace:
+          type: boolean
+        isPending:
+          type: boolean
+        isPublisher:
+          type: boolean
+        isRedactor:
+          type: boolean
+        isUserBound:
+          type: boolean
+        lastUpdatedTime:
+          type: integer
+          format: int64
+        managers:
+          type: string
+        managersCount:
+          type: integer
+          format: int32
+        members:
+          type: string
+        membersCount:
+          type: integer
+          format: int32
+        parentSpaceId:
+          type: integer
+          format: int64
+        pending:
+          type: string
+        pendingUsersCount:
+          type: integer
+          format: int32
+        prettyName:
+          type: string
+        publicSiteId:
+          type: integer
+          format: int64
+        publicSiteName:
+          type: string
+        publicSiteVisibility:
+          type: string
+        publishers:
+          type: string
+        publishersCount:
+          type: integer
+          format: int32
+        redactors:
+          type: string
+        redactorsCount:
+          type: integer
+          format: int32
+        siteId:
+          type: string
+        sovereign:
+          type: boolean
+        subscription:
+          type: string
+        templateId:
+          type: integer
+          format: int64
+        totalBoundUsers:
+          type: integer
+          format: int64
+        unreadItems:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+        url:
+          type: string
+        visibility:
+          type: string
+    URLEntity:
+      type: object
+      properties:
+        url:
+          type: string
     EventAttendeeEntity:
       type: object
       properties:
@@ -1291,14 +2657,18 @@ components:
           type: integer
           format: int64
         identity:
-          $ref: '#/components/schemas/IdentityEntity'
+          $ref: "#/components/schemas/IdentityEntity"
         response:
           type: string
           enum:
-          - NEEDS_ACTION
-          - ACCEPTED
-          - DECLINED
-          - TENTATIVE
+            - NEEDS_ACTION
+            - ACCEPTED
+            - DECLINED
+            - TENTATIVE
+            - WAITING
+          $ref: "#/components/schemas/EventAttendeeResponse"
+        responseDate:
+          type: string
     EventConference:
       type: object
       properties:
@@ -1343,8 +2713,11 @@ components:
     EventEntity:
       type: object
       properties:
+        acceptedCount:
+          type: integer
+          format: int32
         acl:
-          $ref: '#/components/schemas/EventPermission'
+          $ref: "#/components/schemas/EventPermission"
         allDay:
           type: boolean
         allowAttendeeToInvite:
@@ -1354,29 +2727,33 @@ components:
         attendees:
           type: array
           items:
-            $ref: '#/components/schemas/EventAttendeeEntity'
+            $ref: "#/components/schemas/EventAttendeeEntity"
         availability:
           type: string
           enum:
-          - DEFAULT
-          - BUSY
-          - FREE
+            - DEFAULT
+            - BUSY
+            - FREE
+          $ref: "#/components/schemas/EventAvailability"
         calendar:
-          $ref: '#/components/schemas/CalendarEntity'
+          $ref: "#/components/schemas/CalendarEntity"
+        capacity:
+          type: integer
+          format: int32
         color:
           type: string
         conferences:
           type: array
           items:
-            $ref: '#/components/schemas/EventConference'
+            $ref: "#/components/schemas/EventConference"
         created:
           type: string
         creator:
-          $ref: '#/components/schemas/IdentityEntity'
+          $ref: "#/components/schemas/IdentityEntity"
         dateOptions:
           type: array
           items:
-            $ref: '#/components/schemas/EventDateOptionEntity'
+            $ref: "#/components/schemas/EventDateOptionEntity"
         description:
           type: string
         end:
@@ -1386,16 +2763,26 @@ components:
           format: int64
         location:
           type: string
+        masked:
+          type: boolean
+        modifier:
+          $ref: "#/components/schemas/IdentityEntity"
         occurrence:
-          $ref: '#/components/schemas/EventOccurrenceEntity'
+          $ref: "#/components/schemas/EventOccurrenceEntity"
+        open:
+          type: boolean
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
         parent:
-          $ref: '#/components/schemas/EventEntity'
+          $ref: "#/components/schemas/EventEntity"
         recurrence:
-          $ref: '#/components/schemas/EventRecurrenceEntity'
+          $ref: "#/components/schemas/EventRecurrenceEntity"
         reminders:
           type: array
           items:
-            $ref: '#/components/schemas/EventReminderEntity'
+            $ref: "#/components/schemas/EventReminderEntity"
         remoteId:
           type: string
         remoteProviderId:
@@ -1410,15 +2797,29 @@ components:
         status:
           type: string
           enum:
-          - CONFIRMED
-          - TENTATIVE
-          - CANCELLED
+            - CONFIRMED
+            - TENTATIVE
+            - CANCELLED
+          $ref: "#/components/schemas/EventStatus"
         summary:
           type: string
         timeZoneId:
           type: string
         updated:
           type: string
+        visibility:
+          type: string
+          enum:
+            - DEFAULT
+            - PUBLIC
+            - PRIVATE
+          $ref: "#/components/schemas/EventVisibility"
+        waitingCount:
+          type: integer
+          format: int32
+        waitingListPosition:
+          type: integer
+          format: int32
     EventOccurrenceEntity:
       type: object
       properties:
@@ -1432,6 +2833,8 @@ components:
         attendee:
           type: boolean
         canEdit:
+          type: boolean
+        canMove:
           type: boolean
     EventRecurrenceEntity:
       type: object
@@ -1478,13 +2881,14 @@ components:
         frequency:
           type: string
           enum:
-          - YEARLY
-          - MONTHLY
-          - WEEKLY
-          - DAILY
-          - HOURLY
-          - MINUTELY
-          - SECONDLY
+            - YEARLY
+            - MONTHLY
+            - WEEKLY
+            - DAILY
+            - HOURLY
+            - MINUTELY
+            - SECONDLY
+          $ref: "#/components/schemas/EventRecurrenceFrequency"
         id:
           type: integer
           format: int64
@@ -1496,14 +2900,26 @@ components:
         type:
           type: string
           enum:
-          - CUSTOM
-          - DAILY
-          - WEEKLY
-          - WEEK_DAYS
-          - MONTHLY
-          - YEARLY
+            - CUSTOM
+            - DAILY
+            - WEEKLY
+            - WEEK_DAYS
+            - MONTHLY
+            - YEARLY
+          $ref: "#/components/schemas/EventRecurrenceType"
         until:
           type: string
+    EventReminderEntity:
+      type: object
+      properties:
+        before:
+          type: integer
+          format: int32
+        beforePeriodType:
+          type: string
+        id:
+          type: integer
+          format: int64
     EventReminder:
       type: object
       properties:
@@ -1513,10 +2929,10 @@ components:
         beforePeriodType:
           type: string
           enum:
-          - MINUTE
-          - HOUR
-          - DAY
-          - WEEK
+            - MINUTE
+            - HOUR
+            - DAY
+            - WEEK
         datetime:
           type: string
           format: date-time
@@ -1538,17 +2954,62 @@ components:
         untilOccurrenceId:
           type: string
           format: date-time
-    EventReminderEntity:
+    AgendaConnectorAccount:
       type: object
       properties:
-        before:
-          type: integer
-          format: int32
-        beforePeriodType:
+        providerName:
           type: string
-        id:
-          type: integer
-          format: int64
+        pushEnabled:
+          type: boolean
+        remoteUserId:
+          type: string
+    AgendaUserSettings:
+      type: object
+      properties:
+        agendaDefaultView:
+          type: string
+        agendaWeekStartOn:
+          type: string
+        automaticPushEvents:
+          type: boolean
+        cometdContextName:
+          type: string
+        cometdToken:
+          type: string
+        connectedConnectors:
+          type: array
+          items:
+            $ref: "#/components/schemas/AgendaConnectorAccount"
+        connectedRemoteProvider:
+          type: string
+        connectedRemoteUserId:
+          type: string
+        embedMapProvider:
+          type: string
+        reminders:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventReminderParameter"
+        remoteProviders:
+          type: array
+          items:
+            $ref: "#/components/schemas/RemoteProvider"
+        showRemoteEventsForTimeLine:
+          type: boolean
+        showWorkingTime:
+          type: boolean
+        timeZoneId:
+          type: string
+        webConferenceProviders:
+          type: array
+          items:
+            type: string
+        workedDaysNumber:
+          type: string
+        workingTimeEnd:
+          type: string
+        workingTimeStart:
+          type: string
     EventReminderParameter:
       type: object
       properties:
@@ -1558,458 +3019,13 @@ components:
         beforePeriodType:
           type: string
           enum:
-          - MINUTE
-          - HOUR
-          - DAY
-          - WEEK
+            - MINUTE
+            - HOUR
+            - DAY
+            - WEEK
         periodType:
           type: string
           writeOnly: true
-    ExperienceEntity:
-      type: object
-      properties:
-        company:
-          type: string
-        description:
-          type: string
-        endDate:
-          type: string
-        id:
-          type: string
-        isCurrent:
-          type: boolean
-        position:
-          type: string
-        skills:
-          type: string
-        startDate:
-          type: string
-    GlobalId:
-      type: object
-      properties:
-        domain:
-          type: string
-        localId:
-          type: string
-    IMEntity:
-      type: object
-      properties:
-        imId:
-          type: string
-        imType:
-          type: string
-    Identity:
-      type: object
-      properties:
-        cacheTime:
-          type: integer
-          format: int64
-        deleted:
-          type: boolean
-        enable:
-          type: boolean
-        external:
-          type: boolean
-        globalId:
-          $ref: '#/components/schemas/GlobalId'
-        id:
-          type: string
-        identityId:
-          type: integer
-          format: int64
-        profile:
-          $ref: '#/components/schemas/Profile'
-        profileLoader:
-          $ref: '#/components/schemas/ProfileLoader'
-        providerId:
-          type: string
-        remoteId:
-          type: string
-        space:
-          type: boolean
-        user:
-          type: boolean
-    IdentityEntity:
-      type: object
-      properties:
-        dataEntity:
-          type: object
-          properties:
-            empty:
-              type: boolean
-          additionalProperties:
-            type: object
-        deleted:
-          type: string
-        globalId:
-          $ref: '#/components/schemas/IdentityEntity'
-        href:
-          type: string
-        id:
-          type: string
-        lastUpdatedTime:
-          type: integer
-          format: int64
-        profile:
-          $ref: '#/components/schemas/ProfileEntity'
-        providerId:
-          type: string
-        remoteId:
-          type: string
-        space:
-          $ref: '#/components/schemas/SpaceEntity'
-    PhoneEntity:
-      type: object
-      properties:
-        phoneNumber:
-          type: string
-        phoneType:
-          type: string
-    Profile:
-      type: object
-      properties:
-        aboutMe:
-          type: string
-        attachedActivityType:
-          type: string
-          enum:
-          - USER
-          - SPACE
-          - RELATION
-          - RELATIONSHIP
-        avatarImageSource:
-          type: string
-        avatarLastUpdated:
-          type: integer
-          format: int64
-        avatarUrl:
-          type: string
-        bannerLastUpdated:
-          type: integer
-          format: int64
-        bannerUrl:
-          type: string
-        city:
-          type: string
-        company:
-          type: string
-        country:
-          type: string
-        createdTime:
-          type: integer
-          format: int64
-        defaultAvatar:
-          type: boolean
-        department:
-          type: string
-        email:
-          type: string
-        fullName:
-          type: string
-        gender:
-          type: string
-        hasChanged:
-          type: boolean
-          writeOnly: true
-        id:
-          type: string
-        identity:
-          $ref: '#/components/schemas/Identity'
-        lastLoaded:
-          type: integer
-          format: int64
-        listUpdateTypes:
-          type: array
-          items:
-            type: string
-            enum:
-            - POSITION
-            - COMPANY
-            - LOCATION
-            - DEPARTMENT
-            - TEAM
-            - PROFESSION
-            - COUNTRY
-            - CITY
-            - BASIC_INFOR
-            - CONTACT
-            - EXPERIENCES
-            - AVATAR
-            - ABOUT_ME
-            - BANNER
-            - TECHNICAL
-        location:
-          type: string
-        phones:
-          type: array
-          items:
-            type: object
-            additionalProperties:
-              type: string
-        position:
-          type: string
-        profession:
-          type: string
-        properties:
-          type: object
-          additionalProperties:
-            type: object
-        synchronizedDate:
-          type: string
-        team:
-          type: string
-        timeZone:
-          type: string
-        timeZoneDSTSavings:
-          type: integer
-          format: int32
-        updateType:
-          type: string
-          enum:
-          - POSITION
-          - COMPANY
-          - LOCATION
-          - DEPARTMENT
-          - TEAM
-          - PROFESSION
-          - COUNTRY
-          - CITY
-          - BASIC_INFOR
-          - CONTACT
-          - EXPERIENCES
-          - AVATAR
-          - ABOUT_ME
-          - BANNER
-          - TECHNICAL
-        url:
-          type: string
-    ProfileEntity:
-      type: object
-      properties:
-        aboutMe:
-          type: string
-        avatar:
-          type: string
-        banner:
-          type: string
-        city:
-          type: string
-        company:
-          type: string
-        connectionsCount:
-          type: string
-        connectionsInCommonCount:
-          type: string
-        country:
-          type: string
-        createdDate:
-          type: string
-        dataEntity:
-          type: object
-          properties:
-            empty:
-              type: boolean
-          additionalProperties:
-            type: object
-        defaultAvatar:
-          type: boolean
-        deleted:
-          type: string
-        department:
-          type: string
-        email:
-          type: string
-        enabled:
-          $ref: '#/components/schemas/ProfileEntity'
-        enrollmentDate:
-          type: string
-        experiences:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExperienceEntity'
-        firstname:
-          type: string
-        fullname:
-          type: string
-        href:
-          type: string
-        id:
-          type: string
-        identity:
-          type: string
-        ims:
-          type: array
-          items:
-            $ref: '#/components/schemas/IMEntity'
-        isAdmin:
-          type: string
-        isExternal:
-          $ref: '#/components/schemas/ProfileEntity'
-        isGroupBound:
-          type: boolean
-        isInternal:
-          type: boolean
-        isInvited:
-          type: boolean
-        isManager:
-          type: boolean
-        isMember:
-          type: boolean
-        isPending:
-          type: boolean
-        isSpacePublisher:
-          type: boolean
-        isSpaceRedactor:
-          type: boolean
-        lastLoginTime:
-          type: string
-        lastUpdatedTime:
-          type: integer
-          format: int64
-        lastname:
-          type: string
-        location:
-          type: string
-        managedUsersCount:
-          type: string
-        managers:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataEntity'
-        notValid:
-          type: boolean
-        phones:
-          type: array
-          items:
-            $ref: '#/components/schemas/PhoneEntity'
-        position:
-          type: string
-        primaryProperty:
-          type: string
-        profession:
-          type: string
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProfilePropertySettingEntity'
-        relationshipStatus:
-          type: string
-        secondaryProperty:
-          type: string
-        spacesCount:
-          type: string
-        synchronizedDate:
-          type: string
-        team:
-          type: string
-        tertiaryProperty:
-          type: string
-        timeZone:
-          type: string
-        timeZoneDSTSavings:
-          type: string
-        urls:
-          type: array
-          items:
-            $ref: '#/components/schemas/URLEntity'
-        username:
-          type: string
-    ProfileLabel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        label:
-          type: string
-        language:
-          type: string
-        objectId:
-          type: string
-        objectType:
-          type: string
-    ProfileLoader:
-      type: object
-    ProfilePropertyOptionEntity:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        propertySettingId:
-          type: integer
-          format: int64
-        translatedValue:
-          type: string
-        translations:
-          type: object
-          additionalProperties:
-            type: string
-        value:
-          type: string
-    ProfilePropertySettingEntity:
-      type: object
-      properties:
-        active:
-          type: boolean
-        default:
-          type: boolean
-        dropdownList:
-          type: boolean
-        editable:
-          type: boolean
-        groupSynchronizationEnabled:
-          type: boolean
-        groupSynchronized:
-          type: boolean
-        hidden:
-          type: boolean
-        hiddenable:
-          type: boolean
-        id:
-          type: integer
-          format: int64
-        indexInAnalytics:
-          type: boolean
-        internal:
-          type: boolean
-        labels:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProfileLabel'
-        multiValued:
-          type: boolean
-        order:
-          type: integer
-          format: int64
-        parentId:
-          type: integer
-          format: int64
-        propertyName:
-          type: string
-        propertyOptions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProfilePropertyOptionEntity'
-        propertyType:
-          type: string
-        required:
-          type: boolean
-        resolvedLabel:
-          type: string
-        toHide:
-          type: boolean
-        toShow:
-          type: boolean
-        updated:
-          type: integer
-          format: int64
-        userCardFieldSettings:
-          type: boolean
-        value:
-          type: string
-        visible:
-          type: boolean
     RemoteProvider:
       type: object
       properties:
@@ -2026,146 +3042,191 @@ components:
           type: boolean
         secretKey:
           type: string
-    SpaceEntity:
+    AttachedActivityType:
+      type: string
+      enum:
+        - USER
+        - SPACE
+        - RELATION
+        - RELATIONSHIP
+    CalendarShareeEntity:
       type: object
       properties:
-        avatarId:
+        access:
           type: string
         avatarUrl:
           type: string
-        bannerId:
+        calendarId:
+          type: integer
+          format: int64
+        createdDate:
+          type: integer
+          format: int64
+        deliveredTo:
           type: string
-        bannerUrl:
-          type: string
-        canDelete:
+        disabled:
           type: boolean
-        canEdit:
-          type: boolean
-        canEditNavigations:
-          type: boolean
-        canManagePublicSite:
-          type: boolean
-        canRedactOnSpace:
-          type: boolean
-        categoryIds:
-          type: array
-          items:
-            type: integer
-            format: int64
-        createdTime:
-          type: string
-        dataEntity:
-          type: object
-          properties:
-            empty:
-              type: boolean
-          additionalProperties:
-            type: object
-        description:
-          type: string
         displayName:
           type: string
-        externalInvitedUsers:
-          type: array
-          items:
-            type: string
-        groupId:
-          type: string
-        hasBindings:
-          $ref: '#/components/schemas/SpaceEntity'
-        href:
-          type: string
-        id:
-          type: string
-        identity:
-          $ref: '#/components/schemas/SpaceEntity'
-        identityId:
-          $ref: '#/components/schemas/SpaceEntity'
-        invitedMembers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Identity'
-        invitedUsersCount:
-          $ref: '#/components/schemas/SpaceEntity'
-        invitedUsersCountCount:
-          type: integer
-          format: int32
-        isFavorite:
-          type: string
-        isInvited:
-          type: boolean
-        isManager:
-          type: boolean
-        isMember:
-          type: boolean
-        isMuted:
-          type: string
-        isPending:
-          type: boolean
-        isPublisher:
-          type: boolean
-        isRedactor:
-          type: boolean
-        isUserBound:
-          type: boolean
-        lastUpdatedTime:
+        shareeIdentityId:
           type: integer
           format: int64
-        managers:
+        source:
           type: string
-        managersCount:
-          type: integer
-          format: int32
-        members:
+        username:
           type: string
-        membersCount:
-          type: integer
-          format: int32
-        pending:
-          type: string
-        pendingUsersCount:
-          type: integer
-          format: int32
-        prettyName:
-          type: string
-        publicSiteId:
-          type: integer
-          format: int64
-        publicSiteName:
-          type: string
-        publicSiteVisibility:
-          type: string
-        publishers:
-          type: string
-        publishersCount:
-          type: integer
-          format: int32
-        redactors:
-          type: string
-        redactorsCount:
-          type: integer
-          format: int32
-        siteId:
-          type: string
-        subscription:
-          type: string
-        templateId:
-          type: integer
-          format: int64
-        totalBoundUsers:
-          type: integer
-          format: int64
-        unreadItems:
-          type: object
-          additionalProperties:
-            type: integer
-            format: int64
-        url:
-          type: string
-        visibility:
-          type: string
-    URLEntity:
+    CalendarSubscriptionRequestEntity:
       type: object
       properties:
+        color:
+          type: string
+        name:
+          type: string
+        ownerId:
+          type: integer
+          format: int64
         url:
           type: string
+    EventAttendeeResponse:
+      type: string
+      enum:
+        - NEEDS_ACTION
+        - ACCEPTED
+        - DECLINED
+        - TENTATIVE
+        - WAITING
+    EventAvailability:
+      type: string
+      enum:
+        - DEFAULT
+        - BUSY
+        - FREE
+    EventRecurrenceFrequency:
+      type: string
+      enum:
+        - YEARLY
+        - MONTHLY
+        - WEEKLY
+        - DAILY
+        - HOURLY
+        - MINUTELY
+        - SECONDLY
+    EventRecurrenceType:
+      type: string
+      enum:
+        - CUSTOM
+        - DAILY
+        - WEEKLY
+        - WEEK_DAYS
+        - MONTHLY
+        - YEARLY
+    EventSplitEntity:
+      type: object
+      properties:
+        addedAttendees:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventAttendeeEntity"
+        event:
+          $ref: "#/components/schemas/EventEntity"
+        removedAttendees:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventAttendeeEntity"
+        sendInvitation:
+          type: boolean
+        splitFrom:
+          type: string
+    EventStatus:
+      type: string
+      enum:
+        - CONFIRMED
+        - TENTATIVE
+        - CANCELLED
+    EventVisibility:
+      type: string
+      enum:
+        - DEFAULT
+        - PUBLIC
+        - PRIVATE
+    LinkEntity:
+      type: object
+    SharedCalendarEntity:
+      type: object
+      properties:
+        access:
+          type: string
+        calendarId:
+          type: integer
+          format: int64
+        color:
+          type: string
+        deliveredTo:
+          type: string
+        deliveryRef:
+          type: string
+        description:
+          type: string
+        hidden:
+          type: boolean
+        name:
+          type: string
+        ownerAvatarUrl:
+          type: string
+        ownerDisplayName:
+          type: string
+        ownerId:
+          type: integer
+          format: int64
+        ownerUsername:
+          type: string
+        sharedDate:
+          type: integer
+          format: int64
+    TimeBlockEntity:
+      type: object
+      properties:
+        end:
+          type: string
+        start:
+          type: string
+    UpdateType:
+      type: string
+      enum:
+        - POSITION
+        - COMPANY
+        - LOCATION
+        - DEPARTMENT
+        - TEAM
+        - PROFESSION
+        - COUNTRY
+        - CITY
+        - BASIC_INFOR
+        - CONTACT
+        - EXPERIENCES
+        - AVATAR
+        - ABOUT_ME
+        - BANNER
+        - TECHNICAL
+    UserBusyTimeEntity:
+      type: object
+      properties:
+        busy:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeBlockEntity"
+        disclosure:
+          type: string
+        identityId:
+          type: integer
+          format: int64
+    Void:
+      type: object
+info:
+  title: Agenda REST API
+  version: 7.3.x-SNAPSHOT
+  license:
+    name: LGPL
+    url: https://www.gnu.org/licenses/lgpl-3.0.en.html
+servers:
+  - url: /

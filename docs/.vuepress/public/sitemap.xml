@@ -209,14 +209,14 @@
        <priority>0.6</priority>
   </url>
   <url>
-       <loc>https://docs.exoplatform.org/guide/openapi/chat</loc>
+       <loc>https://docs.exoplatform.org/guide/openapi/commons</loc>
        <lastmod>2026-06-25T15:57:15+00:00</lastmod>
        <changefreq>monthly</changefreq>
        <priority>0.6</priority>
   </url>
   <url>
-       <loc>https://docs.exoplatform.org/guide/openapi/commons</loc>
-       <lastmod>2026-06-25T15:57:15+00:00</lastmod>
+       <loc>https://docs.exoplatform.org/guide/openapi/content</loc>
+       <lastmod>2026-11-24T00:00:00+00:00</lastmod>
        <changefreq>monthly</changefreq>
        <priority>0.6</priority>
   </url>
@@ -258,12 +258,6 @@
   </url>
   <url>
        <loc>https://docs.exoplatform.org/guide/openapi/multifactor-authentication</loc>
-       <lastmod>2026-06-25T15:57:15+00:00</lastmod>
-       <changefreq>monthly</changefreq>
-       <priority>0.6</priority>
-  </url>
-  <url>
-       <loc>https://docs.exoplatform.org/guide/openapi/news</loc>
        <lastmod>2026-06-25T15:57:15+00:00</lastmod>
        <changefreq>monthly</changefreq>
        <priority>0.6</priority>

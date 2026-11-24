@@ -1,1 +1,1 @@
-<OpenApi page="addons_wallet_swagger"/>
+<OpenApi page="wallet_swagger"/>

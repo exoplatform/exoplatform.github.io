@@ -1,1 +1,1 @@
-<OpenApi page="addons_poll_swagger"/>
+<OpenApi page="poll_swagger"/>

@@ -1,0 +1,138 @@
+name: Generate and commit OpenAPI spec files
+# Generates the OpenAPI spec of every documented module from its published jar (openapi/),
+# outside the product build. The generation job runs the third-party Maven plugins with no
+# secret and a read-only token; the commit job runs no Maven and publishes only the spec
+# files a page displays.
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  schedule:
+    - cron: '0 22 * * 0' # Every Sunday at 22:00 UTC
+
+concurrency:
+  group: openapi-specs
+  cancel-in-progress: false
+
+env:
+  # yq is pinned, so that a new yq release cannot change the formatting of the specs.
+  YQ_VERSION: v4.44.3
+  YQ_SHA256: a2c097180dd884a8d50c956ee16a9cec070f30a7947cf4ebf87d5f36213e9ed7
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      build-status: ${{ steps.build.outputs.status }}
+      merge-status: ${{ steps.merge.outputs.status }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install yq
+        run: |
+          curl -sSfLo "$RUNNER_TEMP/yq" "https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/yq_linux_amd64"
+          echo "$YQ_SHA256  $RUNNER_TEMP/yq" | sha256sum -c -
+          chmod +x "$RUNNER_TEMP/yq"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Generate the spec parts
+        id: build
+        working-directory: openapi
+        run: |
+          # Empty settings: no credentials and no mirror; dependencies come from Maven Central
+          # and from the public eXo repository declared in openapi/pom.xml.
+          # Fail at end: a module that cannot be generated does not stop the others.
+          echo '<settings/>' > "$RUNNER_TEMP/settings.xml"
+          set +e
+          mvn -B -ntp --strict-checksums --fail-at-end -s "$RUNNER_TEMP/settings.xml" package
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Merge the parts of each module
+        id: merge
+        run: |
+          # A module with missing parts is skipped and keeps its previously published spec.
+          set +e
+          openapi/merge.sh
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+          mkdir -p "$RUNNER_TEMP/specs"
+          cp openapi/*/target/*_swagger.yaml "$RUNNER_TEMP/specs/"
+
+      - name: Upload the specs
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: openapi-specs
+          path: ${{ runner.temp }}/specs/
+          if-no-files-found: error
+          retention-days: 7
+
+  commit:
+    needs: generate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      TARGET_FOLDER: docs/.vuepress/public/specs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # A PAT, so that the push triggers the site deployment (docs.yml)
+          token: ${{ secrets.SWF_TOKEN }}
+
+      - name: Install yq
+        run: |
+          curl -sSfLo "$RUNNER_TEMP/yq" "https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/yq_linux_amd64"
+          echo "$YQ_SHA256  $RUNNER_TEMP/yq" | sha256sum -c -
+          chmod +x "$RUNNER_TEMP/yq"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Download the specs
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: openapi-specs
+          path: ${{ runner.temp }}/specs
+
+      - name: Check and copy the specs
+        run: |
+          # Only <page>_swagger.yaml files that a page of docs/guide/openapi displays, each a
+          # parsable OpenAPI document, are published; anything else fails the job before any copy.
+          allowed=$(sed -n 's/.*<OpenApi page="\([^"]*\)".*/\1.yaml/p' docs/guide/openapi/*.md)
+          invalid=0
+          while IFS= read -r -d '' entry; do
+            name=$(basename "$entry")
+            if [ ! -f "$entry" ] || [ -L "$entry" ] || ! grep -qxF -- "$name" <<< "$allowed"; then
+              echo "::error::Unexpected entry in the specs artifact: $name"
+              invalid=1
+            elif [ "$(yq '.openapi' "$entry")" != "3.0.1" ]; then
+              echo "::error::Not an OpenAPI 3.0.1 document: $name"
+              invalid=1
+            fi
+          done < <(find "$RUNNER_TEMP/specs" -mindepth 1 -print0)
+          [ "$invalid" -eq 0 ] || exit 1
+          cp "$RUNNER_TEMP"/specs/*_swagger.yaml "$TARGET_FOLDER/"
+
+      - name: Commit the specs
+        run: |
+          git config user.email "exo-swf@exoplatform.com"
+          git config user.name "eXo Software Factory"
+          git add -- "$TARGET_FOLDER"
+          git diff --cached --quiet && exit 0
+          git commit -m "Automated integration of OPENAPI spec files"
+          git pull --rebase
+          git push
+
+      - name: Fail if a module could not be generated or merged
+        if: needs.generate.outputs.build-status != '0' || needs.generate.outputs.merge-status != '0'
+        run: |
+          echo "::error::At least one module could not be generated (mvn status ${{ needs.generate.outputs.build-status }}) or merged (merge.sh status ${{ needs.generate.outputs.merge-status }}), see the generate job log"
+          exit 1

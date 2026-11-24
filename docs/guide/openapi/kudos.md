@@ -1,1 +1,1 @@
-<OpenApi page="addons_kudos_swagger"/>
+<OpenApi page="kudos_swagger"/>

@@ -1,1 +1,1 @@
-<OpenApi page="addons_gamification_swagger"/>
+<OpenApi page="gamification_swagger"/>

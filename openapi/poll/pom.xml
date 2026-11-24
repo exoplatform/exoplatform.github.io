@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.exoplatform.documentation</groupId>
+    <artifactId>openapi</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>openapi-poll</artifactId>
+  <packaging>jar</packaging>
+  <name>Poll</name>
+  <properties>
+    <openapi.name>poll</openapi.name>
+    <openapi.title>Poll REST API</openapi.title>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>io.meeds.poll</groupId>
+      <artifactId>poll-services</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <!-- no JAX-RS resource in the services jar: Spring MVC only -->
+      <plugin>
+        <groupId>io.github.kbuntrock</groupId>
+        <artifactId>openapi-maven-plugin</artifactId>
+        <configuration>
+          <apis>
+            <api>
+              <filename>poll-spring.yaml</filename>
+              <locations>
+                <location>io.meeds.poll.rest</location>
+              </locations>
+            </api>
+          </apis>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

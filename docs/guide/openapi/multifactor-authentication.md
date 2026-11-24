@@ -1,1 +1,1 @@
-<OpenApi page="addons_multifactor-authentication_swagger"/>
+<OpenApi page="multifactor-authentication_swagger"/>
