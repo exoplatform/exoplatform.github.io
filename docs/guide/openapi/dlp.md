@@ -1,1 +1,1 @@
-<OpenApi page="addons_dlp_swagger"/>
+<OpenApi page="dlp_swagger"/>

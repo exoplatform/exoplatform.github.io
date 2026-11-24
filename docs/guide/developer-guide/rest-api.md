@@ -10,12 +10,11 @@ This page references all REST APIs available in eXo Platform
 ## eXo Platform Applications API
 - [Agenda REST Api](/guide/openapi/agenda)
 - [App Center REST Api](/guide/openapi/app-center)
-- [Chat REST Api](/guide/openapi/chat)
+- [Content REST Api](/guide/openapi/content)
 - [Documents REST Api](/guide/openapi/documents)
 - [ECMS REST Api](/guide/openapi/ecms)
 - [Gamification REST Api](/guide/openapi/gamification)
 - [Kudos REST Api](/guide/openapi/kudos)
-- [News REST Api](/guide/openapi/news)
 - [Notes REST Api](/guide/openapi/notes)
 - [Perk store REST Api](/guide/openapi/perk-store)
 - [Poll REST Api](/guide/openapi/poll)

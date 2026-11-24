@@ -1,1 +1,1 @@
-<OpenApi page="addons_notes_swagger"/>
+<OpenApi page="notes_swagger"/>

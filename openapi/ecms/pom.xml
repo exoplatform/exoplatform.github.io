@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.exoplatform.documentation</groupId>
+    <artifactId>openapi</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>openapi-ecms</artifactId>
+  <packaging>jar</packaging>
+  <name>ECMS</name>
+  <properties>
+    <openapi.name>ecms</openapi.name>
+    <openapi.title>ECMS REST API</openapi.title>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.ecms</groupId>
+      <artifactId>ecms-core-services</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <configuration>
+          <!-- classes, not packages: their packages are shared with other jars of the classpath -->
+          <resourceClasses>
+            <class>org.exoplatform.services.rest.AttachmentsRestService</class>
+            <class>org.exoplatform.services.rest.DocumentsAppRedirectService</class>
+            <class>org.exoplatform.services.rest.DocumentRestService</class>
+            <class>org.exoplatform.services.rest.transferRules.TransferRulesRestService</class>
+            <class>org.exoplatform.services.cms.webdav.WebDavServiceImpl</class>
+          </resourceClasses>
+        </configuration>
+      </plugin>
+      <!-- no Spring MVC controller in the services jar: JAX-RS only -->
+    </plugins>
+  </build>
+</project>

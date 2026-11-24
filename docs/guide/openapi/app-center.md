@@ -1,1 +1,1 @@
-<OpenApi page="addons_app-center_swagger"/>
+<OpenApi page="app-center_swagger"/>

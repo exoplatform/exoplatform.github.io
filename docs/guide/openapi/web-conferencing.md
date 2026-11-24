@@ -1,1 +1,1 @@
-<OpenApi page="addons_web-conferencing_swagger"/>
+<OpenApi page="web-conferencing_swagger"/>

@@ -1,64 +1,441 @@
 openapi: 3.0.1
-info:
-  title: Gatein-portal Rest APIs
-  description: Gatein-portal used Rest endpoints
-  license:
-    name: LGPL
-    url: https://www.gnu.org/licenses/lgpl-3.0.en.html
-  version: "1.0"
 tags:
-- name: /v1/platform/branding
-  description: Managing branding information
-- name: v1/navigations
-  description: Retrieve sites navigations
-- name: v1/groups
-  description: Manages groups operations
-- name: v1/membershipTypes
-  description: Manage membership types operations
-- name: v1/users
-  description: Manage User operations
-- name: /v1/settings
-  description: Managing settings
+  - name: /registration/settings
+    description: Managing user registraion settings and flow
+  - name: /v1/platform/branding
+    description: Managing branding information
+  - name: v1/navigations
+    description: Retrieve sites navigations
+  - name: v1/groups
+    description: Manages groups operations
+  - name: v1/membershipTypes
+    description: Manage membership types operations
+  - name: v1/users
+    description: Manage User operations
 paths:
-  /v1/groups:
+  /rest/registration/settings:
     get:
       tags:
-      - v1/groups
+        - /registration/settings
+      summary: Get user registraion settings
+      description: Get user registraion settings
+      operationId: getRegistrationSetting
+      responses:
+        "200":
+          description: Request fulfilled
+    put:
+      tags:
+        - /registration/settings
+      summary: Update user registraion settings and flow
+      description: Update user registraion settings and flow
+      operationId: updateRegistrationSetting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegistrationSetting"
+      responses:
+        "204":
+          description: Request fulfilled
+        "403":
+          description: "The session has not been confirmed with a one-time password: OTP_REQUIRED"
+  /rest/welcomeScreen/checkUsername:
+    get:
+      operationId: checkUsername
+      parameters:
+        - name: username
+          in: query
+          schema:
+            type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /rest/v1/platform/branding/appBackground:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Default application Background image
+      description: Get the platform-wide default application background image (Branding and Theme > Pages & Apps style)
+      operationId: getAppBackground
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Object not found
+  /rest/v1/platform/branding/appTextHeaderBackground:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Default application header text Background image
+      description: Get the platform-wide default application header text background image (Branding and Theme > Pages & Apps style)
+      operationId: getAppTextHeaderBackground
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Object not found
+  /rest/v1/platform/branding/appTextTitleBackground:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Default application title text Background image
+      description: Get the platform-wide default application title text background image (Branding and Theme > Pages & Apps style)
+      operationId: getAppTextTitleBackground
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Object not found
+  /rest/v1/platform/branding/css:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Branding CSS content
+      description: Get Branding CSS content
+      operationId: getBrandingCSS
+      parameters:
+        - name: v
+          in: query
+          description: "The value of lastModified parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Branding css retrieved
+        "304":
+          description: Branding css not modified
+        "500":
+          description: Server error when retrieving branding css
+  /rest/v1/platform/branding/favicon:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Branding favicon
+      description: Get Branding favicon
+      operationId: getBrandingFavicon
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Branding favicon retrieved
+        "404":
+          description: Branding favicon not found
+        "500":
+          description: Server error when retrieving branding favicon
+  /rest/v1/platform/branding:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Branding information
+      description: Get Branding information
+      operationId: getBrandingInformation
+      responses:
+        "200":
+          description: Request fulfilled
+    put:
+      tags:
+        - /v1/platform/branding
+      summary: Update Branding information
+      description: Update Branding information
+      operationId: updateBrandingInformation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Branding"
+      responses:
+        "204":
+          description: Branding information updated
+        "400":
+          description: "Invalid value, the body is the message code"
+  /rest/v1/platform/branding/logo:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Branding logo
+      description: Get Branding logo
+      operationId: getBrandingLogo
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Branding logo retrieved
+        "404":
+          description: Branding logo not found
+        "500":
+          description: Server error when retrieving branding logo
+  /rest/v1/platform/branding/default:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get default theme style
+      description: Get default theme style
+      operationId: getDefaultBrandingThemeStyle
+      responses:
+        "200":
+          description: Request fulfilled
+  /rest/v1/platform/branding/drawerBackground:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Default drawer Background image
+      description: Get Default drawer Background image
+      operationId: getDrawerBackground
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Object not found
+  /rest/v1/platform/branding/loginBackground:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get authentication pages left panel background
+      description: Get authentication pages left panel background
+      operationId: getLoginBackground
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Resource not found
+        "500":
+          description: Server error when retrieving resource
+  /rest/v1/platform/branding/pageBackground:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Default Page Background image
+      description: Get Default Page Background image
+      operationId: getPageBackground
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Object not found
+  /rest/v1/platform/branding/sideBarBackground:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Default sidebar Background image
+      description: Get Default sidebar Background image
+      operationId: getSideBarBackground
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Object not found
+  /rest/v1/platform/branding/topBarBackground:
+    get:
+      tags:
+        - /v1/platform/branding
+      summary: Get Default top bar Background image
+      description: Get Default top bar Background image
+      operationId: getTopBarBackground
+      parameters:
+        - name: v
+          in: query
+          description: "The value of version parameter will determine whether the query should be cached by browser or not. If not set, no 'expires HTTP Header will be sent'"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fullfilled
+        "404":
+          description: Object not found
+  /rest/v1/navigations:
+    get:
+      tags:
+        - v1/navigations
+      summary: Gets navigations
+      description: Gets navigations
+      operationId: getSiteNavigation
+      parameters:
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: "Limit, if equals to 0, it will use default limit."
+          schema:
+            type: integer
+            format: int32
+            default: 20
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "404":
+          description: Navigation does not exist
+        "500":
+          description: Internal server error
+  /rest/v1/navigations/{siteType}:
+    get:
+      tags:
+        - v1/navigations
+      summary: Gets navigations of one or multiple site navigations
+      description: Gets navigations of one or multiple site navigations
+      operationId: getSiteTypeNavigations
+      parameters:
+        - name: siteType
+          in: path
+          description: "Portal site type, possible values: PORTAL, GROUP or USER"
+          required: true
+          schema:
+            type: string
+        - name: siteName
+          in: query
+          description: Portal site name
+          required: true
+          schema:
+            type: string
+        - name: scope
+          in: query
+          description: "Scope of navigations tree to retrieve, possible values: ALL, CHILDREN, GRANDCHILDREN, SINGLE"
+          schema:
+            type: string
+            default: ALL
+        - name: nodeId
+          in: query
+          description: parent navigation node id
+          schema:
+            type: string
+        - name: visibility
+          in: query
+          description: "Multivalued visibilities of navigation nodes to retrieve, possible values: DISPLAYED, HIDDEN, SYSTEM or TEMPORAL. If empty, all visibilities will be used."
+          schema:
+            type: array
+            items:
+              type: string
+              default: All possible values combined
+            default: All possible values combined
+        - name: includeGlobal
+          in: query
+          description: if to include Global site in results in portal type case
+          schema:
+            type: boolean
+            default: true
+        - name: expand
+          in: query
+          description: to include extra node page details in results
+          schema:
+            type: boolean
+        - name: temporalCheck
+          in: query
+          description: to check the navigation nodes scheduling start and end dates
+          schema:
+            type: boolean
+            default: true
+        - name: expandBreadcrumb
+          in: query
+          description: to expand the navigation breadcrumb
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Invalid query input
+        "404":
+          description: Navigation does not exist
+        "500":
+          description: Internal server error
+  /rest/v1/groups:
+    get:
+      tags:
+        - v1/groups
       summary: Gets groups
       description: Gets groups
       operationId: getGroups
       parameters:
-      - name: q
-        in: query
-        description: Search text to filter groups
-        schema:
-          type: string
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-      - name: limit
-        in: query
-        description: Limit
-        schema:
-          type: integer
-          format: int32
-      - name: tree
-        in: query
-        description: Whether build tree until results or not
-        schema:
-          type: boolean
-          default: false
-      - name: returnSize
-        in: query
-        schema:
-          type: boolean
-      - name: expand
-        in: query
-        schema:
-          type: string
+        - name: q
+          in: query
+          description: Search text to filter groups
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: Limit
+          schema:
+            type: integer
+            format: int32
+        - name: tree
+          in: query
+          description: Whether build tree until results or not
+          schema:
+            type: boolean
+            default: false
+        - name: returnSize
+          in: query
+          schema:
+            type: boolean
+        - name: expand
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           description: Request fulfilled
@@ -68,7 +445,7 @@ paths:
           description: Internal server error
     put:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Updates an existing Group
       description: Updates an existing Group
       operationId: updateGroup
@@ -76,7 +453,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GroupImpl'
+              $ref: "#/components/schemas/GroupImpl"
       responses:
         "204":
           description: Request fulfilled
@@ -88,7 +465,7 @@ paths:
           description: Internal server error
     post:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Creates a new group
       description: Creates a new group
       operationId: createGroup
@@ -96,7 +473,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GroupImpl'
+              $ref: "#/components/schemas/GroupImpl"
       responses:
         "204":
           description: Request fulfilled
@@ -108,17 +485,17 @@ paths:
           description: Internal server error
     delete:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Deletes an existing Group
       description: Deletes an existing Group
       operationId: deleteGroup
       parameters:
-      - name: groupId
-        in: query
-        description: Group id
-        required: true
-        schema:
-          type: string
+        - name: groupId
+          in: query
+          description: Group id
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: Request fulfilled
@@ -128,40 +505,40 @@ paths:
           description: User not authorized to call this endpoint
         "500":
           description: Internal server error
-  /v1/groups/memberships:
+  /rest/v1/groups/memberships:
     get:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Gets Group memberships list
       description: Gets Group memberships list
       operationId: getGroupMemberships
       parameters:
-      - name: groupId
-        in: query
-        description: Group identifier
-        required: true
-        schema:
-          type: string
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: limit
-        in: query
-        description: Limit
-        schema:
-          type: integer
-          format: int32
-          default: 20
-      - name: returnSize
-        in: query
-        description: Returning the number of users found or not
-        schema:
-          type: boolean
-          default: false
+        - name: groupId
+          in: query
+          description: Group identifier
+          required: true
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: Limit
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: returnSize
+          in: query
+          description: Returning the number of users found or not
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: Request fulfilled
@@ -171,23 +548,23 @@ paths:
           description: Internal server error due to data encoding
     put:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Updates an existing membership
       description: Updates an existing membership
       operationId: updateMembership
       parameters:
-      - name: membershipId
-        in: query
-        description: "Membership identifier with format: MEMBERSHIP_TYPE:GROUP_ID:USER_NAME"
-        required: true
-        schema:
-          type: string
+        - name: membershipId
+          in: query
+          description: "Membership identifier with format: MEMBERSHIP_TYPE:GROUP_ID:USER_NAME"
+          required: true
+          schema:
+            type: string
       requestBody:
         description: Membership object
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MembershipImpl'
+              $ref: "#/components/schemas/MembershipImpl"
       responses:
         "204":
           description: Request fulfilled
@@ -199,7 +576,7 @@ paths:
           description: Internal server error
     post:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Creates a new membership
       description: Creates a new membership
       operationId: createMembership
@@ -208,7 +585,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MembershipImpl'
+              $ref: "#/components/schemas/MembershipImpl"
       responses:
         "204":
           description: Request fulfilled
@@ -216,21 +593,23 @@ paths:
           description: Bad request
         "401":
           description: User not authorized to call this endpoint
+        "403":
+          description: User not allowed to manage the group memberships
         "500":
           description: Internal server error
     delete:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Deletes an existing membership
       description: Deletes an existing membership
       operationId: deleteMembership
       parameters:
-      - name: membershipId
-        in: query
-        description: "Membership identifier with format: MEMBERSHIP_TYPE:USER_NAME:GROUP_ID"
-        required: true
-        schema:
-          type: string
+        - name: membershipId
+          in: query
+          description: "Membership identifier with format: MEMBERSHIP_TYPE:USER_NAME:GROUP_ID"
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: Request fulfilled
@@ -238,12 +617,14 @@ paths:
           description: Bad request
         "401":
           description: User not authorized to call this endpoint
+        "403":
+          description: User not allowed to manage the group memberships
         "500":
           description: Internal server error
-  /v1/groups/memberships/bulk:
+  /rest/v1/groups/memberships/bulk:
     post:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Creates new memberships
       description: Creates new memberships
       operationId: createMultipleMembership
@@ -254,7 +635,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/MembershipImpl'
+                $ref: "#/components/schemas/MembershipImpl"
       responses:
         "204":
           description: Request fulfilled
@@ -264,40 +645,40 @@ paths:
           description: User not authorized to call this endpoint
         "500":
           description: Internal server error
-  /v1/groups/tree:
+  /rest/v1/groups/tree:
     get:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Gets groups tree
       description: Gets groups tree
       operationId: getGroupsTree
       parameters:
-      - name: parentId
-        in: query
-        description: Parent groupId to search
-        schema:
-          type: string
-      - name: q
-        in: query
-        description: Search text to filter groups
-        schema:
-          type: string
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-      - name: limit
-        in: query
-        description: Limit
-        schema:
-          type: integer
-          format: int32
-      - name: returnSize
-        in: query
-        schema:
-          type: boolean
+        - name: parentId
+          in: query
+          description: Parent groupId to search
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search text to filter groups
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: Limit
+          schema:
+            type: integer
+            format: int32
+        - name: returnSize
+          in: query
+          schema:
+            type: boolean
       responses:
         "200":
           description: Request fulfilled
@@ -305,72 +686,112 @@ paths:
           description: User not authorized to call this endpoint
         "500":
           description: Internal server error
-  /v1/groups/treeMembers:
+  /rest/v1/groups/treeMembers:
     get:
       tags:
-      - v1/groups
+        - v1/groups
       summary: Gets groups tree
       description: Gets groups tree
       operationId: getGroupsTreeMembers
       parameters:
-      - name: q
-        in: query
-        description: Search text to filter groups
-        schema:
-          type: string
-      - name: groupMember
-        in: query
-        description: Group member
-        schema:
-          type: string
-      - name: groupType
-        in: query
-        description: Group type
-        schema:
-          type: string
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-      - name: limit
-        in: query
-        description: Limit
-        schema:
-          type: integer
-          format: int32
-      - name: returnSize
-        in: query
-        schema:
-          type: boolean
-      - name: allGroupsForAdmin
-        in: query
-        description: allGroupsForAdmin
-        schema:
-          type: boolean
-      - name: excludeParentGroup
-        in: query
-        description: List of excluded parent/type groups
-        schema:
-          type: array
-          items:
+        - name: q
+          in: query
+          description: Search text to filter groups
+          schema:
             type: string
+        - name: groupMember
+          in: query
+          description: Group member
+          schema:
+            type: string
+        - name: groupType
+          in: query
+          description: Group type
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: Limit
+          schema:
+            type: integer
+            format: int32
+        - name: returnSize
+          in: query
+          schema:
+            type: boolean
+        - name: allGroupsForAdmin
+          in: query
+          description: allGroupsForAdmin
+          schema:
+            type: boolean
+        - name: excludeParentGroup
+          in: query
+          description: List of excluded parent/type groups
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           description: Request fulfilled
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectionEntity'
+                $ref: "#/components/schemas/CollectionEntity"
         "401":
           description: User not authorized to call this endpoint
         "500":
           description: Internal server error
-  /v1/membershipTypes:
+  /rest/v1/groups/nested:
     get:
       tags:
-      - v1/membershipTypes
+        - v1/groups
+      summary: Get nested groups
+      description: Returns paginated nested groups of a parent group
+      operationId: getNestedGroups
+      parameters:
+        - name: groupId
+          in: query
+          description: Parent group id
+          required: true
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Pagination offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: Pagination limit
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: returnSize
+          in: query
+          description: Return total size
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Request fulfilled successfully
+        "404":
+          description: Parent group not found
+        "500":
+          description: Internal server error
+  /rest/v1/membershipTypes:
+    get:
+      tags:
+        - v1/membershipTypes
       summary: Gets membership types
       description: Gets membership types
       operationId: getMembershipType
@@ -383,7 +804,7 @@ paths:
           description: Internal server error
     put:
       tags:
-      - v1/membershipTypes
+        - v1/membershipTypes
       summary: Updates an existing membership type
       description: Updates an existing membership type
       operationId: updateMembershipType
@@ -392,7 +813,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MembershipTypeImpl'
+              $ref: "#/components/schemas/MembershipTypeImpl"
       responses:
         "204":
           description: Request fulfilled
@@ -404,7 +825,7 @@ paths:
           description: Internal server error
     post:
       tags:
-      - v1/membershipTypes
+        - v1/membershipTypes
       summary: Creates a new membership type
       description: Creates a new membership type
       operationId: createMembershipType
@@ -413,7 +834,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MembershipTypeImpl'
+              $ref: "#/components/schemas/MembershipTypeImpl"
       responses:
         "204":
           description: Request fulfilled
@@ -423,20 +844,20 @@ paths:
           description: User not authorized to call this endpoint
         "500":
           description: Internal server error
-  /v1/membershipTypes/{membershipType}:
+  /rest/v1/membershipTypes/{membershipType}:
     delete:
       tags:
-      - v1/membershipTypes
+        - v1/membershipTypes
       summary: Deletes an existing membership type
       description: Deletes an existing membership type
       operationId: deleteMembershipType
       parameters:
-      - name: membershipType
-        in: path
-        description: Membership type name
-        required: true
-        schema:
-          type: string
+        - name: membershipType
+          in: path
+          description: Membership type name
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: Request fulfilled
@@ -446,518 +867,27 @@ paths:
           description: User not authorized to call this endpoint
         "500":
           description: Internal server error
-  /v1/navigations:
-    get:
-      tags:
-      - v1/navigations
-      summary: Gets navigations
-      description: Gets navigations
-      operationId: getSiteNavigation
-      parameters:
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: limit
-        in: query
-        description: "Limit, if equals to 0, it will use default limit."
-        schema:
-          type: integer
-          format: int32
-          default: 20
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "404":
-          description: Navigation does not exist
-        "500":
-          description: Internal server error
-  /v1/navigations/{siteType}:
-    get:
-      tags:
-      - v1/navigations
-      summary: Gets navigations of one or multiple site navigations
-      description: Gets navigations of one or multiple site navigations
-      operationId: getSiteTypeNavigations
-      parameters:
-      - name: siteType
-        in: path
-        description: "Portal site type, possible values: PORTAL, GROUP or USER"
-        required: true
-        schema:
-          type: string
-      - name: siteName
-        in: query
-        description: Portal site name
-        required: true
-        schema:
-          type: string
-      - name: scope
-        in: query
-        description: "Scope of navigations tree to retrieve, possible values: ALL,\
-          \ CHILDREN, GRANDCHILDREN, SINGLE"
-        schema:
-          type: string
-          default: ALL
-      - name: nodeId
-        in: query
-        description: parent navigation node id
-        schema:
-          type: string
-      - name: visibility
-        in: query
-        description: "Multivalued visibilities of navigation nodes to retrieve, possible\
-          \ values: DISPLAYED, HIDDEN, SYSTEM or TEMPORAL. If empty, all visibilities\
-          \ will be used."
-        schema:
-          type: array
-          items:
-            type: string
-            default: All possible values combined
-          default: All possible values combined
-      - name: includeGlobal
-        in: query
-        description: if to include Global site in results in portal type case
-        schema:
-          type: boolean
-          default: true
-      - name: expand
-        in: query
-        description: to include extra node page details in results
-        schema:
-          type: boolean
-      - name: temporalCheck
-        in: query
-        description: to check the navigation nodes scheduling start and end dates
-        schema:
-          type: boolean
-          default: true
-      - name: expandBreadcrumb
-        in: query
-        description: to expand the navigation breadcrumb
-        schema:
-          type: boolean
-          default: false
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "404":
-          description: Navigation does not exist
-        "500":
-          description: Internal server error
-  /v1/platform/branding:
-    get:
-      tags:
-      - /v1/platform/branding
-      summary: Get Branding information
-      description: Get Branding information
-      operationId: getBrandingInformation
-      responses:
-        "200":
-          description: Request fulfilled
-        "304":
-          description: Resource not modified
-        "500":
-          description: Server error when retrieving branding information
-    put:
-      tags:
-      - /v1/platform/branding
-      summary: Update Branding information
-      description: Update Branding information
-      operationId: updateBrandingInformation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Branding'
-      responses:
-        "204":
-          description: Branding information updated
-        "500":
-          description: Server error when updating branding information
-  /v1/platform/branding/css:
-    get:
-      tags:
-      - /v1/platform/branding
-      summary: Get Branding CSS content
-      description: Get Branding CSS content
-      operationId: getBrandingCSS
-      parameters:
-      - name: v
-        in: query
-        description: "The value of lastModified parameter will determine whether the\
-          \ query should be cached by browser or not. If not set, no 'expires HTTP\
-          \ Header will be sent'"
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Branding css retrieved
-        "304":
-          description: Branding css not modified
-        "500":
-          description: Server error when retrieving branding css
-  /v1/platform/branding/favicon:
-    get:
-      tags:
-      - /v1/platform/branding
-      summary: Get Branding favicon
-      description: Get Branding favicon
-      operationId: getBrandingFavicon
-      parameters:
-      - name: lastModified
-        in: query
-        description: "The value of lastModified parameter will determine whether the\
-          \ query should be cached by browser or not. If not set, no 'expires HTTP\
-          \ Header will be sent'"
-        schema:
-          type: string
-      - name: v
-        in: query
-        description: "The value of version parameter will determine whether the query\
-          \ should be cached by browser or not. If not set, no 'expires HTTP Header\
-          \ will be sent'"
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Branding favicon retrieved
-        "404":
-          description: Branding favicon not found
-        "500":
-          description: Server error when retrieving branding favicon
-  /v1/platform/branding/loginBackground:
-    get:
-      tags:
-      - /v1/platform/branding
-      summary: Get authentication pages left panel background
-      description: Get authentication pages left panel background
-      operationId: getLoginBackground
-      parameters:
-      - name: lastModified
-        in: query
-        description: "The value of lastModified parameter will determine whether the\
-          \ query should be cached by browser or not. If not set, no 'expires HTTP\
-          \ Header will be sent'"
-        schema:
-          type: string
-      - name: v
-        in: query
-        description: "The value of version parameter will determine whether the query\
-          \ should be cached by browser or not. If not set, no 'expires HTTP Header\
-          \ will be sent'"
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Request fullfilled
-        "404":
-          description: Resource not found
-        "500":
-          description: Server error when retrieving resource
-  /v1/platform/branding/logo:
-    get:
-      tags:
-      - /v1/platform/branding
-      summary: Get Branding logo
-      description: Get Branding logo
-      operationId: getBrandingLogo
-      parameters:
-      - name: lastModified
-        in: query
-        description: "The value of lastModified parameter will determine whether the\
-          \ query should be cached by browser or not. If not set, no 'expires HTTP\
-          \ Header will be sent'"
-        schema:
-          type: string
-      - name: v
-        in: query
-        description: "The value of version parameter will determine whether the query\
-          \ should be cached by browser or not. If not set, no 'expires HTTP Header\
-          \ will be sent'"
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Branding logo retrieved
-        "404":
-          description: Branding logo not found
-        "500":
-          description: Server error when retrieving branding logo
-  /v1/settings/{context}/{scope}/{settingKey}:
-    get:
-      tags:
-      - /v1/settings
-      summary: Gets a specific setting value
-      description: Gets a specific setting value
-      operationId: getSetting
-      parameters:
-      - name: context
-        in: path
-        description: "Context - Format 'contextName,contextId' where 'contextId' is\
-          \ optional. Example: GLOBAL or USER,john"
-        required: true
-        schema:
-          type: string
-      - name: scope
-        in: path
-        description: "Scope - Format 'scopeName,scopeId' where 'scopeId' is optional.\
-          \ Example: GLOBAL or APPLICATION,wiki or SPACE,marketing"
-        required: true
-        schema:
-          type: string
-      - name: settingKey
-        in: path
-        description: Setting key
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "401":
-          description: User does not have permissions to get it
-        "404":
-          description: Setting does not exist
-        "500":
-          description: Internal server error
-    put:
-      tags:
-      - /v1/settings
-      summary: Sets a specific setting value
-      description: Sets a specific setting value
-      operationId: setSetting
-      parameters:
-      - name: context
-        in: path
-        description: "Context - Format 'contextName,contextId' where 'contextId' is\
-          \ optional. Example: GLOBAL or USER,john"
-        required: true
-        schema:
-          type: string
-      - name: scope
-        in: path
-        description: "Scope - Format 'scopeName,scopeId' where 'scopeId' is optional.\
-          \ Example: GLOBAL or APPLICATION,wiki or SPACE,marketing"
-        required: true
-        schema:
-          type: string
-      - name: settingKey
-        in: path
-        description: Setting key
-        required: true
-        schema:
-          type: string
-      requestBody:
-        description: Setting value
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SettingValueEntity'
-        required: true
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "401":
-          description: User does not have permissions to update it
-        "500":
-          description: Internal server error
-  /v1/users:
-    get:
-      tags:
-      - v1/users
-      summary: Gets all users
-      description: Gets all users
-      operationId: getUsers
-      parameters:
-      - name: q
-        in: query
-        description: "User name information to filter, ex: user name, last name, first\
-          \ name or full name"
-        schema:
-          type: string
-      - name: status
-        in: query
-        description: "User status : ANY, ENABLED or DISABLED"
-        schema:
-          type: string
-          default: ANY
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: limit
-        in: query
-        description: Limit
-        schema:
-          type: integer
-          format: int32
-          default: 10
-      - name: returnSize
-        in: query
-        description: Returning the number of users found or not
-        schema:
-          type: boolean
-          default: false
-      responses:
-        "200":
-          description: Request fulfilled
-        "500":
-          description: Internal server error due to data encoding
-    put:
-      tags:
-      - v1/users
-      summary: Update an existing user
-      description: Update an existing user
-      operationId: updateUser
-      requestBody:
-        description: User Object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/UserRestEntity'
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "500":
-          description: Internal server error due to data encoding
-    post:
-      tags:
-      - v1/users
-      summary: Create new user
-      description: Create new user
-      operationId: createUser
-      requestBody:
-        description: User Object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/UserRestEntity'
-      responses:
-        "200":
-          description: Request fulfilled
-        "400":
-          description: Invalid query input
-        "500":
-          description: Internal server error due to data encoding
-  /v1/users/isDelegatedAdministrator:
-    get:
-      tags:
-      - v1/users
-      summary: Check if current user is a delegated administrator
-      description: Check if current user is a delegated administrator
-      operationId: isDelegatedAdministrator
-      responses:
-        "200":
-          description: Request fulfilled
-        "500":
-          description: Internal server error due to data encoding
-  /v1/users/isSuperUser:
-    get:
-      tags:
-      - v1/users
-      summary: Check if current user is a superUser
-      description: Check if current user is a superUser
-      operationId: isSuperUser
-      responses:
-        "200":
-          description: Request fulfilled
-        "500":
-          description: Internal server error due to data encoding
-  /v1/users/isSynchronizedUserAllowedToChangePassword:
-    get:
-      tags:
-      - v1/users
-      summary: Check if synchronized user is allowed to change his password
-      description: Check if synchronized user is allowed to change his password
-      operationId: isSynchronizedUserAllowedToChangePassword
-      responses:
-        "200":
-          description: Request fulfilled
-        "500":
-          description: Internal server error due to data encoding
-  /v1/users/{id}:
-    get:
-      tags:
-      - v1/users
-      summary: Gets a user identified by its id
-      description: Gets a user identified by its id
-      operationId: getUser
-      parameters:
-      - name: id
-        in: path
-        description: User name identifier
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Request fulfilled
-        "401":
-          description: User not authorized to call this endpoint
-        "404":
-          description: User not found
-        "500":
-          description: Internal server error
-    delete:
-      tags:
-      - v1/users
-      summary: Deletes a user identified by its id
-      description: Deletes a user identified by its id
-      operationId: deleteUser
-      parameters:
-      - name: id
-        in: path
-        description: User name identifier
-        required: true
-        schema:
-          type: string
-      responses:
-        "204":
-          description: Request fulfilled
-        "401":
-          description: User not authorized to call this endpoint
-        "404":
-          description: User not found
-        "500":
-          description: Internal server error
-  /v1/users/{id}/changePassword:
+  /rest/v1/users/{id}/changePassword:
     patch:
       tags:
-      - v1/users
+        - v1/users
       summary: Changes user password
       description: Changes user password
       operationId: changePassword
       parameters:
-      - name: id
-        in: path
-        description: username to change his password
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: username to change his password
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           '*/*':
             schema:
               required:
-              - currentPassword
-              - newPassword
+                - currentPassword
+                - newPassword
               type: object
               properties:
                 currentPassword:
@@ -975,57 +905,284 @@ paths:
           description: User not found
         "500":
           description: Internal server error
-  /v1/users/{id}/memberships:
+  /rest/v1/users/confirmation:
+    post:
+      tags:
+        - v1/users
+      summary: Confirms the current session with a one-time password
+      description: "Validates the one-time password sent by email to the authenticated user and marks the current session as confirmed, so that the administrator actions on user accounts are applied from it. The code validates once. The confirmation proves the caller's identity only: each guarded endpoint keeps its own permission check."
+      operationId: confirmSession
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              required:
+                - otpCode
+              type: object
+              properties:
+                otpCode:
+                  type: string
+                  description: One-time password received by email
+      responses:
+        "204":
+          description: Session confirmed
+        "401":
+          description: "Wrong, expired, already used or throttled code: OTP_CODE_INVALID"
+  /rest/v1/users:
     get:
       tags:
-      - v1/users
+        - v1/users
+      summary: Gets all users
+      description: Gets all users
+      operationId: getUsers
+      parameters:
+        - name: q
+          in: query
+          description: "User name information to filter, ex: user name, last name, first name or full name"
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: "User status : ANY, ENABLED or DISABLED"
+          schema:
+            type: string
+            default: ANY
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: Limit
+          schema:
+            type: integer
+            format: int32
+            default: 10
+        - name: returnSize
+          in: query
+          description: Returning the number of users found or not
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error due to data encoding
+    put:
+      tags:
+        - v1/users
+      summary: Update an existing user
+      description: "Update an existing user: names, email, password when given, enabled flag, and the preferred language when given, a blank one leaving the stored one unchanged"
+      operationId: updateUser
+      requestBody:
+        description: User Object
+        content:
+          '*/*':
+            schema:
+              $ref: "#/components/schemas/UserRestEntity"
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: "Invalid query input, or a language that is not a supported locale: LANGUAGE:INVALID"
+        "404":
+          description: Unknown user
+        "403":
+          description: "User not administrator, or the session has not been confirmed with a one-time password: OTP_REQUIRED"
+        "500":
+          description: "The update could not be proven: USER:PASSWORD_NOT_STORED or USER:PASSWORD_NOT_VERIFIABLE, nothing written after the password; USER:UPDATE_INCOMPLETE, a field read back other than requested"
+    post:
+      tags:
+        - v1/users
+      summary: Create new user
+      description: "Creates an account: the login is the given one or a generated one, the password is optional, the role (INTERNAL, EXTERNAL or ADMINISTRATOR) decides the memberships, the language is the preferred one"
+      operationId: createUser
+      requestBody:
+        description: User Object
+        content:
+          '*/*':
+            schema:
+              $ref: "#/components/schemas/UserRestEntity"
+      responses:
+        "201":
+          description: "Account created, the body carries its login"
+        "400":
+          description: "A refused field, the body being its code: USERNAME:*, PASSWORD:*, FIRSTNAME:*, LASTNAME:*, EMAIL:*, ROLE:INVALID, LANGUAGE:INVALID"
+        "403":
+          description: "The session has not been confirmed with a one-time password: OTP_REQUIRED"
+        "500":
+          description: "The store did not complete the creation, the body being the code: USER:CREATION_FAILED and USER:USERNAME_GENERATION_EXHAUSTED (nothing created), USER:CREATED_INCOMPLETE:<login>:<parts> (created, then deactivated), USER:CREATED_INCOMPLETE_ENABLED:<login>:<parts> (created, still active)"
+  /rest/v1/users/{id}:
+    get:
+      tags:
+        - v1/users
+      summary: Gets a user identified by its id
+      description: Gets a user identified by its id
+      operationId: getUser
+      parameters:
+        - name: id
+          in: path
+          description: User name identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "401":
+          description: User not authorized to call this endpoint
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+        - v1/users
+      summary: Deletes a user identified by its id
+      description: Deletes a user identified by its id
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          description: User name identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: User not authorized to call this endpoint
+        "403":
+          description: "The session has not been confirmed with a one-time password: OTP_REQUIRED"
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+  /rest/v1/users/onboardingSettings:
+    get:
+      tags:
+        - v1/users
+      summary: Gets the onboarding settings
+      description: "Gets the validity of an onboarding link, in days and in hours, as configured on the platform"
+      operationId: getOnboardingSettings
+      responses:
+        "200":
+          description: Request fulfilled
+  /rest/v1/users/{id}/memberships:
+    get:
+      tags:
+        - v1/users
       summary: Gets User memberships list
       description: Gets User memberships list
       operationId: getUserMemberships
       parameters:
-      - name: id
-        in: path
-        description: User name identifier
-        required: true
-        schema:
-          type: string
-      - name: offset
-        in: query
-        description: Offset
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: limit
-        in: query
-        description: Limit
-        schema:
-          type: integer
-          format: int32
-          default: 20
-      - name: returnSize
-        in: query
-        description: Returning the number of users found or not
-        schema:
-          type: boolean
-          default: false
+        - name: id
+          in: path
+          description: User name identifier
+          required: true
+          schema:
+            type: string
+        - name: groupId
+          in: query
+          description: "Group id to filter only its memberships, ex: /platform"
+          schema:
+            type: string
+        - name: includeNestedGroups
+          in: query
+          description: "When filtering by groupId, whether to also include memberships on groups nested, at any level, inside the given group"
+          schema:
+            type: boolean
+            default: false
+        - name: offset
+          in: query
+          description: Offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          description: Limit
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: returnSize
+          in: query
+          description: Returning the number of users found or not
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: Request fulfilled
+        "403":
+          description: User not allowed to list the group memberships
         "404":
           description: User not found
         "500":
           description: Internal server error due to data encoding
+  /rest/v1/users/isSuperUser:
+    get:
+      tags:
+        - v1/users
+      summary: Check if current user is a superUser
+      description: Check if current user is a superUser
+      operationId: isSuperUser
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error due to data encoding
+  /rest/v1/users/isSynchronizedUserAllowedToChangePassword:
+    get:
+      tags:
+        - v1/users
+      summary: Check if synchronized user is allowed to change his password
+      description: Check if synchronized user is allowed to change his password
+      operationId: isSynchronizedUserAllowedToChangePassword
+      responses:
+        "200":
+          description: Request fulfilled
+        "500":
+          description: Internal server error due to data encoding
 components:
   schemas:
+    RegistrationSetting:
+      type: object
+      properties:
+        accountDeactivationEnabled:
+          type: boolean
+        accountDeletionAnonymizationEnabled:
+          type: boolean
+        accountDeletionEnabled:
+          type: boolean
+        deletedUserLabels:
+          type: object
+          additionalProperties:
+            type: string
+        externalUser:
+          type: boolean
+        extraGroupIds:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+          enum:
+            - OPEN
+            - RESTRICTED
     Background:
       type: object
       properties:
         data:
-          type: array
-          items:
-            type: string
-            format: byte
+          type: string
+          format: byte
         fileId:
           type: integer
           format: int64
@@ -1040,19 +1197,33 @@ components:
     Branding:
       type: object
       properties:
+        appBackground:
+          $ref: "#/components/schemas/Background"
+        appTextHeaderBackground:
+          $ref: "#/components/schemas/Background"
+        appTextTitleBackground:
+          $ref: "#/components/schemas/Background"
         companyLink:
           type: string
         companyName:
           type: string
+        customCss:
+          type: string
         defaultLanguage:
           type: string
+        direction:
+          type: string
+        drawerBackground:
+          $ref: "#/components/schemas/Background"
         favicon:
-          $ref: '#/components/schemas/Favicon'
+          $ref: "#/components/schemas/Favicon"
         lastUpdatedTime:
           type: integer
           format: int64
         loginBackground:
-          $ref: '#/components/schemas/Background'
+          $ref: "#/components/schemas/Background"
+        loginBackgroundAltText:
+          type: string
         loginBackgroundTextColor:
           type: string
         loginSubtitle:
@@ -1064,9 +1235,31 @@ components:
           additionalProperties:
             type: string
         logo:
-          $ref: '#/components/schemas/Logo'
+          $ref: "#/components/schemas/Logo"
+        pageBackground:
+          $ref: "#/components/schemas/Background"
+        pageBackgroundAttachment:
+          type: string
+        pageBackgroundColor:
+          type: string
+        pageBackgroundEffect:
+          type: string
+        pageBackgroundPosition:
+          type: string
+        pageBackgroundRepeat:
+          type: string
+        pageBackgroundSize:
+          type: string
+        pageWidth:
+          type: string
+        sideBarBackground:
+          $ref: "#/components/schemas/Background"
         siteName:
           type: string
+        supportedFontFamilies:
+          type: array
+          items:
+            type: string
         supportedLanguages:
           type: object
           additionalProperties:
@@ -1075,7 +1268,91 @@ components:
           type: object
           additionalProperties:
             type: string
-        topBarTheme:
+        topBarBackground:
+          $ref: "#/components/schemas/Background"
+    Favicon:
+      type: object
+      properties:
+        data:
+          type: string
+          format: byte
+        fileId:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+        updatedDate:
+          type: integer
+          format: int64
+        uploadId:
+          type: string
+    Logo:
+      type: object
+      properties:
+        data:
+          type: string
+          format: byte
+        fileId:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+        updatedDate:
+          type: integer
+          format: int64
+        uploadId:
+          type: string
+    GroupImpl:
+      type: object
+      properties:
+        description:
+          type: string
+        enclosingMemberships:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/NestedMembership"
+        groupName:
+          type: string
+        id:
+          type: string
+        internalStore:
+          type: boolean
+        label:
+          type: string
+        originatingStore:
+          type: string
+        parentId:
+          type: string
+    NestedMembership:
+      type: object
+      properties:
+        groupId:
+          type: string
+        includeAllMembershipTypes:
+          type: boolean
+        inheritMembershipType:
+          type: boolean
+        membershipType:
+          type: string
+        nestedGroupId:
+          type: string
+        nestedMembershipType:
+          type: string
+    MembershipImpl:
+      type: object
+      properties:
+        groupId:
+          type: string
+        id:
+          type: string
+        inherited:
+          type: boolean
+        membershipType:
+          type: string
+        userName:
           type: string
     CollectionEntity:
       type: object
@@ -1097,72 +1374,6 @@ components:
           format: int32
       additionalProperties:
         type: object
-    Favicon:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: string
-            format: byte
-        fileId:
-          type: integer
-          format: int64
-        size:
-          type: integer
-          format: int64
-        updatedDate:
-          type: integer
-          format: int64
-        uploadId:
-          type: string
-    GroupImpl:
-      type: object
-      properties:
-        description:
-          type: string
-        groupName:
-          type: string
-        id:
-          type: string
-        internalStore:
-          type: boolean
-        label:
-          type: string
-        originatingStore:
-          type: string
-        parentId:
-          type: string
-    Logo:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: string
-            format: byte
-        fileId:
-          type: integer
-          format: int64
-        size:
-          type: integer
-          format: int64
-        updatedDate:
-          type: integer
-          format: int64
-        uploadId:
-          type: string
-    MembershipImpl:
-      type: object
-      properties:
-        groupId:
-          type: string
-        id:
-          type: string
-        membershipType:
-          type: string
-        userName:
-          type: string
     MembershipTypeImpl:
       type: object
       properties:
@@ -1178,11 +1389,6 @@ components:
           type: string
         owner:
           type: string
-    SettingValueEntity:
-      type: object
-      properties:
-        value:
-          type: string
     UserRestEntity:
       type: object
       properties:
@@ -1194,11 +1400,25 @@ components:
           type: string
         fullName:
           type: string
+        isInternal:
+          type: boolean
+        language:
+          type: string
         lastName:
           type: string
         password:
           type: string
         platformAdministrator:
           type: boolean
+        role:
+          type: string
         userName:
           type: string
+info:
+  title: Portal REST API
+  version: 7.3.x-SNAPSHOT
+  license:
+    name: LGPL
+    url: https://www.gnu.org/licenses/lgpl-3.0.en.html
+servers:
+  - url: /

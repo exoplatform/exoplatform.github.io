@@ -1,0 +1,594 @@
+---
+openapi: 3.0.1
+info:
+  title: Kudos REST API
+  version: 7.3.x-SNAPSHOT
+  license:
+    name: LGPL
+    url: https://www.gnu.org/licenses/lgpl-3.0.en.html
+tags:
+  - name: /kudos/rest/account
+    description: Retrieve Kudos settings for users and spaces
+  - name: /kudos/rest/kudos
+    description: Manages Kudos
+  - name: /kudos/rest/settings
+    description: Manages Kudos global settings
+paths:
+  "/kudos/rest/account/settings":
+    get:
+      tags:
+        - /kudos/rest/account
+      operationId: KudosAccountREST.getSettings
+      description: returns account settings object
+      summary: Retrieves user/space settings for kudos
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountSettings"
+        "403":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: getSettings
+  "/kudos/rest/kudos":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.getKudosByPeriodOfDate
+      description: Get Kudos list created in a period contained a selected date in seconds and returns list of Kudos
+      summary: Get Kudos list created in a period contained a selected date in seconds
+      parameters:
+        - name: dateInSeconds
+          description: "Timestamp in seconds of date in the middle of selected period. If not defined, current time will be used."
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          description: Limit of results to return
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Kudos"
+        "400":
+          description: Invalid query input
+        "500":
+          description: Internal server error
+      x-operation-name: getKudosByPeriodOfDate
+    post:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.createKudos
+      description: Creates new Kudos and returns an empty response
+      summary: Creates new Kudos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Kudos"
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Kudos"
+        "400":
+          description: Invalid query input
+        "403":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: createKudos
+  "/kudos/rest/kudos/byActivity/{activityId}":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.getKudosByActivityId
+      description: Get Kudos by its generated comment or activity id
+      summary: Get Kudos by its generated comment or activity id
+      parameters:
+        - name: activityId
+          description: kudos activity or comment identifier
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Kudos"
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Entity Not found
+        "500":
+          description: Internal server error
+      x-operation-name: getKudosByActivityId
+  "/kudos/rest/kudos/byActivity/{activityId}/all":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.getKudosListOfActivity
+      description: "Get Kudos List attached to a parent activity, whether the activity itself or in a comment"
+      summary: "Get Kudos List attached to a parent activity, whether the activity itself or in a comment"
+      parameters:
+        - name: activityId
+          description: kudos parent activity identifier
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Kudos"
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Entity Not found
+        "500":
+          description: Internal server error
+      x-operation-name: getKudosListOfActivity
+  "/kudos/rest/kudos/byDates":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.getKudosByDates
+      description: Get Kudos list created between start and end dates in seconds
+      summary: Get Kudos list created between start and end dates in seconds
+      parameters:
+        - name: startDateInSeconds
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: endDateInSeconds
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          description: Limit of results to return
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Kudos"
+        "400":
+          description: Invalid query input
+        "403":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: getKudosByDates
+  "/kudos/rest/kudos/byEntity":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.getEntityKudos
+      description: Get Kudos list by entity type and id and returns list of Kudos
+      summary: Get Kudos list by entity type and id
+      parameters:
+        - name: entityType
+          description: "kudos entity type (for example activity, comment...)"
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: entityId
+          description: kudos entity id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          description: Limit of results to return
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Kudos"
+        "400":
+          description: Invalid query input
+        "403":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: getEntityKudos
+  "/kudos/rest/kudos/byEntity/sent/count":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.countKudosByEntityAndSender
+      description: Get Kudos count by entity and current user as sender
+      summary: Get Kudos count by entity and current user as sender
+      parameters:
+        - name: entityType
+          description: "kudos entity type (for example activity, comment...)"
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: entityId
+          description: kudos entity id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        "400":
+          description: Invalid query input
+        "403":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: countKudosByEntityAndSender
+  "/kudos/rest/kudos/period":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.getPeriodDates
+      description: Get Kudos period of time by computing it using period type and a selected date
+      summary: Get Kudos period of time by computing it using period type and a selected date
+      parameters:
+        - name: periodType
+          description: "Period type, can be: WEEK, MONTH, QUARTER, SEMESTER and YEAR. Default is the same as configured period"
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: dateInSeconds
+          description: Date in the middle of a period defined using a timestamp in seconds
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KudosPeriod"
+        "400":
+          description: Invalid query input
+        "403":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: getPeriodDates
+  "/kudos/rest/kudos/{identityId}/received":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.getReceivedKudosByPeriod
+      description: Retrieve the list of received Kudos by a user or space in a selected period
+      summary: Retrieve the list of received Kudos by a user or space in a selected period
+      parameters:
+        - name: identityId
+          description: User or space identity technical id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dateInSeconds
+          description: Date in the middle of a period defined using a timestamp in seconds
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: periodType
+          description: "Period type, can be: WEEK, MONTH, QUARTER, SEMESTER and YEAR. Default is the same as configured period"
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          description: "Limit of kudos to retrieve, if equal to 0, no kudos will be retrieved"
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: returnSize
+          description: "Whether return size of received kudos, default = false"
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KudosList"
+        "400":
+          description: Invalid query input
+        "500":
+          description: Internal server error
+      x-operation-name: getReceivedKudosByPeriod
+  "/kudos/rest/kudos/{identityId}/sent":
+    get:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.getSentKudosByPeriod
+      description: Retrieve the list of sent Kudos for a user in a selected period
+      summary: Retrieve the list of sent Kudos for a user in a selected period
+      parameters:
+        - name: identityId
+          description: User or space identity technical id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dateInSeconds
+          description: Date in the middle of a period defined using a timestamp in seconds
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: periodType
+          description: "Period type, can be: WEEK, MONTH, QUARTER, SEMESTER and YEAR. Default is the same as configured period"
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          description: "Limit of kudos to retrieve, if equal to 0, no kudos will be retrieved"
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: returnSize
+          description: "Whether return size of sent kudos, default = false"
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KudosList"
+        "400":
+          description: Invalid query input
+        "500":
+          description: Internal server error
+      x-operation-name: getSentKudosByPeriod
+  "/kudos/rest/kudos/{kudosId}":
+    delete:
+      tags:
+        - /kudos/rest/kudos
+      operationId: KudosREST.deleteKudos
+      description: Cancels a sent kudos
+      summary: Cancels a sent kudos
+      parameters:
+        - name: kudosId
+          description: Kudos technical identifier
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+        "404":
+          description: Object not found
+        "400":
+          description: Invalid query input
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: deleteKudos
+  "/kudos/rest/settings":
+    get:
+      tags:
+        - /kudos/rest/settings
+      operationId: KudosSettingsREST.getSettings
+      description: Get Kudos global settings
+      summary: Get Kudos global settings
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalSettings"
+        "403":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: getSettings
+    post:
+      tags:
+        - /kudos/rest/settings
+      operationId: KudosSettingsREST.saveSettings
+      description: Saves Kudos global settings and returns an empty response
+      summary: Saves Kudos global settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GlobalSettings"
+      responses:
+        "204":
+          description: Request fulfilled
+        "403":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: saveSettings
+components:
+  schemas:
+    AccountSettings:
+      type: object
+      properties:
+        disabled:
+          type: boolean
+        remainingKudos:
+          type: integer
+          format: int64
+    GlobalSettings:
+      type: object
+      properties:
+        endPeriodDateInSeconds:
+          type: integer
+          format: int64
+        kudosPerPeriod:
+          type: integer
+          format: int64
+        kudosPeriodType:
+          $ref: "#/components/schemas/KudosPeriodType"
+        startPeriodDateInSeconds:
+          type: integer
+          format: int64
+    Kudos:
+      type: object
+      properties:
+        activityId:
+          type: integer
+          format: int64
+        enabledReceiver:
+          type: boolean
+        entityId:
+          type: string
+        entityType:
+          type: string
+        externalReceiver:
+          type: boolean
+        message:
+          type: string
+        parentEntityId:
+          type: string
+        publicationStartTime:
+          type: integer
+          format: int64
+        receiverAvatar:
+          type: string
+        receiverFullName:
+          type: string
+        receiverId:
+          type: string
+        receiverIdentityId:
+          type: string
+        receiverPosition:
+          type: string
+        receiverType:
+          type: string
+        receiverURL:
+          type: string
+        senderAvatar:
+          type: string
+        senderFullName:
+          type: string
+        senderId:
+          type: string
+        senderIdentityId:
+          type: string
+        senderURL:
+          type: string
+        spacePrettyName:
+          type: string
+        technicalId:
+          type: integer
+          format: int64
+        timeInSeconds:
+          type: integer
+          format: int64
+    KudosList:
+      type: object
+      properties:
+        kudos:
+          type: array
+          items:
+            $ref: "#/components/schemas/Kudos"
+        limit:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+    KudosPeriod:
+      type: object
+      properties:
+        endDateInSeconds:
+          type: integer
+          format: int64
+        startDateInSeconds:
+          type: integer
+          format: int64
+    KudosPeriodType:
+      type: string
+      enum:
+        - WEEK
+        - MONTH
+        - QUARTER
+        - SEMESTER
+        - YEAR
+servers:
+  - url: /

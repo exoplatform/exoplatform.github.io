@@ -1,0 +1,150 @@
+openapi: 3.0.1
+paths:
+  /rest/onlyoffice/editor/config/{workspace}/{path}:
+    post:
+      operationId: configPost
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: path
+          in: path
+          required: true
+          schema:
+            pattern: .*
+            type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /rest/onlyoffice/editor/content/{userId}/{key}:
+    get:
+      operationId: content
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /rest/onlyoffice/editor/versions/{workspace}/{key}/{itemParPage}/{pageNum}:
+    get:
+      operationId: getVersions
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: itemParPage
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: pageNum
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /rest/onlyoffice/editor/state/{userId}/{key}:
+    get:
+      operationId: localState
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /rest/onlyoffice/editor/status/{userId}/{key}:
+    post:
+      operationId: status
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /rest/onlyoffice/editor/api/version:
+    get:
+      operationId: versionGet
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /rest/onlyoffice/editor/viewer/{workspace}/{fileId}:
+    get:
+      operationId: viewerConfig
+      parameters:
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+info:
+  title: OnlyOffice REST API
+  version: 7.3.x-SNAPSHOT
+  license:
+    name: LGPL
+    url: https://www.gnu.org/licenses/lgpl-3.0.en.html
+servers:
+  - url: /

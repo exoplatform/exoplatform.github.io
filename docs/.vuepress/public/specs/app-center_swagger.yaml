@@ -1,0 +1,1034 @@
+---
+openapi: 3.0.1
+info:
+  title: App Center REST API
+  version: 7.3.x-SNAPSHOT
+  license:
+    name: LGPL
+    url: https://www.gnu.org/licenses/lgpl-3.0.en.html
+tags:
+  - name: /app-center/rest/applications
+    description: Manage and access application center applications
+  - name: /app-center/rest/badges
+    description: Access unread counters displayed on application tiles
+  - name: /app-center/rest/favorites
+    description: Manage and access application center applications
+  - name: /app-center/rest/pins
+    description: Manage the applications pinned to the topbar of the authenticated user
+paths:
+  "/app-center/rest/applications":
+    get:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.getActiveApplications
+      description: Return list of applications in json format
+      summary: Retrieves all authorized applications for currently authenticated user
+      parameters:
+        - name: offset
+          description: Query Offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          description: Query results limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: keyword
+          description: Keyword to search in applications title and url
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationList"
+        "500":
+          description: Internal server error
+      x-operation-name: getActiveApplications
+    post:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.createApplication
+      description: Creates a new application in application center and returns an empty response
+      summary: Creates a new application in application center
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationForm"
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized operation
+        "409":
+          description: Conflict
+      x-operation-name: createApplication
+    put:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.updateApplication
+      description: Updates an existing application identified by its id or title or url
+      summary: Updates an existing application identified by its id or title or url
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationForm"
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: updateApplication
+  "/app-center/rest/applications/all":
+    get:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.getApplications
+      description: Return list of applications in json format
+      summary: Retrieves all available applications
+      parameters:
+        - name: offset
+          description: Query Offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          description: Query results limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: keyword
+          description: Keyword to search in applications title and url
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationList"
+        "500":
+          description: Internal server error
+      x-operation-name: getApplications
+  "/app-center/rest/applications/contextual":
+    post:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.createContextApplication
+      description: "Creates, from the settings of a Shortcuts portlet, an application only that portlet lists, displayed to the audience of the portlet's context, and returns it"
+      summary: Creates an application listed only by a Shortcuts portlet
+      parameters:
+        - name: settingName
+          description: CMS setting name of the portlet window
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationForm"
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: "Invalid field or illustration, the response's message naming it"
+        "403":
+          description: Not allowed to manage the applications of the portlet
+        "404":
+          description: "Unknown portlet setting, or space of its context"
+      x-operation-name: createContextApplication
+  "/app-center/rest/applications/contextual/list":
+    get:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.getContextApplications
+      description: "As applications/list, for a user who may edit the portlet's settings, plus the applications the portlet created whose audience excludes the user, unless an administrator emptied that audience. The applications the portlet created carry their categoryIds: empty when they have none, null when they could not be read"
+      summary: "Retrieves the applications a Shortcuts portlet lists, for its settings drawer"
+      parameters:
+        - name: settingName
+          description: CMS setting name of the portlet window
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: ids
+          description: "Ordered application ids, comma-separated"
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+        "400":
+          description: More than 100 ids
+        "403":
+          description: Not allowed to edit the portlet's settings
+        "404":
+          description: Unknown portlet setting
+      x-operation-name: getContextApplications
+  "/app-center/rest/applications/contextual/suggest":
+    get:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.getContextSuggestions
+      description: "Returns active, non-personal applications the current user may access, and the applications the portlet created, matching the keyword. The applications the portlet created carry their categoryIds, as on contextual/list"
+      summary: Suggests the applications a Shortcuts portlet may list
+      parameters:
+        - name: settingName
+          description: CMS setting name of the portlet window
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: keyword
+          description: Keyword to search in applications title and url
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: excludedIds
+          description: "Application ids already selected, never suggested, at most 100"
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: offset
+          description: Query Offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          description: "Query results limit, at most 20"
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+        "400":
+          description: More than 100 excluded ids
+        "403":
+          description: Not allowed to edit the portlet's settings
+        "404":
+          description: Unknown portlet setting
+      x-operation-name: getContextSuggestions
+  "/app-center/rest/applications/contextual/{applicationId}":
+    put:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.updateContextApplication
+      description: "Updates, from the settings of the Shortcuts portlet that created it, an application only that portlet lists, with the fields its form offers, and returns it without its permissions, its badge resolved, with its categoryIds (null when they could not be read)"
+      summary: Updates an application a Shortcuts portlet created
+      parameters:
+        - name: applicationId
+          description: Application technical id to update
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: settingName
+          description: CMS setting name of the portlet window
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationForm"
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: "Invalid field or illustration, or application not created by a Shortcuts portlet, or by another one, the response's message naming which"
+        "403":
+          description: Not allowed to manage the applications of the portlet
+        "404":
+          description: "Unknown portlet setting, or unknown application, or one the portlet does not manage that the user may not access"
+      x-operation-name: updateContextApplication
+    delete:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.deleteContextApplication
+      description: "Deletes, from the settings of the Shortcuts portlet that created it, an application only that portlet lists"
+      summary: Deletes an application a Shortcuts portlet created
+      parameters:
+        - name: applicationId
+          description: Application technical id to delete
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: settingName
+          description: CMS setting name of the portlet window
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: "Application not created by a Shortcuts portlet, or by another one, the response's message telling which"
+        "403":
+          description: Not allowed to manage the applications of the portlet
+        "404":
+          description: "Unknown portlet setting, or unknown application, or one the portlet does not manage that the user may not access"
+      x-operation-name: deleteContextApplication
+  "/app-center/rest/applications/illustration/{applicationId}":
+    get:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.getApplicationIllustration
+      description: This can only be done by the logged in user.
+      summary: Gets an application illustration by application id
+      parameters:
+        - name: applicationId
+          description: Application id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: r
+          description: "The token of the illustration URL, which authorizes a user who may not see the application, anonymous included"
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sizes
+          description: Dimensions of size
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: v
+          description: Last modified parameter
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+        "500":
+          description: Internal server error
+        "400":
+          description: Invalid query input
+        "404":
+          description: Resource not found
+      x-operation-name: getApplicationIllustration
+  "/app-center/rest/applications/list":
+    get:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.getListedApplications
+      description: "Returns, in the order of the ids, or grouped per category in the order of the category ids, the active applications the current user may access, unknown and forbidden ids skipped"
+      summary: Retrieves the applications a Shortcuts portlet lists
+      parameters:
+        - name: settingName
+          description: CMS setting name of the portlet window
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: ids
+          description: "Ordered application ids, comma-separated"
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: categoryIds
+          description: "Ordered category ids, comma-separated"
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+        "400":
+          description: "More than 100 ids or category ids, or both ids and category ids"
+        "404":
+          description: Unknown portlet setting
+      x-operation-name: getListedApplications
+  "/app-center/rest/applications/personal":
+    post:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.createPersonalApplication
+      summary: Creates a personal URL application for the authenticated user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationForm"
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized operation
+      x-operation-name: createPersonalApplication
+  "/app-center/rest/applications/personal/{applicationId}":
+    put:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.updatePersonalApplication
+      summary: Updates a personal URL application owned by the authenticated user
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationForm"
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Not found
+      x-operation-name: updatePersonalApplication
+    delete:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.deletePersonalApplication
+      summary: Deletes a personal URL application owned by the authenticated user
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Not found
+      x-operation-name: deletePersonalApplication
+  "/app-center/rest/applications/placements":
+    get:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.getApplicationPlacements
+      summary: Retrieves the applications stuck to each layout side by the authenticated user
+      parameters:
+        - name: siteName
+          description: "Current site name, used to compute whether stuck panels may display on it"
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationPlacements"
+      x-operation-name: getApplicationPlacements
+  "/app-center/rest/applications/placements/{side}":
+    put:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.stickApplication
+      summary: Sticks an application to the given layout side for the authenticated user
+      parameters:
+        - name: side
+          description: "Layout side to stick the application to: left or right"
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: applicationId
+          description: Application technical id to stick
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: "Bad Request: an application that may not be stuck, the response's message telling it; or an invalid side, with no message"
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Not found
+      x-operation-name: stickApplication
+    delete:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.unstickApplication
+      summary: Removes the application stuck to the given layout side for the authenticated user
+      parameters:
+        - name: side
+          description: "Layout side to free: left or right"
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: Bad Request
+      x-operation-name: unstickApplication
+  "/app-center/rest/applications/settings":
+    get:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.getSettings
+      summary: Retrieves app-center global settings
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationCenterSettings"
+      x-operation-name: getSettings
+    post:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.saveSettings
+      summary: Saves app-center global settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCenterSettings"
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+      x-operation-name: saveSettings
+  "/app-center/rest/applications/{applicationId}":
+    delete:
+      tags:
+        - /app-center/rest/applications
+      operationId: ApplicationRest.deleteApplication
+      description: Deletes an existing application identified by its id
+      summary: Deletes an existing application identified by its id
+      parameters:
+        - name: applicationId
+          description: Application technical id to delete
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "401":
+          description: Unauthorized operation
+        "500":
+          description: Internal server error
+      x-operation-name: deleteApplication
+  "/app-center/rest/badges/providers":
+    get:
+      tags:
+        - /app-center/rest/badges
+      operationId: ApplicationBadgeRest.getBadgeProviders
+      description: Returns the names an administrator can bind to an application
+      summary: Lists the badge providers contributed by installed addons
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationBadgeProvider"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+      x-operation-name: getBadgeProviders
+  "/app-center/rest/badges/{badgeName}":
+    get:
+      tags:
+        - /app-center/rest/badges
+      operationId: ApplicationBadgeRest.getBadge
+      description: Returns the number of items to display on the application tile
+      summary: Retrieves the badge count of an application for the currently authenticated user
+      parameters:
+        - name: badgeName
+          description: Badge technical name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        "403":
+          description: Forbidden
+        "404":
+          description: Badge not found
+        "500":
+          description: Internal server error
+      x-operation-name: getBadge
+  "/app-center/rest/favorites":
+    get:
+      tags:
+        - /app-center/rest/favorites
+      operationId: ApplicationFavoriteRest.getFavoriteApplicationsList
+      description: Return list of applications in json format
+      summary: Retrieves favorite applications for currently authenticated user
+      parameters:
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationList"
+        "500":
+          description: Internal server error
+      x-operation-name: getFavoriteApplicationsList
+    put:
+      tags:
+        - /app-center/rest/favorites
+      operationId: ApplicationFavoriteRest.updateApplicationsOrder
+      description: "Updates the order of the given applications, each one becoming a favorite unless mandatory, and returns an empty response. Every application is checked before any order is written: one refused application refuses the whole request."
+      summary: Updates an existing application's order identified by its id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/ApplicationOrder"
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: "An application created from a Shortcuts portlet, never a favorite, or an invalid id, the response's message telling it"
+        "403":
+          description: An application not accessible to the user
+        "404":
+          description: An unknown application
+        "500":
+          description: Internal server error
+      x-operation-name: updateApplicationsOrder
+  "/app-center/rest/favorites/{applicationId}":
+    post:
+      tags:
+        - /app-center/rest/favorites
+      operationId: ApplicationFavoriteRest.addFavoriteApplication
+      description: Adds an existing application identified by its id as favorite for current authenticated user
+      summary: Adds an existing application identified by its id as favorite for current authenticated user
+      parameters:
+        - name: applicationId
+          description: Application technical id to add as favorite
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: "Application created from a Shortcuts portlet, never a favorite, or an invalid id, the response's message telling it"
+        "403":
+          description: Application not accessible to the user
+        "404":
+          description: Unknown application
+        "500":
+          description: Internal server error
+      x-operation-name: addFavoriteApplication
+    delete:
+      tags:
+        - /app-center/rest/favorites
+      operationId: ApplicationFavoriteRest.deleteFavoriteApplication
+      description: Deletes an existing application identified by its id from current authenticated user favorites and returns an empty response
+      summary: Deletes an existing application identified by its id from current authenticated user favorites
+      parameters:
+        - name: applicationId
+          description: Application technical id to delete from favorite
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Request fulfilled
+        "500":
+          description: Internal server error
+      x-operation-name: deleteFavoriteApplication
+  "/app-center/rest/pins":
+    get:
+      tags:
+        - /app-center/rest/pins
+      operationId: ApplicationPinRest.getPinnedApplicationIds
+      description: "Returns the application ids in pin order, leaving out the pins of deleted applications and of applications created from a Shortcuts portlet"
+      summary: Retrieves the ids of the applications pinned to the topbar of the authenticated user
+      responses:
+        "200":
+          description: Request fulfilled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+      x-operation-name: getPinnedApplicationIds
+  "/app-center/rest/pins/{applicationId}":
+    put:
+      tags:
+        - /app-center/rest/pins
+      operationId: ApplicationPinRest.pinApplication
+      description: "Pins an active application the authenticated user can access, not created from a Shortcuts portlet, after the applications already pinned, up to 100 pinned applications"
+      summary: Pins an application to the topbar of the authenticated user
+      parameters:
+        - name: applicationId
+          description: Application technical id to pin
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+        "400":
+          description: "Invalid application id, inactive application or application created from a Shortcuts portlet (appCenter.pin.pinNotAllowed), or an application not pinned yet while 100 applications are already pinned (appCenter.pin.tooManyPins)"
+        "403":
+          description: The authenticated user can't access the application
+        "404":
+          description: Application not found
+      x-operation-name: pinApplication
+    delete:
+      tags:
+        - /app-center/rest/pins
+      operationId: ApplicationPinRest.unpinApplication
+      description: "Unpins the application, if pinned"
+      summary: Unpins an application from the topbar of the authenticated user
+      parameters:
+        - name: applicationId
+          description: Application technical id to unpin
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Request fulfilled
+      x-operation-name: unpinApplication
+components:
+  schemas:
+    Application:
+      type: object
+      properties:
+        active:
+          type: boolean
+        allowDetach:
+          type: boolean
+        allowStick:
+          type: boolean
+        badgeName:
+          type: string
+        categoryIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        changedManually:
+          type: boolean
+        contextSettingName:
+          type: string
+        contextSpaceId:
+          type: integer
+          format: int64
+        contextual:
+          type: boolean
+        default:
+          type: boolean
+        description:
+          type: string
+        helpPageURL:
+          type: string
+        icon:
+          type: string
+        id:
+          type: integer
+          format: int64
+        imageFileId:
+          type: integer
+          format: int64
+        imageUrl:
+          type: string
+        mandatory:
+          type: boolean
+        mobile:
+          type: boolean
+        order:
+          type: integer
+          format: int64
+        permissions:
+          type: array
+          items:
+            type: string
+        personal:
+          type: boolean
+        pwa:
+          type: boolean
+        sameTab:
+          type: boolean
+        shortcut:
+          type: string
+        system:
+          type: boolean
+        title:
+          type: string
+        type:
+          $ref: "#/components/schemas/ApplicationType"
+        url:
+          type: string
+    ApplicationBadgeProvider:
+      type: object
+      properties:
+        drawerNames:
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+        portletNames:
+          type: array
+          items:
+            type: string
+    ApplicationCenterSettings:
+      type: object
+      properties:
+        allowUserPersonalApps:
+          type: boolean
+    ApplicationForm:
+      type: object
+      properties:
+        active:
+          type: boolean
+        allowDetach:
+          type: boolean
+        allowStick:
+          type: boolean
+        badgeName:
+          type: string
+        categoryIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        changedManually:
+          type: boolean
+        contextSettingName:
+          type: string
+        contextSpaceId:
+          type: integer
+          format: int64
+        default:
+          type: boolean
+        description:
+          type: string
+        helpPageURL:
+          type: string
+        icon:
+          type: string
+        id:
+          type: integer
+          format: int64
+        illustrationMimeType:
+          type: string
+        illustrationRemoved:
+          type: boolean
+        imageFileId:
+          type: integer
+          format: int64
+        imageUploadId:
+          type: string
+        imageUrl:
+          type: string
+        mandatory:
+          type: boolean
+        mobile:
+          type: boolean
+        order:
+          type: integer
+          format: int64
+        permissions:
+          type: array
+          items:
+            type: string
+        personal:
+          type: boolean
+        pwa:
+          type: boolean
+        sameTab:
+          type: boolean
+        shortcut:
+          type: string
+        system:
+          type: boolean
+        title:
+          type: string
+        type:
+          $ref: "#/components/schemas/ApplicationType"
+        url:
+          type: string
+    ApplicationList:
+      type: object
+      properties:
+        applications:
+          type: array
+          items:
+            $ref: "#/components/schemas/Application"
+        limit:
+          type: integer
+          format: int64
+        offset:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+    ApplicationOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        order:
+          type: integer
+          format: int64
+    ApplicationPlacements:
+      type: object
+      properties:
+        left:
+          $ref: "#/components/schemas/Application"
+        right:
+          $ref: "#/components/schemas/Application"
+        siteEligible:
+          type: boolean
+    ApplicationType:
+      type: string
+      enum:
+        - LINK
+        - DRAWER
+        - PORTLET
+servers:
+  - url: /

@@ -1,1 +1,1 @@
-<OpenApi page="addons_perk-store_swagger"/>
+<OpenApi page="perk-store_swagger"/>

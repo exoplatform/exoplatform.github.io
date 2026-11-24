@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OpenAPI specifications of the eXo / Meeds REST services, generated outside the product build.
+  Each sub-module takes the published services jar of one module from Nexus and generates the
+  JAX-RS part (swagger-core) and the Spring MVC part (kbuntrock); merge.sh then merges them
+  into one file per module, with absolute paths under a "/" server.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.exoplatform.documentation</groupId>
+  <artifactId>openapi</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>eXo REST API documentation - OpenAPI generation</name>
+
+  <modules>
+    <module>social</module>
+    <module>gamification</module>
+    <module>commons</module>
+    <module>gatein_portal</module>
+    <module>content</module>
+    <module>poll</module>
+    <module>perk-store</module>
+    <module>notes</module>
+    <module>tasks</module>
+    <module>kudos</module>
+    <module>wallet</module>
+    <module>app-center</module>
+    <module>documents</module>
+    <module>agenda</module>
+    <module>ecms</module>
+    <module>web-conferencing</module>
+    <module>onlyoffice</module>
+    <module>processes</module>
+    <module>dlp</module>
+    <module>anti-malware</module>
+    <module>multifactor-authentication</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Line of the documented modules -->
+    <platform.version>7.3.x-SNAPSHOT</platform.version>
+    <!-- Generation tooling, pinned -->
+    <swagger.version>2.2.56</swagger.version>
+    <kbuntrock.version>1.35.0</kbuntrock.version>
+    <!-- Filled by each sub-module -->
+    <openapi.name>${project.artifactId}</openapi.name>
+    <openapi.title>${project.name}</openapi.title>
+    <openapi.spring.prefix>/${openapi.name}/rest</openapi.spring.prefix>
+    <openapi.parts.dir>${project.build.directory}/openapi-parts</openapi.parts.dir>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>exo-public</id>
+      <url>https://repository.exoplatform.org/public</url>
+      <releases><enabled>true</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <!-- JAX-RS services (legacy ws engine, javax.ws.rs) -->
+          <groupId>io.swagger.core.v3</groupId>
+          <artifactId>swagger-maven-plugin</artifactId>
+          <version>${swagger.version}</version>
+          <configuration>
+            <outputPath>${openapi.parts.dir}</outputPath>
+            <outputFileName>${openapi.name}-jaxrs</outputFileName>
+            <outputFormat>YAML</outputFormat>
+            <prettyPrint>true</prettyPrint>
+            <!-- JAX-RS resources are served under the portal's /rest context -->
+            <openapiFilePath>${maven.multiModuleProjectDirectory}/jaxrs-openapi.yaml</openapiFilePath>
+          </configuration>
+          <dependencies>
+            <!-- provided by the server at runtime, so absent from the services jar's transitive dependencies -->
+            <dependency>
+              <groupId>javax.ws.rs</groupId>
+              <artifactId>javax.ws.rs-api</artifactId>
+              <version>2.1.1</version>
+            </dependency>
+            <dependency>
+              <groupId>javax.servlet</groupId>
+              <artifactId>javax.servlet-api</artifactId>
+              <version>4.0.1</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>jaxrs</id>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>resolve</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <!-- Spring MVC services -->
+          <groupId>io.github.kbuntrock</groupId>
+          <artifactId>openapi-maven-plugin</artifactId>
+          <version>${kbuntrock.version}</version>
+          <configuration>
+            <outputDirectory>${openapi.parts.dir}</outputDirectory>
+            <!-- the plugin posts usage data to api.openapi-maven-plugin.eu unless disabled -->
+            <analytics>false</analytics>
+            <apiConfiguration>
+              <!-- Spring MVC controllers are served under /{webapp}/rest (spring.mvc.servlet.path=/rest) -->
+              <pathPrefix>${openapi.spring.prefix}</pathPrefix>
+            </apiConfiguration>
+          </configuration>
+          <executions>
+            <execution>
+              <id>spring</id>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>documentation</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

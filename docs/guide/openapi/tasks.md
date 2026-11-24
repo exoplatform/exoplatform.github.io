@@ -1,1 +1,1 @@
-<OpenApi page="addons_task_swagger"/>
+<OpenApi page="tasks_swagger"/>

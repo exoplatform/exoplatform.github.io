@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.exoplatform.documentation</groupId>
+    <artifactId>openapi</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>openapi-content</artifactId>
+  <packaging>jar</packaging>
+  <name>Content</name>
+  <properties>
+    <openapi.name>content</openapi.name>
+    <openapi.title>Content REST API</openapi.title>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>io.meeds.content</groupId>
+      <artifactId>content-service</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <!-- provided-scope dependencies of the services jar, needed to load its REST classes -->
+    <dependency>
+      <groupId>io.meeds.social</groupId>
+      <artifactId>social-component-core</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.meeds.social</groupId>
+      <artifactId>social-component-notification</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.meeds.social</groupId>
+      <artifactId>social-component-service</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.meeds.analytics</groupId>
+      <artifactId>analytics-api</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.meeds.notes</groupId>
+      <artifactId>notes-service</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.meeds.layout</groupId>
+      <artifactId>layout-service</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <!-- no JAX-RS resource in the services jar: Spring MVC only -->
+      <plugin>
+        <groupId>io.github.kbuntrock</groupId>
+        <artifactId>openapi-maven-plugin</artifactId>
+        <configuration>
+          <apis>
+            <api>
+              <filename>content-spring.yaml</filename>
+              <locations>
+                <location>io.meeds.content.rest</location>
+                <location>io.meeds.content.news.rest</location>
+                <location>io.meeds.content.link.rest</location>
+              </locations>
+            </api>
+          </apis>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
